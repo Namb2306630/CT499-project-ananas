@@ -4,7 +4,7 @@
 
 - Student: Huỳnh Nhựt Nam
 - Student ID: B2306630
-- Course: CT499 - Công nghệ Web
+- Course: CT499 - Phát triển ứng dụng web
 
 ---
 
