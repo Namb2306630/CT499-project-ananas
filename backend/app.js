@@ -3,6 +3,7 @@ const cors = require("cors");
 const authRouter = require("./app/routes/auth.route");
 const provinceRouter = require("./app/routes/province.route");
 const addressRouter = require("./app/routes/address.route");
+const systemConfigRouter = require("./app/routes/system-config.route");
 const AppError = require("./app/constants/app-error");
 
 const app = express(); // để tạo ra một ứng dụng Express
@@ -17,6 +18,7 @@ app.get("/", (req, res) => {
 app.use("/api/auth", authRouter);
 app.use("/api", provinceRouter);
 app.use("/api/address", addressRouter);
+app.use("/api/admin/system-config", systemConfigRouter);
 
 app.use((req, res, next) => {
   return next(new AppError(404, "Resource not found"));

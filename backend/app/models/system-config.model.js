@@ -2,16 +2,36 @@
 const mongoose = require("mongoose");
 const systemConfigSchema = new mongoose.Schema(
   {
-    vatPercent: Number,
+    vatPercent: {
+      type: Number,
+      required: true,
+      min: 0,
+      max: 100,
+    },
     // Thuế VAT
+    //trong đó tỷ lệ tính thuế GTGT là 1% và tỷ lệ tính thuế TNCN là 0,5%
 
-    operatingCostPercent: Number,
+    operatingCostPercent: {
+      type: Number,
+      required: true,
+      min: 0,
+      max: 100,
+    },
     // Chi phí vận hành
 
-    profitPercent: Number,
+    profitPercent: {
+      type: Number,
+      required: true,
+      min: 0,
+      max: 100,
+    },
     // Lợi nhuận mong muốn
 
-    freeShippingThreshold: Number,
+    freeShippingThreshold: {
+      type: Number,
+      required: true,
+      min: 0,
+    },
     // Miễn phí ship từ bao nhiêu tiền
   },
   { timestamps: true },
