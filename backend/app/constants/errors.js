@@ -16,6 +16,8 @@ const ErrorCode = {
 
   INVALID_CREDENTIALS: () =>
     new AppError(1007, "Số điện thoại hoặc mật khẩu không đúng"),
+
+  ADDRESS_NOT_EXISTS: () => new AppError(1008, "Địa chỉ không tồn tại"),
 };
 
 module.exports = ErrorCode;

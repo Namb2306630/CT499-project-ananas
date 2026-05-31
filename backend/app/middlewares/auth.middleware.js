@@ -7,7 +7,11 @@ const authMiddleware = async (req, res, next) => {
     const authHeader = req.headers.authorization;
 
     if (!authHeader) {
-      throw ErrorCode.UNAUTHORIZED();
+      next(ErrorCode.UNAUTHORIZED());
+    }
+
+    if (!authHeader.startsWith("Bearer ")) {
+      return next(ErrorCode.UNAUTHORIZED());
     }
 
     const token = authHeader.split(" ")[1];
@@ -17,7 +21,7 @@ const authMiddleware = async (req, res, next) => {
     req.user = decoded;
     next();
   } catch {
-    throw ErrorCode.UNAUTHORIZED();
+    next(ErrorCode.UNAUTHORIZED());
   }
 };
 
