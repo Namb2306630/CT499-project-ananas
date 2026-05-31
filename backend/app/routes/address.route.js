@@ -10,10 +10,10 @@ router.get("/", addressController.getAddresses);
 
 router.post("/", addressController.createAddress);
 
-router.put("/:id", addressController.updateAddress);
+router.put("/", addressController.updateAddress);
 
-router.delete("/:id", addressController.deleteAddress);
+router.delete("/", addressController.deleteAddress);
 
-router.patch("/:id/default", addressController.setDefault);
+router.patch("/", addressController.setDefault);
 
 module.exports = router;

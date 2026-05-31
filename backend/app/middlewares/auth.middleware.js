@@ -19,6 +19,12 @@ const authMiddleware = async (req, res, next) => {
     const decoded = jwt.verify(token, config.jwt.accessSecret);
 
     req.user = decoded;
+    //     {
+    //   _id: "123",
+    //   role: "user",
+    //   iat: 1710000000,
+    //   exp: 1710003600
+    // }
     next();
   } catch {
     next(ErrorCode.UNAUTHORIZED());

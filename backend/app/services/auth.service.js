@@ -29,7 +29,7 @@ const generateAvatar = (userName) => {
 const generateToken = (user) => {
   return jwt.sign(
     {
-      id: user._id,
+      _id: user._id,
       role: user.role,
       version: user.jwtVersion,
     },
@@ -41,7 +41,7 @@ const generateToken = (user) => {
 const generateRefreshToke = (user) => {
   return jwt.sign(
     {
-      id: user._id,
+      _id: user._id,
       version: user.jwtVersion,
     },
     config.jwt.refreshSecret,
@@ -125,7 +125,7 @@ class AuthService {
   async refreshToken(refreshToken) {
     try {
       const decoded = jwt.verify(refreshToken, config.jwt.refreshSecret);
-      const user = await User.findById(decoded.id);
+      const user = await User.findById(decoded._id);
       if (!user) {
         throw ErrorCode.UNAUTHORIZED();
       }

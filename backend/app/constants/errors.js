@@ -18,6 +18,9 @@ const ErrorCode = {
     new AppError(1007, "Số điện thoại hoặc mật khẩu không đúng"),
 
   ADDRESS_NOT_EXISTS: () => new AppError(1008, "Địa chỉ không tồn tại"),
+
+  CANNOT_DELETE_DEFAULT_ADDRESS: () =>
+    new AppError(1009, "Không thể xóa địa chỉ mặc định"),
 };
 
 module.exports = ErrorCode;

@@ -16,7 +16,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/auth", authRouter);
 app.use("/api", provinceRouter);
-app.use("/api/addresses", addressRouter);
+app.use("/api/address", addressRouter);
 
 app.use((req, res, next) => {
   return next(new AppError(404, "Resource not found"));
