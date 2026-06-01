@@ -1,7 +1,7 @@
 const Address = require("../models/address.model");
 const ErrorCode = require("../constants/errors");
 const REGEX = require("../utils/regex.util");
-
+const updateFields = require("../utils/updateFields.until");
 class AddressService {
   //lấy địa chỉ
   async getAddresses(userId) {
@@ -42,17 +42,19 @@ class AddressService {
       throw ErrorCode.INVALID_PHONE();
     }
 
-    if (payload.isDefault) {
-      await Address.updateMany(
-        {
-          userId,
-        },
-        { $set: { isDefault: false } },
-      );
+    if (payload.isDefault === true) {
+      await Address.updateMany({ userId }, { $set: { isDefault: false } });
     }
 
-    //Copy các thuộc tính từ object nguồn sang object đích
-    Object.assign(address, payload);
+    updateFields(address, payload, [
+      "name",
+      "phone",
+      "city",
+      "district",
+      "ward",
+      "address",
+      "isDefault",
+    ]);
 
     await address.save();
 
