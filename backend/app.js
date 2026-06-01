@@ -19,14 +19,13 @@ app.get("/", (req, res) => {
   res.json({ message: "Welcome to ananas" });
 });
 app.use("/uploads", express.static("uploads"));
-
 app.use("/api/auth", authRouter);
 app.use("/api", provinceRouter);
-app.use("/api/address", addressRouter);
+app.use("/api/addresses", addressRouter);
 app.use("/api/admin/system-config", systemConfigRouter);
-app.use("/api", userRouter);
-app.use("/api/category", categoryRouter);
-app.use("/api/brand", brandRouter);
+app.use("/api/users", userRouter);
+app.use("/api/categories", categoryRouter);
+app.use("/api/brands", brandRouter);
 
 app.use((req, res, next) => {
   return next(new AppError(404, "Resource not found"));
