@@ -10,7 +10,7 @@ const ErrorCode = {
 
   INVALID_PHONE: () => new AppError(1004, "Số điện thoại không hợp lệ"),
 
-  UNAUTHORIZED: () => new AppError(1005, "Bạn chưa đăng nhập"),
+  UNAUTHORIZED: () => new AppError(1005, "Bạn cần đăng nhập"),
 
   PASSWORD_NOT_MATCH: () => new AppError(1006, "Mật khẩu xác nhận không khớp"),
 
@@ -35,6 +35,9 @@ const ErrorCode = {
 
   // INVALID_FREE_SHIPPING_THRESHOLD: () =>
   //   new AppError(1014, "Ngưỡng miễn phí vận chuyển không hợp lệ"),
+
+  CATEGORY_ALREADY_EXISTS: () => new AppError(1015, "Tên danh mục đã tồn tại"),
+  CATEGORY_NOT_EXISTS: () => new AppError(1016, "Danh mục không tồn tại"),
 };
 
 module.exports = ErrorCode;
