@@ -56,18 +56,10 @@ class AuthService {
   async register(payload) {
     const { phone, password, confirmPassword } = payload;
 
-    //check regex
-    if (!REGEX.PHONE.test(phone)) {
-      throw ErrorCode.INVALID_PHONE();
-    }
-    if (!REGEX.PASSWORD.test(password)) {
-      throw ErrorCode.INVALID_PASSWORD();
-    }
-
     //check confirm password
-    if (password !== confirmPassword) {
-      throw ErrorCode.PASSWORD_NOT_MATCH();
-    }
+    // if (password !== confirmPassword) {
+    //   throw ErrorCode.PASSWORD_NOT_MATCH();
+    // }
 
     //check DB
     const existedUser = await User.findOne({
@@ -95,18 +87,13 @@ class AuthService {
 
   async login(payload) {
     const { phone, password } = payload;
-    //console.log("phone:", phone);
 
     const user = await User.findOne({ phone });
-
-    //console.log("user:", user);
 
     if (!user) {
       throw ErrorCode.INVALID_CREDENTIALS();
     }
     const isMatch = await bcrypt.compare(password, user.password);
-
-    //console.log("isMatch:", isMatch);
 
     if (!isMatch) {
       throw ErrorCode.INVALID_CREDENTIALS();

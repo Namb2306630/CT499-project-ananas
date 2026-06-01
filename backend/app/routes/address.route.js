@@ -1,14 +1,19 @@
 const express = require("express");
 const addressController = require("../controllers/address.controller");
 const authMiddleware = require("../middlewares/auth.middleware");
-
+const validate = require("../middlewares/validate.middleware");
+const { createAddressSchema } = require("../validations/address.validation");
 const router = express.Router();
 
 router.use(authMiddleware);
 
 router.get("/", addressController.getAddresses);
 
-router.post("/", addressController.createAddress);
+router.post(
+  "/",
+  validate(createAddressSchema),
+  addressController.createAddress,
+);
 
 router.put("/:id", addressController.updateAddress);
 

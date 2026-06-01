@@ -16,10 +16,6 @@ class AddressService {
   async createAddress(userId, payload) {
     const { isDefault } = payload;
 
-    if (payload.phone != null && !REGEX.PHONE.test(payload.phone)) {
-      throw ErrorCode.INVALID_PHONE();
-    }
-
     const count = await Address.countDocuments({ userId });
 
     if (isDefault) {
@@ -41,6 +37,7 @@ class AddressService {
     });
 
     if (!address) throw ErrorCode.ADDRESS_NOT_EXISTS();
+
     if (payload.phone != null && !REGEX.PHONE.test(payload.phone)) {
       throw ErrorCode.INVALID_PHONE();
     }
