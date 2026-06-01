@@ -18,7 +18,10 @@ const categorySchema = new mongoose.Schema(
     // URL SEO cho đường dẫn đẹp VD ao-thun-nam
     //npm install slugify
 
-    image: String,
+    image: {
+      type: String,
+      default: null,
+    },
     // Ảnh đại diện danh mục
 
     parent: {
@@ -28,11 +31,11 @@ const categorySchema = new mongoose.Schema(
     },
     // Danh mục cha (nếu có)
 
-    type: {
-      type: String,
-      enum: ["featured", "product_line", "style", "accessory", "collection"],
-      default: "product_line",
-    },
+    // type: {
+    //   type: String,
+    //   enum: ["featured", "product_line", "style", "accessory", "collection"],
+    //   default: "product_line",
+    // },
 
     isActive: {
       type: Boolean,

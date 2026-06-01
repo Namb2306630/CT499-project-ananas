@@ -3,43 +3,36 @@ const mongoose = require("mongoose");
 const productSchema = new mongoose.Schema(
   {
     name: String,
-    // Tên sản phẩm
-
     slug: String,
-    // SEO URL
-
     description: String,
-    // Mô tả sản phẩm
-
     category: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Category",
     },
-    // Danh mục
-
     brand: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Brand",
     },
-    // Thương hiệu
-
     productLine: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "ProductLine",
     },
     //dòng sản phẩm
-
+    costPrice: Number,
+    // Giá nhập
+    sellingPrice: Number,
+    // Giá bán
     gender: {
       type: String,
       enum: ["male", "female", "unisex"],
       default: "unisex",
     },
-    // Đối tượng sử dụng sản phẩm
 
-    type: {
-      type: String,
-      enum: ["shoe", "sock", "lace", "accessory"],
+    discountPercent: {
+      type: Number,
+      default: 0,
     },
+    //giảm giá phần trăm, dùng để hiển thị trên trang list
 
     styles: [
       {
@@ -47,24 +40,25 @@ const productSchema = new mongoose.Schema(
         ref: "Style",
       },
     ],
+    isBestSeller: {
+      type: Boolean,
+      default: false,
+    },
 
-    costPrice: Number,
-    // Giá nhập
+    isNewArrival: {
+      type: Boolean,
+      default: false,
+    },
 
-    sellingPrice: Number,
-    // Giá bán
-
+    isSale: {
+      type: Boolean,
+      default: false,
+    },
     defaultColor: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "ProductVariant",
     },
     // Màu mặc định hiển thị ngoài trang list
-
-    totalStock: Number,
-    // Tổng tồn kho
-
-    stockStatus: String,
-    // in_stock | out_of_stock
 
     status: String,
     // active | inactive | discontinued
