@@ -1,9 +1,13 @@
 const categoryService = require("../services/category.service");
 const ApiResponse = require("../constants/api-response");
+const { deleteImage } = require("../utils/uploadImage.util");
 
 exports.create = async (req, res, next) => {
   try {
-    const data = await categoryService.create(req.body);
+    const data = await categoryService.create({
+      ...req.body,
+      image: req.file ? req.file.path.replace(/\\/g, "/") : null,
+    });
     return ApiResponse.success({
       res,
       data,
@@ -18,6 +22,11 @@ exports.update = async (req, res, next) => {
   try {
     const categoryId = req.params.id;
     const data = await categoryService.update(categoryId, req.body);
+    if (req.file) {
+      deleteImage(data.image);
+      data.image = req.file.path.replace(/\\/g, "/");
+      // chuyền từ đường dẫn Windows sang đường dẫn URL (thay \ thành /)
+    }
     return ApiResponse.success({
       res,
       data,

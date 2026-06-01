@@ -5,6 +5,7 @@ const validate = require("../middlewares/validate.middleware");
 const router = express.Router();
 const authMiddleware = require("../middlewares/auth.middleware");
 const roleMiddleware = require("../middlewares/role.middleware");
+const { uploadCategoryImage } = require("../middlewares/upload.middleware");
 
 const Role = require("../utils/role.util");
 
@@ -12,10 +13,15 @@ router.use(authMiddleware);
 router.use(roleMiddleware(Role.SUPER_ADMIN));
 
 // Tạo category
-router.post("/", validate(createCategorySchema), categoryController.create);
+router.post(
+  "/",
+  validate(createCategorySchema),
+  uploadCategoryImage,
+  categoryController.create,
+);
 
 // Update category
-router.put("/:id", categoryController.update);
+router.put("/:id", uploadCategoryImage, categoryController.update);
 
 // Xóa category
 router.delete("/:id", categoryController.remove);
