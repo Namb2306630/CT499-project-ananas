@@ -14,18 +14,23 @@ const storage = (folder) =>
       // tạo folder nếu chưa có
       if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir, {
-          recursive: true, //iúp tạo nhiều cấp folder nếu chưa tồn tại
+          recursive: true, //giúp tạo nhiều cấp folder nếu chưa tồn tại
         });
       }
 
-      cb(null, dir); //lưu file
+      cb(null, dir); //lưu file cb là callback, cb(error, destination)
+      //dir = "uploads/brands";
     },
 
     filename: function (req, file, cb) {
       const uniqueName = Date.now() + "-" + Math.round(Math.random() * 1e9);
 
       cb(null, uniqueName + path.extname(file.originalname));
+      //1780326848831-427389156.png
     },
+    //uploads/brands
+    // +
+    // 1780326848831-427389156.png
   });
 
 // ====== 2. FILTER FILE ======
@@ -38,6 +43,7 @@ const fileFilter = (req, file, cb) => {
     );
   }
 
+  //cb(error, acceptFile)
   cb(null, true);
 };
 
@@ -54,9 +60,9 @@ const uploadImage = (folder) =>
 // ====== 4. DELETE OLD IMAGE ======
 const deleteImage = (filePath) => {
   if (!filePath) return;
-
+  //truyền đường dẫn được lưu trong database vào, ví dụ: uploads/brands/1780326848831-427389156.png
   const fullPath = path.join(process.cwd(), filePath);
-
+  //process.cwd() trả về đường dẫn gốc của project, ví dụ: D:\CT499\project\ananas\backend
   if (fs.existsSync(fullPath)) {
     fs.unlinkSync(fullPath);
   }
@@ -66,3 +72,10 @@ module.exports = {
   uploadImage,
   deleteImage,
 };
+
+// {
+//   fieldname: 'logo',
+//   originalname: 'ananas.png',
+//   filename: '1780326848831-427389156.png',
+//   path: 'uploads\\brands\\1780326848831-427389156.png'
+// }
