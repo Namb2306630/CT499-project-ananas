@@ -14,8 +14,15 @@ const brandSchema = new mongoose.Schema(
     description: String,
     // Mô tả
 
-    isActive: Boolean,
-    // Trạng thái hoạt động
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
+
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true },
 );
