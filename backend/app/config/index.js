@@ -14,6 +14,10 @@ const config = {
     accessExpires: process.env.JWT_ACCESS_EXPIRES_IN,
     refreshExpires: process.env.JWT_REFRESH_EXPIRES_IN,
   },
+  img: {
+    size: 2,
+    allowed: ["image/jpeg", "image/png", "image/webp"],
+  },
 };
 
 module.exports = config;
