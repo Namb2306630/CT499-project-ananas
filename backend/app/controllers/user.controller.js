@@ -6,13 +6,6 @@ exports.updateProfile = (req, res) => {
   res.send({ message: "cập nhật thông tin cá nhân" });
 };
 
-exports.address = (req, res) => {
-  res.send({ message: "thêm địa chỉ" });
-};
-
-exports.updateAddress = (req, res) => {
-  res.send({ message: "cập nhật địa chỉ" });
-};
 
 exports.findOne = (req, res) => {
   res.send({ message: "tìm user" });
