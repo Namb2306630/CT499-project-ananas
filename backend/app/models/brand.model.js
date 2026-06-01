@@ -1,4 +1,4 @@
-//thương hiệu
+//thương hiệu -> 1 thương hiệu là ananas
 const mongoose = require("mongoose");
 const brandSchema = new mongoose.Schema(
   {

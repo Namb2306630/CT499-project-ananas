@@ -23,6 +23,31 @@ const productSchema = new mongoose.Schema(
     },
     // Thương hiệu
 
+    productLine: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "ProductLine",
+    },
+    //dòng sản phẩm
+
+    gender: {
+      type: String,
+      enum: ["male", "female", "unisex"],
+      default: "unisex",
+    },
+    // Đối tượng sử dụng sản phẩm
+
+    type: {
+      type: String,
+      enum: ["shoe", "sock", "lace", "accessory"],
+    },
+
+    styles: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Style",
+      },
+    ],
+
     costPrice: Number,
     // Giá nhập
 
@@ -31,7 +56,7 @@ const productSchema = new mongoose.Schema(
 
     defaultColor: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "ProductColor",
+      ref: "ProductVariant",
     },
     // Màu mặc định hiển thị ngoài trang list
 

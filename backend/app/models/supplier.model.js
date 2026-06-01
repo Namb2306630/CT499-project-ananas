@@ -1,23 +1,25 @@
-// nhà cung cấp mặt hàng
-const mongoose = require("mongoose");
-const supplierSchema = new mongoose.Schema(
-  {
-    name: String,
-    // Tên nhà cung cấp
+// // nhà cung cấp mặt hàng
+// const mongoose = require("mongoose");
+// const supplierSchema = new mongoose.Schema(
+//   {
+//     name: String,
+//     // Tên nhà cung cấp
 
-    phone: String,
-    // SĐT
+//     phone: String,
+//     // SĐT
 
-    email: String,
-    // Email
+//     email: String,
+//     // Email
 
-    address: String,
-    // Địa chỉ
+//     address: String,
+//     // Địa chỉ
 
-    status: String,
-    // active | inactive
-  },
-  { timestamps: true },
-);
+//     status: String,
+//     // active | inactive
+//   },
+//   { timestamps: true },
+// );
 
-module.exports = mongoose.model("Supplier", supplierSchema);
+// module.exports = mongoose.model("Supplier", supplierSchema);
+
+//sản phẩm tự sản xuất và bán nên không cần nhà cung cấp

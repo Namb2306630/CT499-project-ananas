@@ -20,7 +20,7 @@ const userSchema = new mongoose.Schema(
     },
     email: {
       type: String,
-      default: "",
+      default: null,
     },
     password: {
       type: String,
