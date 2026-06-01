@@ -29,7 +29,8 @@ exports.update = async (req, res, next) => {
     // nếu có file mới
     if (req.file) {
       deleteImage(brand.logo);
-      req.body.logo = req.file.path;
+      req.body.logo = req.file.path.replace(/\\/g, "/");
+      // chuyền từ đường dẫn Windows sang đường dẫn URL (thay \ thành /)
     }
 
     const data = await brandService.update(brandId, req.body);
