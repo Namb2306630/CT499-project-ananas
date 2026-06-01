@@ -3,7 +3,7 @@ const bycrypt = require("bcryptjs");
 const Role = require("../utils/role.util");
 
 const seedAdmin = async () => {
-  const superAdminExists = await User.findOne({ role: "super-admin" });
+  const superAdminExists = await User.findOne({ role: Role.SUPER_ADMIN });
 
   if (superAdminExists) return;
 
