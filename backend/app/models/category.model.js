@@ -15,7 +15,8 @@ const categorySchema = new mongoose.Schema(
     // Tên danh mục (Quần áo, Giày dép)
 
     slug: String,
-    // URL SEO
+    // URL SEO cho đường dẫn đẹp VD ao-thun-nam
+    //npm install slugify
 
     image: String,
     // Ảnh đại diện danh mục
@@ -23,11 +24,26 @@ const categorySchema = new mongoose.Schema(
     parent: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Category",
+      default: null,
     },
     // Danh mục cha (nếu có)
 
-    isActive: Boolean,
+    type: {
+      type: String,
+      enum: ["featured", "product_line", "style", "accessory", "collection"],
+      default: "product_line",
+    },
+
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
     // Trạng thái hiển thị
+
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true },
 );
