@@ -4,8 +4,8 @@ const validate = require("../middlewares/validate.middleware");
 const authMiddleware = require("../middlewares/auth.middleware");
 const roleMiddleware = require("../middlewares/role.middleware");
 const role = require("../utils/role.util");
-const { uploadImage } = require("../utils/uploadImage.util");
 const router = express.Router();
+const { uploadBrandLogo } = require("../middlewares/upload.middleware");
 const { createBrandSchema } = require("../validations/brand.validation");
 
 router.use(authMiddleware);
@@ -14,12 +14,12 @@ router.post(
   "/",
   validate(createBrandSchema),
   roleMiddleware(role.SUPER_ADMIN),
-  uploadImage("brands").single("logo"),
+  uploadBrandLogo, // chỉ nhận 1 file với field name là logo
   brandController.create,
 );
 router.put(
   "/:id",
-  uploadImage("brands").single("logo"),
+  uploadBrandLogo,
   roleMiddleware(role.SUPER_ADMIN),
   brandController.update,
 );
