@@ -35,7 +35,7 @@ exports.createAddress = async (req, res, next) => {
 exports.updateAddress = async (req, res, next) => {
   try {
     const userId = req.user._id;
-    const addressId = req.body.addressId;
+    const addressId = req.params.id;
     const data = await addressService.updateAddress(
       userId,
       addressId,
@@ -52,9 +52,12 @@ exports.updateAddress = async (req, res, next) => {
 };
 exports.deleteAddress = async (req, res, next) => {
   try {
+    const userId = req.user._id;
+    const addressId = req.params.id;
+
     await addressService.deleteAddress({
-      userId: req.user._id,
-      addressId: req.body.addressId,
+      userId,
+      addressId,
     });
 
     return ApiResponse.success({
@@ -68,9 +71,12 @@ exports.deleteAddress = async (req, res, next) => {
 };
 exports.setDefault = async (req, res, next) => {
   try {
+    const userId = req.user._id;
+    const addressId = req.params.id;
+
     const data = await addressService.setDefaultAddress({
-      userId: req.user._id,
-      addressId: req.body.addressId,
+      userId,
+      addressId,
     });
 
     return ApiResponse.success({

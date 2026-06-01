@@ -6,10 +6,8 @@ class SystemConfigService {
     return await SystemConfig.findOne();
   }
 
-  async update(systemId, payload) {
-    const system = await SystemConfig.findOne({
-      _id: systemId,
-    });
+  async update(payload) {
+    const system = await SystemConfig.findOne();
     if (!system) throw ErrorCode.SYSTEM_NOT_EXISTS();
 
     if (

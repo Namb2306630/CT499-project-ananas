@@ -16,8 +16,7 @@ exports.get = async (req, res, next) => {
 };
 exports.update = async (req, res, next) => {
   try {
-    const systemId = req.body.systemId;
-    const data = await systemConfigService.update(systemId, req.body);
+    const data = await systemConfigService.update(req.body);
     return ApiResponse.success({
       res,
       data,
