@@ -1,5 +1,5 @@
 const Joi = require("joi");
-const REGEX = require("../utils/regex");
+const REGEX = require("../utils/regex.util");
 
 exports.createAddressSchema = Joi.object({
   displayName: Joi.string().required().messages({

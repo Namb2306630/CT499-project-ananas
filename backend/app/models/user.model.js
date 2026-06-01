@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const Role = require("../utils/role.util");
 
 const userSchema = new mongoose.Schema(
   {
@@ -14,7 +15,7 @@ const userSchema = new mongoose.Schema(
     },
     phone: {
       type: String,
-      require: true,
+      required: true,
       unique: true,
     },
     email: {
@@ -27,8 +28,8 @@ const userSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ["user", "admin", "super-admin"],
-      default: "user",
+      enum: Object.values(Role),
+      default: Role.USER,
     },
     avatar: {
       type: String,

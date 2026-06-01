@@ -1,5 +1,5 @@
 const Joi = require("joi");
-const REGEX = require("../utils/regex");
+const REGEX = require("../utils/regex.util");
 
 exports.registerSchema = Joi.object({
   phone: Joi.string().pattern(REGEX.PHONE).required().messages({

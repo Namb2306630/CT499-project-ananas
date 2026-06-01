@@ -1,5 +1,6 @@
 const User = require("../models/user.model");
 const bycrypt = require("bcryptjs");
+const Role = require("../utils/role.util");
 
 const seedAdmin = async () => {
   const superAdminExists = await User.findOne({ role: "super-admin" });
@@ -13,7 +14,7 @@ const seedAdmin = async () => {
     email: "admin@gmail.com",
     phone: "0909090909",
     password: hashedPassword,
-    role: "super-admin",
+    role: Role.SUPER_ADMIN,
   });
 };
 

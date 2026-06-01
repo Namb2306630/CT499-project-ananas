@@ -1,6 +1,6 @@
 const Address = require("../models/address.model");
 const ErrorCode = require("../constants/errors");
-const REGEX = require("../utils/regex");
+const REGEX = require("../utils/regex.util");
 
 class AddressService {
   //lấy địa chỉ
