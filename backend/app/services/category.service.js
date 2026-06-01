@@ -1,13 +1,10 @@
 const Category = require("../models/category.model");
 const ErrorCode = require("../constants/errors");
 const slugify = require("slugify");
-
+const updateFields = require("../utils/updateFields.until");
 class CategoryService {
   async create(payload) {
     const { name } = payload;
-
-    const existCategory = await Category.findOne({ name });
-    if (existCategory) throw ErrorCode.CATEGORY_ALREADY_EXISTS();
 
     const slug = slugify(name, {
       lower: true,
@@ -15,30 +12,57 @@ class CategoryService {
       strict: true,
     });
 
+    const existCategory = await Category.findOne({ slug });
+
+    if (existCategory) {
+      if (existCategory.isDeleted) {
+        existCategory.isDeleted = false;
+        existCategory.isActive = true;
+
+        await existCategory.save();
+
+        return existCategory;
+      }
+      throw ErrorCode.CATEGORY_ALREADY_EXISTS();
+    }
+
     return Category.create({
       ...payload,
+      slug,
     });
   }
 
   async update(categoryId, payload) {
-    const { name, slug, image, parent, isActive } = payload;
-    const category = await Category.findOne({ _id: categoryId });
+    const category = await Category.findOne({
+      _id: categoryId,
+      isDeleted: false,
+    });
+
     if (!category) throw ErrorCode.CATEGORY_NOT_EXISTS();
 
-    if (payload.name != null) {
-      const existCategory = await Category.findOne({
-        name: payload.name,
-        _id: { $ne: categoryId },
+    const { name, image, parent, isActive } = payload;
+    if (name) {
+      const slug = slugify(name, {
+        lower: true,
+        locale: "vi",
+        strict: true,
       });
+
+      const existCategory = await Category.findOne({
+        slug,
+        _id: { $ne: categoryId },
+        isDeleted: false,
+      });
+
+      if (existCategory) {
+        throw ErrorCode.CATEGORY_ALREADY_EXISTS();
+      }
+
+      category.name = name;
+      category.slug = slug;
     }
 
-    Object.assign(category, {
-      name,
-      slug,
-      image,
-      parent,
-      isActive,
-    });
+    updateFields(category, payload, ["image", "parent", "isActive"]);
 
     await category.save();
 
@@ -50,11 +74,14 @@ class CategoryService {
     if (!category) throw ErrorCode.CATEGORY_NOT_EXISTS();
 
     category.isDeleted = true;
+    category.isActive = false;
     await category.save();
   }
 
   async getAll() {
-    return await Category.find({ isDeleted: false }).sort({ createdAt: -1 });
+    return await Category.find({ isDeleted: false, isActive: true }).sort({
+      createdAt: -1,
+    });
   }
 
   async getById(categoryId) {
