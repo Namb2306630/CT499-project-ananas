@@ -3,15 +3,18 @@ const slugify = require("slugify");
 const ErrorCode = require("../constants/errors");
 const updateFields = require("../utils/updateFields.until");
 
+const slugName = (name) =>
+  slugify(name, {
+    lower: true,
+    locale: "vi",
+    strict: true,
+  });
+
 class BrandService {
   async create(payload) {
     const { name } = payload;
 
-    const slug = slugify(name, {
-      lower: true,
-      locale: "vi",
-      strict: true,
-    });
+    const slug = slugName(name);
 
     const existBrand = await Brand.findOne({ slug });
     if (existBrand) {
@@ -42,11 +45,7 @@ class BrandService {
 
     const { name, logo, description, isActive } = payload;
     if (name) {
-      const slug = slugify(name, {
-        lower: true,
-        locale: "vi",
-        strict: true,
-      });
+      const slug = slugName(name);
 
       const existBrand = await Brand.findOne({
         slug,
@@ -55,7 +54,7 @@ class BrandService {
       });
 
       if (existBrand) {
-        throw ErrorCode.BRAND_NOT_EXISTS();
+        throw ErrorCode.BRAND_ALREADY_EXISTS();
       }
 
       brand.name = name;
@@ -86,7 +85,7 @@ class BrandService {
   }
 
   async getById(id) {
-    const brand = await Brand.findOne({ _id: id });
+    const brand = await Brand.findById(id);
     if (!brand) throw ErrorCode.BRAND_NOT_EXISTS();
 
     return brand;

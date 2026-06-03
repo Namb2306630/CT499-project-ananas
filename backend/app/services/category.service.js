@@ -2,15 +2,18 @@ const Category = require("../models/category.model");
 const ErrorCode = require("../constants/errors");
 const slugify = require("slugify");
 const updateFields = require("../utils/updateFields.until");
+
+const slugName = (name) =>
+  slugify(name, {
+    lower: true,
+    locale: "vi",
+    strict: true,
+  });
 class CategoryService {
   async create(payload) {
     const { name } = payload;
 
-    const slug = slugify(name, {
-      lower: true,
-      locale: "vi",
-      strict: true,
-    });
+    const slug = slugName(name);
 
     const existCategory = await Category.findOne({ slug });
 
@@ -42,11 +45,7 @@ class CategoryService {
 
     const { name, image, parent, isActive } = payload;
     if (name) {
-      const slug = slugify(name, {
-        lower: true,
-        locale: "vi",
-        strict: true,
-      });
+      const slug = slugName(name);
 
       const existCategory = await Category.findOne({
         slug,
