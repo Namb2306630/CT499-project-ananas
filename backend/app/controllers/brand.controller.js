@@ -1,6 +1,6 @@
 const brandService = require("../services/brand.service");
 const ApiResponse = require("../constants/api-response");
-
+const ErrorCode = require("../constants/errors");
 const { deleteImage } = require("../utils/uploadImage.util");
 
 exports.create = async (req, res, next) => {
@@ -22,10 +22,6 @@ exports.create = async (req, res, next) => {
 exports.update = async (req, res, next) => {
   try {
     const brandId = req.params.id;
-
-    const brand = await brandService.getById(brandId);
-    if (!brand) throw new Error("Brand not found");
-
     // nếu có file mới
     if (req.file) {
       deleteImage(brand.logo);
@@ -63,6 +59,14 @@ exports.remove = async (req, res, next) => {
 exports.getAll = async (req, res, next) => {
   try {
     const data = await brandService.getAll();
+
+    if (data.length === 0) {
+      return ApiResponse.success({
+        res,
+        data: [],
+        message: "Không có thương hiệu nào",
+      });
+    }
 
     return ApiResponse.success({
       res,
