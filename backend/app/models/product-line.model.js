@@ -8,6 +8,14 @@ const productLineSchema = new mongoose.Schema({
     ref: "Brand",
   },
   description: String,
+  isDeleted: {
+    type: Boolean,
+    default: false,
+  },
+  isActive: {
+    type: Boolean,
+    default: true,
+  },
 });
 
 module.exports = mongoose.model("ProductLine", productLineSchema);
