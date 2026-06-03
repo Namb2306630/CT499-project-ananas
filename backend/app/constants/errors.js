@@ -41,7 +41,13 @@ const ErrorCode = {
   BRAND_NOT_EXISTS: () => new AppError(1017, "Thương hiệu không tồn tại"),
   BRAND_ALREADY_EXISTS: () => new AppError(1018, "Thương hiệu đã tồn tại"),
 
-  IMAGE_TYPE_NOT_ALLOWED: () => new AppError(1019, "Chỉ cho phép tải lên các tệp hình ảnh"),
+  IMAGE_TYPE_NOT_ALLOWED: () =>
+    new AppError(1019, "Chỉ cho phép tải lên các tệp hình ảnh"),
+
+  PRODUCT_LINE_NOT_EXISTS: () =>
+    new AppError(1020, "Dòng sản phẩm không tồn tại"),
+  PRODUCT_LINE_ALREADY_EXISTS: () =>
+    new AppError(1021, "Dòng sản phẩm đã tồn tại"),
 };
 
 module.exports = ErrorCode;
