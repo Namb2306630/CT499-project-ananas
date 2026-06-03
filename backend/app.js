@@ -7,6 +7,7 @@ const systemConfigRouter = require("./app/routes/system-config.route");
 const userRouter = require("./app/routes/user.route");
 const categoryRouter = require("./app/routes/category.route");
 const brandRouter = require("./app/routes/brand.route");
+const productLineRouter = require("./app/routes/product-line.route");
 const AppError = require("./app/constants/app-error");
 const multer = require("multer");
 
@@ -26,6 +27,7 @@ app.use("/api/admin/system-config", systemConfigRouter);
 app.use("/api/users", userRouter);
 app.use("/api/categories", categoryRouter);
 app.use("/api/brands", brandRouter);
+app.use("/api/product-line", productLineRouter);
 
 app.use((req, res, next) => {
   return next(new AppError(404, "Resource not found"));
