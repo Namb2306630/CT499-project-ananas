@@ -7,7 +7,7 @@ module.exports = (schema) => {
     if (error) {
       return next({
         statusCode: 400,
-        message: error.details.map((e) => e.message).join(", "),
+        message: error.details.map((e) => e.message),
       });
     }
     next();
