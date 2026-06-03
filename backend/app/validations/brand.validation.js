@@ -9,4 +9,5 @@ exports.createBrandSchema = Joi.object({
     "string.uri": "Logo phải là một URL hợp lệ",
     "string.empty": "Logo không được để trống",
   }),
+  description: Joi.string().allow("").optional(),
 });
