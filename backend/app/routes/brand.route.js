@@ -8,23 +8,30 @@ const router = express.Router();
 const { uploadBrandLogo } = require("../middlewares/upload.middleware");
 const { createBrandSchema } = require("../validations/brand.validation");
 
-router.use(authMiddleware);
+//router.use(authMiddleware);
 
 router.post(
   "/",
-  validate(createBrandSchema),
+  authMiddleware,
   roleMiddleware(role.SUPER_ADMIN),
+  validate(createBrandSchema),
   uploadBrandLogo, // chỉ nhận 1 file với field name là logo
   brandController.create,
 );
 router.put(
   "/:id",
-  uploadBrandLogo,
+  authMiddleware,
   roleMiddleware(role.SUPER_ADMIN),
+  uploadBrandLogo,
   brandController.update,
 );
 router.get("/", brandController.getAll);
 router.get("/:id", brandController.getById);
-router.delete("/:id", roleMiddleware(role.SUPER_ADMIN), brandController.remove);
+router.delete(
+  "/:id",
+  authMiddleware,
+  roleMiddleware(role.SUPER_ADMIN),
+  brandController.remove,
+);
 
 module.exports = router;
