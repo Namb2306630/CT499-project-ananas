@@ -11,3 +11,17 @@ exports.createCategorySchema = Joi.object({
   }),
   image: Joi.string().allow("", null).optional(),
 });
+
+exports.updateCategorySchema = Joi.object({
+  name: Joi.string().messages({
+    "string.empty": "Tên danh mục không được để trống",
+  }),
+
+  parent: Joi.string().regex(REGEX._ID).allow(null).messages({
+    "string.pattern.base": "Parent không hợp lệ",
+  }),
+
+  image: Joi.string().allow(null, ""),
+
+  isActive: Joi.boolean(),
+}).min(1);

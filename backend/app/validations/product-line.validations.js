@@ -13,3 +13,16 @@ exports.createProductLineSchema = Joi.object({
 
   description: Joi.string().allow("").optional(),
 });
+exports.updateProductLineSchema = Joi.object({
+  name: Joi.string().messages({
+    "string.empty": "Tên dòng sản phẩm không được để trống",
+  }),
+
+  brand: Joi.string().regex(REGEX._ID).messages({
+    "string.pattern.base": "Brand không hợp lệ",
+  }),
+
+  description: Joi.string().allow(""),
+
+  isActive: Joi.boolean(),
+}).min(1);
