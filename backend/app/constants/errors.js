@@ -48,6 +48,9 @@ const ErrorCode = {
     new AppError(1020, "Dòng sản phẩm không tồn tại"),
   PRODUCT_LINE_ALREADY_EXISTS: () =>
     new AppError(1021, "Dòng sản phẩm đã tồn tại"),
+
+  STYLE_NOT_EXISTS: () => new AppError(1022, "Kiểu dáng sản phẩm không tồn tại"),
+  STYLE_ALREADY_EXISTS: () => new AppError(1023, "Kiểu dáng sản phẩm đã tồn tại"),
 };
 
 module.exports = ErrorCode;
