@@ -77,7 +77,13 @@ class CategoryService {
     await category.save();
   }
 
-  async getAll() {
+  async getAllForAdmin() {
+    return await Category.find({ isDeleted: false }).sort({
+      createdAt: -1,
+    });
+  }
+
+  async getAllForUser() {
     return await Category.find({ isDeleted: false, isActive: true }).sort({
       createdAt: -1,
     });

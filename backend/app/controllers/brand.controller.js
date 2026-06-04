@@ -56,9 +56,31 @@ exports.remove = async (req, res, next) => {
   }
 };
 
-exports.getAll = async (req, res, next) => {
+exports.getAllForAdmin = async (req, res, next) => {
   try {
-    const data = await brandService.getAll();
+    const data = await brandService.getAllForAdmin();
+
+    if (data.length === 0) {
+      return ApiResponse.success({
+        res,
+        data: [],
+        message: "Không có thương hiệu nào",
+      });
+    }
+
+    return ApiResponse.success({
+      res,
+      data,
+      message: "Lấy danh sách thương hiệu thành công",
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.getAllForUser = async (req, res, next) => {
+  try {
+    const data = await brandService.getAllForUser();
 
     if (data.length === 0) {
       return ApiResponse.success({

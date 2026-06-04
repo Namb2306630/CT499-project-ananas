@@ -51,9 +51,22 @@ exports.remove = async (req, res, next) => {
   }
 };
 
-exports.getAll = async (req, res, next) => {
+exports.getAllForUser = async (req, res, next) => {
   try {
-    const data = await categoryService.getAll();
+    const data = await categoryService.getAllForUser();
+    return ApiResponse.success({
+      res,
+      data,
+      message: "Lấy danh sách danh mục thành công",
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.getAllForAdmin = async (req, res, next) => {
+  try {
+    const data = await categoryService.getAllForAdmin();
     return ApiResponse.success({
       res,
       data,

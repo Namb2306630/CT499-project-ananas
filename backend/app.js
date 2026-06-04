@@ -27,9 +27,9 @@ app.use("/api", provinceRouter);
 app.use("/api/addresses", addressRouter);
 app.use("/api/admin/system-config", systemConfigRouter);
 app.use("/api/users", userRouter);
-app.use("/api/categories", categoryRouter);
-app.use("/api/brands", brandRouter);
-app.use("/api/product-line", productLineRouter);
+app.use("/api", categoryRouter);
+app.use("/api", brandRouter);
+app.use("/api", productLineRouter);
 app.use("/api", styleRouter);
 
 app.use((req, res, next) => {

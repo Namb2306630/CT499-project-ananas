@@ -29,9 +29,30 @@ exports.update = async (req, res, next) => {
   }
 };
 
-exports.getAll = async (req, res, next) => {
+exports.getAllForAdmin = async (req, res, next) => {
   try {
-    const data = await productLineService.getAll();
+    const data = await productLineService.getAllForAdmin();
+
+    if (data.length === 0) {
+      return ApiResponse.success({
+        res,
+        data,
+        message: "Không có dòng sản phẩm nào",
+      });
+    }
+    return ApiResponse.success({
+      res,
+      data,
+      message: "Lấy danh sách dòng sản phẩm thành công",
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.getAllForUser = async (req, res, next) => {
+  try {
+    const data = await productLineService.getAllForUser();
 
     if (data.length === 0) {
       return ApiResponse.success({

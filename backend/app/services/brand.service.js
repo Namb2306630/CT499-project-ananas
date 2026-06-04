@@ -78,7 +78,13 @@ class BrandService {
     await brand.save();
   }
 
-  async getAll() {
+  async getAllForAdmin() {
+    return await Brand.find({ isDeleted: false }).sort({
+      createdAt: -1,
+    });
+  }
+
+  async getAllForUser() {
     return await Brand.find({ isDeleted: false, isActive: true }).sort({
       createdAt: -1,
     });

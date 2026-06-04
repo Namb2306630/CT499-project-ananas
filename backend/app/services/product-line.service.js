@@ -81,7 +81,13 @@ class ProductLineService {
     await productLine.save();
   }
 
-  async getAll() {
+  async getAllForAdmin() {
+    return ProductLine.find({ isDeleted: false }).sort({
+      name: -1,
+    });
+  }
+
+  async getAllForUser() {
     return ProductLine.find({ isDeleted: false, isActive: true }).sort({
       name: -1,
     });

@@ -9,25 +9,36 @@ const role = require("../utils/role.util");
 const router = express.Router();
 const authMiddleware = require("../middlewares/auth.middleware");
 router.post(
-  "/",
+  "/admin/product-lines",
   authMiddleware,
   roleMiddleware(role.SUPER_ADMIN),
   validate(createProductLineSchema),
   productLineController.create,
 );
 router.put(
-  "/:id",
+  "/admin/product-lines/:id",
   authMiddleware,
   roleMiddleware(role.SUPER_ADMIN),
   productLineController.update,
 );
 router.delete(
-  "/:id",
+  "/addmin/product-lines/:id",
   authMiddleware,
   roleMiddleware(role.SUPER_ADMIN),
   productLineController.remove,
 );
-router.get("/", productLineController.getAll);
-router.get("/:id", productLineController.getById);
+router.get(
+  "/admin/product-lines",
+  authMiddleware,
+  roleMiddleware(role.SUPER_ADMIN),
+  productLineController.getAllForAdmin,
+);
+router.get("/product-lines", productLineController.getAllForUser);
+router.get(
+  "/:id",
+  authMiddleware,
+  roleMiddleware(role.SUPER_ADMIN),
+  productLineController.getById,
+);
 
 module.exports = router;
