@@ -22,16 +22,6 @@ const productSchema = new mongoose.Schema(
       trim: true,
     },
 
-    categories: {
-      type: [
-        {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Category",
-        },
-      ],
-      default: [],
-    }, // 1 sp có thể thuộc nhiều danh mục
-
     brand: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Brand",
@@ -43,6 +33,17 @@ const productSchema = new mongoose.Schema(
       ref: "ProductLine",
       required: true,
     },
+
+    categories: {
+      type: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Category",
+        },
+      ],
+      default: [],
+    }, // 1 sp có thể thuộc nhiều danh mục
+
     // dòng sản phẩm
 
     costPrice: {
