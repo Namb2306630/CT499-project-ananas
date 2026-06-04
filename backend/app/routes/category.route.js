@@ -14,7 +14,7 @@ const Role = require("../utils/role.util");
 
 // Tạo category
 router.post(
-  "/admin/categories",
+  "/admin",
   validate(createCategorySchema),
   uploadCategoryImage,
   categoryController.create,
@@ -22,7 +22,7 @@ router.post(
 
 // Update category
 router.put(
-  "/admin/categories/:id",
+  "/admin/:id",
   authMiddleware,
   roleMiddleware(Role.SUPER_ADMIN),
   uploadCategoryImage,
@@ -31,16 +31,16 @@ router.put(
 
 // Xóa category
 router.delete(
-  "/admin/categories/:id",
+  "/admin/:id",
   authMiddleware,
   roleMiddleware(Role.SUPER_ADMIN),
   categoryController.remove,
 );
 
 // Lấy tất cả category dạng cây
-router.get("/categories", categoryController.getAllForUser);
+router.get("/", categoryController.getAllForUser);
 router.get(
-  "/admin/categories",
+  "/admin",
   authMiddleware,
   roleMiddleware(Role.SUPER_ADMIN),
   categoryController.getAllForAdmin,
@@ -48,7 +48,7 @@ router.get(
 
 // Lấy 1 category
 router.get(
-  "/admin/categories/:id",
+  "/admin/:id",
   authMiddleware,
   roleMiddleware(Role.SUPER_ADMIN),
   categoryController.getById,

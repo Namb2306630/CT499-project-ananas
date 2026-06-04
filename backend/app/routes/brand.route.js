@@ -11,7 +11,7 @@ const { createBrandSchema } = require("../validations/brand.validation");
 //router.use(authMiddleware);
 
 router.post(
-  "/admin/brands",
+  "/admin",
   authMiddleware,
   roleMiddleware(role.SUPER_ADMIN),
   validate(createBrandSchema),
@@ -19,21 +19,21 @@ router.post(
   brandController.create,
 );
 router.put(
-  "/admin/brands/:id",
+  "/admin/:id",
   authMiddleware,
   roleMiddleware(role.SUPER_ADMIN),
   uploadBrandLogo,
   brandController.update,
 );
 router.get(
-  "/admin/brands",
+  "/admin",
   authMiddleware,
   roleMiddleware(role.SUPER_ADMIN),
   brandController.getAllForAdmin,
 );
-router.get("/brands", brandController.getAllForUser);
+router.get("/", brandController.getAllForUser);
 router.get(
-  "/brands/:id",
+  "/admin/:id",
   authMiddleware,
   roleMiddleware(role.SUPER_ADMIN),
   brandController.getById,

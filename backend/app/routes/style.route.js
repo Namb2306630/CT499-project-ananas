@@ -15,7 +15,7 @@ const router = express.Router();
 /* ================= ADMIN ================= */
 
 router.post(
-  "/admin/styles",
+  "/admin",
   authMiddleware,
   roleMiddleware(role.SUPER_ADMIN),
   validate(createStyleSchema),
@@ -23,28 +23,28 @@ router.post(
 );
 
 router.put(
-  "/admin/styles/:id",
+  "/admin/:id",
   authMiddleware,
   roleMiddleware(role.SUPER_ADMIN),
   styleController.update,
 );
 
 router.delete(
-  "/admin/styles/:id",
+  "/admin/:id",
   authMiddleware,
   roleMiddleware(role.SUPER_ADMIN),
   styleController.remove,
 );
 
 router.get(
-  "/admin/styles",
+  "/admin",
   authMiddleware,
   roleMiddleware(role.SUPER_ADMIN),
   styleController.getAllForAdmin,
 );
 
 router.get(
-  "/admin/styles/:id",
+  "/admin/:id",
   authMiddleware,
   roleMiddleware(role.SUPER_ADMIN),
   styleController.getById,
@@ -52,6 +52,6 @@ router.get(
 
 /* ================= USER ================= */
 
-router.get("/styles", styleController.getAllForUser);
+router.get("/", styleController.getAllForUser);
 
 module.exports = router;
