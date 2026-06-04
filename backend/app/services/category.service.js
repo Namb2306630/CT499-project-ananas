@@ -9,6 +9,20 @@ const slugName = (name) =>
     locale: "vi",
     strict: true,
   });
+
+const buildCategoryTree = (categories, parent = null) => {
+  return categories
+    .filter((item) => {
+      if (parent === null) {
+        return item.parent === null;
+      }
+      return item.parent?.toString() === parent.toString();
+    })
+    .map((item) => ({
+      ...item,
+      children: buildCategoryTree(categories, item._id),
+    }));
+};
 class CategoryService {
   async create(payload) {
     const { name } = payload;
@@ -84,9 +98,14 @@ class CategoryService {
   }
 
   async getAllForUser() {
-    return await Category.find({ isDeleted: false, isActive: true }).sort({
-      createdAt: -1,
-    });
+    const categories = await Category.find({
+      isDeleted: false,
+      isActive: true,
+    })
+      .sort({ createdAt: -1 })
+      .lean();
+
+    return buildCategoryTree(categories);
   }
 
   async getById(categoryId) {
