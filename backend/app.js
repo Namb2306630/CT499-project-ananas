@@ -9,6 +9,7 @@ const categoryRouter = require("./app/routes/category.route");
 const brandRouter = require("./app/routes/brand.route");
 const productLineRouter = require("./app/routes/product-line.route");
 const styleRouter = require("./app/routes/style.route");
+const productRouter = require("./app/routes/product.route");
 
 const AppError = require("./app/constants/app-error");
 const multer = require("multer");
@@ -23,14 +24,15 @@ app.get("/", (req, res) => {
 });
 app.use("/uploads", express.static("uploads"));
 app.use("/api/auth", authRouter);
-app.use("/api", provinceRouter);
+app.use("/api/provinces", provinceRouter);
 app.use("/api/addresses", addressRouter);
 app.use("/api/admin/system-config", systemConfigRouter);
 app.use("/api/users", userRouter);
-app.use("/api", categoryRouter);
-app.use("/api", brandRouter);
-app.use("/api", productLineRouter);
-app.use("/api", styleRouter);
+app.use("/api/categories", categoryRouter);
+app.use("/api/brands", brandRouter);
+app.use("/api/product-lines", productLineRouter);
+app.use("/api/styles", styleRouter);
+app.use("/api/products", productRouter);
 
 app.use((req, res, next) => {
   return next(new AppError(404, "Resource not found"));
