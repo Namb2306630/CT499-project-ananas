@@ -26,8 +26,16 @@ const authMiddleware = async (req, res, next) => {
     //   exp: 1710003600
     // }
     next();
-  } catch {
-    next(ErrorCode.UNAUTHORIZED());
+  } catch (error) {
+    if (error.name === "TokenExpiredError") {
+      return next(ErrorCode.UNAUTHORIZED("Token đã hết hạn"));
+    }
+
+    if (error.name === "JsonWebTokenError") {
+      return next(ErrorCode.UNAUTHORIZED("Token không hợp lệ"));
+    }
+
+    return next(error);
   }
 };
 
