@@ -54,6 +54,13 @@ exports.remove = async (req, res, next) => {
 exports.getAllForUser = async (req, res, next) => {
   try {
     const data = await categoryService.getAllForUser();
+    if (data.length === 0) {
+      return ApiResponse.success({
+        res,
+        data: [],
+        message: "Không có danh mục nào",
+      });
+    }
     return ApiResponse.success({
       res,
       data,
@@ -67,6 +74,13 @@ exports.getAllForUser = async (req, res, next) => {
 exports.getAllForAdmin = async (req, res, next) => {
   try {
     const data = await categoryService.getAllForAdmin();
+    if (data.length === 0) {
+      return ApiResponse.success({
+        res,
+        data: [],
+        message: "Không có danh mục nào",
+      });
+    }
     return ApiResponse.success({
       res,
       data,
