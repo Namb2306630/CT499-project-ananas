@@ -1,6 +1,9 @@
 const express = require("express");
 const categoryController = require("../controllers/category.controller");
-const { createCategorySchema } = require("../validations/category.validation");
+const {
+  createCategorySchema,
+  updateCategorySchema,
+} = require("../validations/category.validation");
 const validate = require("../middlewares/validate.middleware");
 const router = express.Router();
 const authMiddleware = require("../middlewares/auth.middleware");
@@ -25,6 +28,7 @@ router.put(
   "/admin/:id",
   authMiddleware,
   roleMiddleware(Role.SUPER_ADMIN),
+  validate(updateCategorySchema),
   uploadCategoryImage,
   categoryController.update,
 );

@@ -1,6 +1,7 @@
 const express = require("express");
 const {
   createProductLineSchema,
+  updateProductLineSchema,
 } = require("../validations/product-line.validations");
 const productLineController = require("../controllers/product-line.controller");
 const validate = require("../middlewares/validate.middleware");
@@ -19,6 +20,7 @@ router.put(
   "/admin/:id",
   authMiddleware,
   roleMiddleware(role.SUPER_ADMIN),
+  validate(updateProductLineSchema),
   productLineController.update,
 );
 router.delete(

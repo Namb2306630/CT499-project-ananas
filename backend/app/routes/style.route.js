@@ -8,11 +8,12 @@ const validate = require("../middlewares/validate.middleware");
 
 const role = require("../utils/role.util");
 
-const { createStyleSchema } = require("../validations/style.validation");
+const {
+  createStyleSchema,
+  updateStyleSchema,
+} = require("../validations/style.validation");
 
 const router = express.Router();
-
-/* ================= ADMIN ================= */
 
 router.post(
   "/admin",
@@ -26,6 +27,7 @@ router.put(
   "/admin/:id",
   authMiddleware,
   roleMiddleware(role.SUPER_ADMIN),
+  validate(updateStyleSchema),
   styleController.update,
 );
 

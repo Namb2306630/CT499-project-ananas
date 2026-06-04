@@ -6,7 +6,10 @@ const roleMiddleware = require("../middlewares/role.middleware");
 const role = require("../utils/role.util");
 const router = express.Router();
 const { uploadBrandLogo } = require("../middlewares/upload.middleware");
-const { createBrandSchema } = require("../validations/brand.validation");
+const {
+  createBrandSchema,
+  updateBrandSchema,
+} = require("../validations/brand.validation");
 
 //router.use(authMiddleware);
 
@@ -22,6 +25,7 @@ router.put(
   "/admin/:id",
   authMiddleware,
   roleMiddleware(role.SUPER_ADMIN),
+  validate(updateBrandSchema),
   uploadBrandLogo,
   brandController.update,
 );
