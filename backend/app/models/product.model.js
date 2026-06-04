@@ -22,11 +22,15 @@ const productSchema = new mongoose.Schema(
       trim: true,
     },
 
-    category: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Category",
-      required: true,
-    },
+    categories: {
+      type: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Category",
+        },
+      ],
+      default: [],
+    }, // 1 sp có thể thuộc nhiều danh mục
 
     brand: {
       type: mongoose.Schema.Types.ObjectId,
