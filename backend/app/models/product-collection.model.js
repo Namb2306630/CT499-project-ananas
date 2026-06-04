@@ -5,21 +5,39 @@ const collectionSchema = new mongoose.Schema(
     name: {
       type: String,
       required: true,
+      unique: true,
+      trim: true,
     },
 
     slug: {
       type: String,
       required: true,
       unique: true,
+      trim: true,
+      lowercase: true,
     },
 
-    banner: String,
+    banner: {
+      type: String,
+      default: null,
+      trim: true,
+    },
 
-    description: String,
+    description: {
+      type: String,
+      default: "",
+      trim: true,
+    },
 
-    startDate: Date,
+    startDate: {
+      type: Date,
+      default: null,
+    },
 
-    endDate: Date,
+    endDate: {
+      type: Date,
+      default: null,
+    },
 
     isActive: {
       type: Boolean,
@@ -31,4 +49,5 @@ const collectionSchema = new mongoose.Schema(
 
 module.exports = mongoose.model("Collection", collectionSchema);
 
-// bộ sưu tập sản phẩm theo mùa, sự kiện, chủ đề... mỗi bộ có một banner riêng, mô tả riêng, thời gian hiển thị riêng.
+// bộ sưu tập sản phẩm theo mùa, sự kiện, chủ đề...
+// mỗi bộ có một banner riêng, mô tả riêng, thời gian hiển thị riêng.

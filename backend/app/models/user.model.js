@@ -8,44 +8,62 @@ const userSchema = new mongoose.Schema(
       unique: true,
       lowercase: true,
       trim: true,
+      default: null,
     },
+
     canChangeUserName: {
       type: Boolean,
       default: true,
     },
+
     phone: {
       type: String,
       required: true,
       unique: true,
+      trim: true,
     },
+
     email: {
       type: String,
       default: null,
+      lowercase: true,
+      trim: true,
     },
+
     password: {
       type: String,
       required: true,
     },
+
     role: {
       type: String,
       enum: Object.values(Role),
       default: Role.USER,
     },
+
     avatar: {
       type: String,
-      default: "",
+      default: null,
+      trim: true,
     },
+
     provider: {
       type: String,
       default: "local",
+      lowercase: true,
+      trim: true,
     },
+
     googleId: {
       type: String,
-      default: "",
+      default: null,
+      trim: true,
     },
+
     jwtVersion: {
       type: Number,
       default: 1,
+      min: 1,
     },
   },
   {

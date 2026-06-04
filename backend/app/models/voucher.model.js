@@ -2,37 +2,82 @@ const mongoose = require("mongoose");
 
 const voucherSchema = new mongoose.Schema(
   {
-    code: String,
+    code: {
+      type: String,
+      required: true,
+      unique: true,
+      uppercase: true,
+      trim: true,
+    },
     // Mã giảm giá
 
-    name: String,
+    name: {
+      type: String,
+      required: true,
+      trim: true,
+    },
     // Tên chương trình
 
-    type: String,
+    type: {
+      type: String,
+      required: true,
+      enum: ["fixed", "percent"],
+      lowercase: true,
+      trim: true,
+    },
     // fixed | percent
 
-    value: Number,
+    value: {
+      type: Number,
+      required: true,
+      min: 0,
+    },
     // Giá trị giảm
 
-    minOrderValue: Number,
+    minOrderValue: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
     // Điều kiện đơn tối thiểu
 
-    maxDiscount: Number,
+    maxDiscount: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
     // Giới hạn giảm tối đa
 
-    quantity: Number,
+    quantity: {
+      type: Number,
+      required: true,
+      min: 0,
+    },
     // Tổng số lượng voucher
 
-    usedCount: Number,
+    usedCount: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
     // Đã dùng
 
-    startDate: Date,
+    startDate: {
+      type: Date,
+      required: true,
+    },
     // Ngày bắt đầu
 
-    endDate: Date,
+    endDate: {
+      type: Date,
+      required: true,
+    },
     // Ngày kết thúc
 
-    isActive: Boolean,
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
     // trạng thái
   },
   { timestamps: true },

@@ -1,22 +1,39 @@
-//đơn vị vận chuyển
-
 const mongoose = require("mongoose");
 
 const shippingSchema = new mongoose.Schema(
   {
-    provider: String,
+    provider: {
+      type: String,
+      required: true,
+      trim: true,
+    },
     // Đơn vị vận chuyển
 
-    province: String,
+    province: {
+      type: String,
+      required: true,
+      trim: true,
+    },
     // Khu vực
 
-    fee: Number,
+    fee: {
+      type: Number,
+      required: true,
+      min: 0,
+    },
     // Phí ship
 
-    estimatedDays: Number,
+    estimatedDays: {
+      type: Number,
+      required: true,
+      min: 1,
+    },
     // Thời gian giao
 
-    isActive: Boolean,
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
     // trạng thái
   },
   { timestamps: true },

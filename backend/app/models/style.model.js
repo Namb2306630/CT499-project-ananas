@@ -6,6 +6,7 @@ const styleSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
+      trim: true,
     },
     // Tên style: streetwear, sport...
 
@@ -13,17 +14,26 @@ const styleSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
+      trim: true,
+      lowercase: true,
     },
     // SEO URL
 
     description: {
       type: String,
+      default: "",
+      trim: true,
     },
     // Mô tả style
 
     isActive: {
       type: Boolean,
       default: true,
+    },
+
+    isDelete: {
+      type: Boolean,
+      default: false,
     },
     // Trạng thái sử dụng
   },

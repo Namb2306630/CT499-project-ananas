@@ -1,17 +1,36 @@
-//thương hiệu -> 1 thương hiệu là ananas
 const mongoose = require("mongoose");
+
 const brandSchema = new mongoose.Schema(
   {
-    name: String,
+    name: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+    },
     // Tên thương hiệu
 
-    slug: String,
+    slug: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+      lowercase: true,
+    },
     // SEO URL
 
-    logo: String,
+    logo: {
+      type: String,
+      default: null,
+      trim: true,
+    },
     // Logo thương hiệu
 
-    description: String,
+    description: {
+      type: String,
+      default: "",
+      trim: true,
+    },
     // Mô tả
 
     isActive: {

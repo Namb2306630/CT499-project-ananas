@@ -5,60 +5,84 @@ const orderSchema = new mongoose.Schema(
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
+      default: null,
     },
-    // Người đặt
+    // Người đặt hàng
 
-    orderCode: String,
+    orderCode: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+      uppercase: true,
+    },
     // Mã đơn hàng
 
-    addressSnapshot: {
-      displayName: String,
-      phone: String,
-      province: String,
-      district: String,
-      ward: String,
-      detail: String,
+    subtotal: {
+      type: Number,
+      required: true,
+      min: 0,
     },
-    // Snapshot địa chỉ giao hàng
+    // Tổng tiền sản phẩm trước giảm giá và phí ship
 
-    items: [
-      {
-        product: mongoose.Schema.Types.ObjectId,
-        productName: String,
-        colorName: String,
-        size: String,
-        quantity: Number,
-        unitPrice: Number,
-        totalPrice: Number,
-      },
-    ],
-    // Danh sách sản phẩm trong đơn
+    productDiscount: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+    // Giảm giá từ sản phẩm
 
-    subtotal: Number,
-    // Tổng tiền hàng
+    voucherDiscount: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+    // Giảm giá từ voucher
 
-    productDiscount: Number,
-    // Giảm giá sản phẩm
+    shippingFee: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+    // Phí vận chuyển
 
-    voucherDiscount: Number,
-    // Giảm giá voucher
+    totalAmount: {
+      type: Number,
+      required: true,
+      min: 0,
+    },
+    // Tổng thanh toán cuối cùng
 
-    shippingFee: Number,
-    // Phí ship
+    paymentMethod: {
+      type: String,
+      required: true,
+      enum: ["cod", "momo", "vnpay", "banking"],
+      lowercase: true,
+      trim: true,
+    },
+    // Phương thức thanh toán
 
-    totalAmount: Number,
-    // Tổng thanh toán
+    paymentStatus: {
+      type: String,
+      default: "pending",
+      enum: ["pending", "paid", "failed"],
+      lowercase: true,
+      trim: true,
+    },
+    // Trạng thái thanh toán
 
-    paymentMethod: String,
-    // cod | momo | vnpay | banking
-
-    paymentStatus: String,
-    // pending | paid | failed
-
-    orderStatus: String,
-    // pending | confirmed | shipping | completed | cancelled
+    orderStatus: {
+      type: String,
+      default: "pending",
+      enum: ["pending", "confirmed", "shipping", "completed", "cancelled"],
+      lowercase: true,
+      trim: true,
+    },
+    // Trạng thái đơn hàng
   },
-  { timestamps: true },
+  {
+    timestamps: true,
+  },
 );
 
 module.exports = mongoose.model("Order", orderSchema);
