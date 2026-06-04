@@ -93,6 +93,14 @@ class AddressService {
 
     return address;
   }
+
+  async getById({ userId, addressId }) {
+    const address = await Address.findOne({ _id: id, userId });
+
+    if (!address) throw ErrorCode.ADDRESS_NOT_EXISTS();
+
+    return address;
+  }
 }
 
 module.exports = new AddressService();

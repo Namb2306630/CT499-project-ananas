@@ -21,4 +21,6 @@ router.delete("/:id", addressController.deleteAddress);
 
 router.patch("/:id/default", addressController.setDefault);
 
+router.get("/:id", addressController.getById);
+
 module.exports = router;

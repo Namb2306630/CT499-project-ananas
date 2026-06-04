@@ -88,3 +88,18 @@ exports.setDefault = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.getById = async (req, res, next) => {
+  try {
+    const userId = req.user._id;
+    const addressId = req.params.id;
+    const data = addressService.getById({ userId, addressId });
+    return ApiResponse.success({
+      res,
+      data,
+      message: "Lấy địa chỉ thành công",
+    });
+  } catch (err) {
+    next(err);
+  }
+};
