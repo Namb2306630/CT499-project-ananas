@@ -31,7 +31,7 @@ const styleSchema = new mongoose.Schema(
       default: true,
     },
 
-    isDelete: {
+    isDeleted: {
       type: Boolean,
       default: false,
     },
