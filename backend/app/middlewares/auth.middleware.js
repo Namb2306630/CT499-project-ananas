@@ -7,7 +7,7 @@ const authMiddleware = async (req, res, next) => {
     const authHeader = req.headers.authorization;
 
     if (!authHeader) {
-      next(ErrorCode.UNAUTHORIZED());
+      return next(ErrorCode.UNAUTHORIZED());
     }
 
     if (!authHeader.startsWith("Bearer ")) {
