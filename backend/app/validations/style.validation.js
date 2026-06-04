@@ -5,5 +5,5 @@ exports.createStyleSchema = Joi.object({
     "string.emptyempty": "Tên kiểu dáng không được bỏ trống",
     "any.required": "Tên kiểu dáng là bắt buộc",
   }),
-  description: Joi.string().required().optional()
+  description: Joi.string().allow("").optional(),
 });
