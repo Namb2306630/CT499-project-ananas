@@ -9,7 +9,7 @@ exports.createCategorySchema = Joi.object({
   parent: Joi.string().regex(REGEX._ID).allow(null).optional().messages({
     "string.pattern.base": "Parent không hợp lệ",
   }),
-  image: Joi.string().allow("", null).optional(),
+  // image: Joi.string().allow("", null).optional(),
 });
 
 exports.updateCategorySchema = Joi.object({
@@ -21,7 +21,7 @@ exports.updateCategorySchema = Joi.object({
     "string.pattern.base": "Parent không hợp lệ",
   }),
 
-  image: Joi.string().allow(null, ""),
+  // image: Joi.string().allow(null, ""),
 
   isActive: Joi.boolean(),
-}).min(1);
+}).min(0);

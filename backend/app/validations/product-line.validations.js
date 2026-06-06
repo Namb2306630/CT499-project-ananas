@@ -1,4 +1,5 @@
 const Joi = require("joi");
+const REGEX = require("../utils/regex.util");
 
 exports.createProductLineSchema = Joi.object({
   name: Joi.string().required().messages({
@@ -25,4 +26,4 @@ exports.updateProductLineSchema = Joi.object({
   description: Joi.string().allow(""),
 
   isActive: Joi.boolean(),
-}).min(1);
+}).min(0);
