@@ -54,10 +54,30 @@ const ErrorCode = {
   STYLE_ALREADY_EXISTS: () =>
     new AppError(1023, "Kiểu dáng sản phẩm đã tồn tại"),
 
-  PRODUCT_NOT_EXISTS: () =>
-    new AppError(1024, "Kiểu dáng sản phẩm không tồn tại"),
-  PRODUCT_ALREADY_EXISTS: () =>
-    new AppError(1025, "Kiểu dáng sản phẩm đã tồn tại"),
+  PRODUCT_NOT_EXISTS: () => new AppError(1024, "Sản phẩm không tồn tại"),
+  PRODUCT_ALREADY_EXISTS: () => new AppError(1025, "Sản phẩm đã tồn tại"),
+
+  PRODUCT_VARI_NOT_EXISTS: () =>
+    new AppError(1026, "Màu sản phẩm không tồn tại"),
+  PRODUCT_VARI_ALREADY_EXISTS: () =>
+    new AppError(1027, "Màu sản phẩm đã tồn tại"),
+
+  PRODUCT_VARI_IMAGES: () =>
+    new AppError(1028, "Ảnh chi tiết sản phẩm chỉ giới hạn tối đa là 10 ảnh"),
+
+  LOGO_BRAND_REQUIRED: () =>
+    new AppError(1029, "Logo thương hiệu không được để trống"),
+  MAIN_IMAGE_REQUIRED: () =>
+    new AppError(1030, "Ảnh sản phẩm không được để trống"),
+  HOVER_IMAGE_REQUIRED: () =>
+    new AppError(1031, "Ảnh hover sản phẩm không được để trống"),
+  IMAGES_REQUIRED: () =>
+    new AppError(1032, "Ảnh phụ sản phẩm không được để trống"),
+
+  MAX_IMAGES: () => new AppError(1033, "Ảnh phụ sản phẩm tối ta 10 ảnh"),
+
+  INVALID_INPUT: () =>
+    new AppError(1034, "vui lòng nhập đầy đủ mã sản phẩm và màu sản phẩm"),
 };
 
 module.exports = ErrorCode;
