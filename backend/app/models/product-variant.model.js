@@ -43,6 +43,16 @@ const productVariantSchema = new mongoose.Schema(
       default: [],
     },
     // gallery chi tiết
+
+    status: {
+      type: String,
+      enum: ["active", "inactive", "out_of_stock", "discontinued"],
+      default: "active",
+    },
+    // active	đang bán bình thường
+    // inactive	ẩn khỏi user (admin giữ lại)
+    // out_of_stock	hết hàng tạm thời
+    // discontinued	ngừng bán vĩnh viễn
   },
   { timestamps: true },
 );
