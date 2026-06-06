@@ -2,6 +2,7 @@ const Brand = require("../models/brand.model");
 const slugify = require("slugify");
 const ErrorCode = require("../constants/errors");
 const updateFields = require("../utils/updateFields.until");
+const { deleteImage } = require("../utils/uploadImage.util");
 
 const slugName = (name) =>
   slugify(name, {
@@ -11,7 +12,10 @@ const slugName = (name) =>
   });
 
 class BrandService {
-  async create(payload) {
+  async create(payload, file) {
+    if (!file) {
+      throw ErrorCode.LOGO_BRAND_REQUIRED();
+    }
     const { name } = payload;
 
     const slug = slugName(name);
@@ -29,13 +33,15 @@ class BrandService {
       throw ErrorCode.BRAND_ALREADY_EXISTS();
     }
 
+    payload.logo = file?.path.replace(/\\/g, "/") || null;
+
     return Brand.create({
       ...payload,
       slug,
     });
   }
 
-  async update(id, payload) {
+  async update(id, payload, file) {
     const brand = await Brand.findOne({
       _id: id,
       isDeleted: false,
@@ -59,6 +65,19 @@ class BrandService {
 
       brand.name = name;
       brand.slug = slug;
+    }
+    if (file) {
+      const oldLogo = brand.logo;
+
+      brand.logo = file.path.replace(/\\/g, "/");
+
+      await brand.save();
+
+      if (oldLogo) {
+        deleteImage(oldLogo);
+      }
+
+      return brand;
     }
 
     updateFields(brand, payload, ["logo", "description", "isActive"]);
