@@ -32,18 +32,16 @@ class ProductService {
   }
 
   async create(payload) {
-    const { name, categories = [], brand, productLine, styles = [] } = payload;
-
+    const { name, categories = [], productLine, styles = [], _id } = payload;
+    const existID = await Product.findById(_id);
     // Tạo slug
-    const slug = slugName(name);
 
     // Kiểm tra sản phẩm đã tồn tại chưa
-    const existProduct = await Product.findOne({ slug });
 
-    if (existProduct) {
+    if (existID) {
       // Nếu đã ngừng kinh doanh thì mở lại
-      if (existProduct.status === "discontinued") {
-        existProduct.status = "active";
+      if (existID.status === "discontinued") {
+        existID.status = "active";
 
         //ko cần dùng này
         // updateFields(existProduct, payload, [
@@ -61,13 +59,16 @@ class ProductService {
         //   "defaultColor",
         // ]);
 
-        await existProduct.save();
+        await existID.save();
 
-        return existProduct;
+        return existID;
       }
-
-      throw ErrorCode.PRODUCT_ALREADY_EXISTS();
     }
+
+    const slug = slugName(name);
+
+    const existSlug = await Product.findOne({ slug });
+    if (existSlug) throw ErrorCode.PRODUCT_SLUG_ALREADY_EXISTS();
 
     const existProductLine = await ProductLine.findOne({
       _id: productLine,

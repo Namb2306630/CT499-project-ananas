@@ -55,7 +55,9 @@ const ErrorCode = {
     new AppError(1023, "Kiểu dáng sản phẩm đã tồn tại"),
 
   PRODUCT_NOT_EXISTS: () => new AppError(1024, "Sản phẩm không tồn tại"),
-  PRODUCT_ALREADY_EXISTS: () => new AppError(1025, "Sản phẩm đã tồn tại"),
+  PRODUCT_ID_ALREADY_EXISTS: () => new AppError(1025, "Mã sản phẩm đã tồn tại"),
+  PRODUCT_SLUG_ALREADY_EXISTS: () =>
+    new AppError(1025, "Tên sản phẩm đã tồn tại"),
 
   PRODUCT_VARI_NOT_EXISTS: () =>
     new AppError(1026, "Màu sản phẩm không tồn tại"),
