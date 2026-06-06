@@ -45,21 +45,21 @@ class ProductService {
       if (existProduct.status === "discontinued") {
         existProduct.status = "active";
 
-        updateFields(existProduct, payload, [
-          "description",
-          "categories",
-          "brand",
-          "productLine",
-          "costPrice",
-          "sellingPrice",
-          "gender",
-          "discountPercent",
-          "styles",
-          "isBestSeller",
-          "isNewArrival",
-          "isSale",
-          "defaultColor",
-        ]);
+        //ko cần dùng này
+        // updateFields(existProduct, payload, [
+        //   "description",
+        //   "categories",
+        //   "productLine",
+        //   "costPrice",
+        //   "sellingPrice",
+        //   "gender",
+        //   "discountPercent",
+        //   "styles",
+        //   "isBestSeller",
+        //   "isNewArrival",
+        //   "isSale",
+        //   "defaultColor",
+        // ]);
 
         await existProduct.save();
 
@@ -67,15 +67,6 @@ class ProductService {
       }
 
       throw ErrorCode.PRODUCT_ALREADY_EXISTS();
-    }
-
-    const existBrand = await Brand.findOne({
-      _id: brand,
-      isDeleted: false,
-    });
-
-    if (!existBrand) {
-      throw ErrorCode.BRAND_NOT_EXISTS();
     }
 
     const existProductLine = await ProductLine.findOne({
@@ -152,7 +143,6 @@ class ProductService {
     updateFields(product, payload, [
       "description",
       "categories",
-      "brand",
       "productLine",
       "costPrice",
       "gender",
@@ -208,7 +198,6 @@ class ProductService {
 
   async getAllForAdmin() {
     return Product.find()
-      .populate("brand")
       .populate("productLine")
       .populate("categories")
       .sort({ createdAt: -1 });
@@ -227,7 +216,6 @@ class ProductService {
       slug,
       status: "active",
     })
-      .populate("brand")
       .populate("categories")
       .populate("styles")
       .populate("productLine")
