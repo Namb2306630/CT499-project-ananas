@@ -3,6 +3,8 @@ const ErrorCode = require("../constants/errors");
 const slugify = require("slugify");
 const updateFields = require("../utils/updateFields.until");
 
+const { deleteImage } = require("../utils/uploadImage.util");
+
 const slugName = (name) =>
   slugify(name, {
     lower: true,
@@ -24,7 +26,7 @@ const buildCategoryTree = (categories, parent = null) => {
     }));
 };
 class CategoryService {
-  async create(payload) {
+  async create(payload, file) {
     const { name } = payload;
 
     const slug = slugName(name);
@@ -43,13 +45,15 @@ class CategoryService {
       throw ErrorCode.CATEGORY_ALREADY_EXISTS();
     }
 
+    payload.image = file?.path.replace(/\\/g, "/") || null;
+
     return Category.create({
       ...payload,
       slug,
     });
   }
 
-  async update(categoryId, payload) {
+  async update(categoryId, payload, file) {
     const category = await Category.findOne({
       _id: categoryId,
       isDeleted: false,
@@ -73,6 +77,20 @@ class CategoryService {
 
       category.name = name;
       category.slug = slug;
+    }
+
+    if (file) {
+      const oldImage = category.image;
+
+      category.image = file.path.replace(/\\/g, "/");
+
+      await category.save();
+
+      if (oldImage) {
+        deleteImage(oldImage);
+      }
+
+      return category;
     }
 
     updateFields(category, payload, ["image", "parent", "isActive"]);

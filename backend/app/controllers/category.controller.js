@@ -1,19 +1,17 @@
 const categoryService = require("../services/category.service");
 const ApiResponse = require("../constants/api-response");
-const { deleteImage } = require("../utils/uploadImage.util");
+const { removeUploadedFiles } = require("../utils/uploadImage.util");
 
 exports.create = async (req, res, next) => {
   try {
-    const data = await categoryService.create({
-      ...req.body,
-      image: req.file ? req.file.path.replace(/\\/g, "/") : null,
-    });
+    const data = await categoryService.create(req.body, req.file);
     return ApiResponse.success({
       res,
       data,
       message: "Tạo danh mục thành công",
     });
   } catch (err) {
+    removeUploadedFiles(req.file);
     next(err);
   }
 };
@@ -21,18 +19,14 @@ exports.create = async (req, res, next) => {
 exports.update = async (req, res, next) => {
   try {
     const categoryId = req.params.id;
-    const data = await categoryService.update(categoryId, req.body);
-    if (req.file) {
-      deleteImage(data.image);
-      data.image = req.file.path.replace(/\\/g, "/");
-      // chuyền từ đường dẫn Windows sang đường dẫn URL (thay \ thành /)
-    }
+    const data = await categoryService.update(categoryId, req.body, req.file);
     return ApiResponse.success({
       res,
       data,
       message: "Cập nhật danh mục thành công",
     });
   } catch (err) {
+    removeUploadedFiles(req.file);
     next(err);
   }
 };
