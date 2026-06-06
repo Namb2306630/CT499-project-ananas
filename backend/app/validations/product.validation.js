@@ -23,7 +23,15 @@ exports.createProductSchema = Joi.object({
       "array.base": "Danh mục phải là mảng",
     }),
 
-  styles: Joi.array().items(Joi.string().regex(REGEX._ID)).optional(),
+  styles: Joi.array().items(Joi.string().regex(REGEX._ID)).required().messages({
+    "any.required": "Kiểu dáng sản phẩm là bắt buộc",
+    "string.pattern.base": "Mã style không hợp lệ",
+  }),
+
+  collection: Joi.string().regex(REGEX._ID).required().messages({
+    "any.required": "Bộ sưu tập là bắt buộc",
+    "string.pattern.base": "Mã collection không hợp lệ",
+  }),
 
   productLine: Joi.string().regex(REGEX._ID).required().messages({
     "any.required": "Dòng sản phẩm là bắt buộc",
@@ -59,7 +67,9 @@ exports.updateProductSchema = Joi.object({
     "array.base": "Danh mục phải là mảng",
   }),
 
-  styles: Joi.array().items(Joi.string().regex(REGEX._ID)),
+  styles: Joi.array().items(Joi.string().regex(REGEX._ID)).messages({
+    "string.pattern.base": "Mã styles không hợp lệ",
+  }),
 
   productLine: Joi.string().regex(REGEX._ID).messages({
     "string.pattern.base": "Mã product line không hợp lệ",

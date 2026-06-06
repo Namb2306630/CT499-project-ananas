@@ -3,6 +3,7 @@ const Brand = require("../models/brand.model");
 const Category = require("../models/category.model");
 const ProductLine = require("../models/product-line.model");
 const Style = require("../models/style.model");
+const Collection = require("../models/collection.model");
 const ErrorCode = require("../constants/errors");
 const slugify = require("slugify");
 const updateFields = require("../utils/updateFields.until");
@@ -32,7 +33,7 @@ class ProductService {
   }
 
   async validateRelations(payload) {
-    const { categories = [], productLine, styles = [] } = payload;
+    const { categories = [], productLine, styles = [], collection } = payload;
 
     const existProductLine = await ProductLine.findOne({
       _id: productLine,
@@ -50,6 +51,15 @@ class ProductService {
 
     if (existCategories.length !== categories.length) {
       throw ErrorCode.CATEGORY_NOT_EXISTS();
+    }
+
+    const existCollection = await Collection.findOne({
+      _id: collection,
+      isDeleted: false,
+    });
+
+    if (!existCollection) {
+      throw ErrorCode.COLLECTION_NOT_EXISTS();
     }
 
     if (styles.length > 0) {

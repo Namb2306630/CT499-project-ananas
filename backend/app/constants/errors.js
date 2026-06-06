@@ -79,7 +79,10 @@ const ErrorCode = {
   MAX_IMAGES: () => new AppError(1033, "Ảnh phụ sản phẩm tối ta 10 ảnh"),
 
   INVALID_INPUT: () =>
-    new AppError(1034, "vui lòng nhập đầy đủ mã sản phẩm và màu sản phẩm"),
+    new AppError(1034, "Vui lòng nhập đầy đủ mã sản phẩm và màu sản phẩm"),
+
+  COLLECTION_NOT_EXISTS: () => new AppError(1035, "Bộ sưu tập không tồn tại"),
+  COLLECTION_ALREADY_EXISTS: () => new AppError(1036, "Bộ sưu tập đã tồn tại"),
 };
 
 module.exports = ErrorCode;
