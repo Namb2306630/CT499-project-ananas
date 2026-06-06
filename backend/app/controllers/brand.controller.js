@@ -1,20 +1,18 @@
 const brandService = require("../services/brand.service");
 const ApiResponse = require("../constants/api-response");
-const ErrorCode = require("../constants/errors");
-const { deleteImage } = require("../utils/uploadImage.util");
-
+const { removeUploadedFiles } = require("../utils/uploadImage.util");
 exports.create = async (req, res, next) => {
   try {
-    const data = await brandService.create({
-      ...req.body,
-      logo: req.file ? req.file.path.replace(/\\/g, "/") : null,
-    });
+    console.log(req.file);
+    console.log(req.body);
+    const data = await brandService.create(req.body, req.file);
     return ApiResponse.success({
       res,
       data,
       message: "Thêm thương hiệu sản phẩm thành công",
     });
   } catch (err) {
+    removeUploadedFiles(req.file);
     next(err);
   }
 };
@@ -22,14 +20,8 @@ exports.create = async (req, res, next) => {
 exports.update = async (req, res, next) => {
   try {
     const brandId = req.params.id;
-    // nếu có file mới
-    if (req.file) {
-      deleteImage(brand.logo);
-      req.body.logo = req.file.path.replace(/\\/g, "/");
-      // chuyền từ đường dẫn Windows sang đường dẫn URL (thay \ thành /)
-    }
 
-    const data = await brandService.update(brandId, req.body);
+    const data = await brandService.update(brandId, req.body, req.file);
 
     return ApiResponse.success({
       res,
@@ -37,6 +29,7 @@ exports.update = async (req, res, next) => {
       message: "Cập nhật thông tin thương hiệu sản phẩm thành công",
     });
   } catch (err) {
+    removeUploadedFiles(req.file);
     next(err);
   }
 };
