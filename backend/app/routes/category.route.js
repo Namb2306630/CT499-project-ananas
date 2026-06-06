@@ -18,8 +18,8 @@ const Role = require("../utils/role.util");
 // Tạo category
 router.post(
   "/admin",
-  validate(createCategorySchema),
   uploadCategoryImage,
+  validate(createCategorySchema),
   categoryController.create,
 );
 
@@ -28,8 +28,8 @@ router.put(
   "/admin/:id",
   authMiddleware,
   roleMiddleware(Role.SUPER_ADMIN),
-  validate(updateCategorySchema),
   uploadCategoryImage,
+  validate(updateCategorySchema),
   categoryController.update,
 );
 

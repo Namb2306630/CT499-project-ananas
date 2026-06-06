@@ -17,16 +17,16 @@ router.post(
   "/admin",
   authMiddleware,
   roleMiddleware(role.SUPER_ADMIN),
-  validate(createBrandSchema),
-  uploadBrandLogo, // chỉ nhận 1 file với field name là logo
+  uploadBrandLogo,
+  validate(createBrandSchema), // chỉ nhận 1 file với field name là logo
   brandController.create,
 );
 router.put(
   "/admin/:id",
   authMiddleware,
   roleMiddleware(role.SUPER_ADMIN),
-  validate(updateBrandSchema),
   uploadBrandLogo,
+  validate(updateBrandSchema),
   brandController.update,
 );
 router.get(
