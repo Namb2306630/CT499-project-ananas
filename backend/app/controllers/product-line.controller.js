@@ -4,11 +4,22 @@ const ApiResponse = require("../constants/api-response");
 
 exports.create = async (req, res, next) => {
   try {
-    const data = await productLineService.create(req.body);
+    const result = await productLineService.create(req.body);
+
+    let message = "";
+
+    if (result.action === "created") {
+      message = "Tạo dòng sản phẩm thành công";
+    }
+
+    if (result.action === "restored") {
+      message = "Dòng sản phẩm đã tồn tại trước đó, hệ thống đã khôi phục lại";
+    }
+
     return ApiResponse.success({
       res,
-      data,
-      message: "Tạo dòng sản phẩm thành công",
+      data: result.data,
+      message,
     });
   } catch (err) {
     next(err);

@@ -3,20 +3,31 @@ const ApiResponse = require("../constants/api-response");
 const { removeUploadedFiles } = require("../utils/uploadImage.util");
 exports.create = async (req, res, next) => {
   try {
-    console.log(req.file);
-    console.log(req.body);
-    const data = await brandService.create(req.body, req.file);
+    const result = await brandService.create(req.body, req.file);
+
+    let message = "";
+
+    if (result.action === "created") {
+      message = "Thêm thương hiệu sản phẩm thành công";
+    }
+
+    if (result.action === "restored") {
+      message =
+        "Thương hiệu đã tồn tại trước đó, hệ thống đã khôi phục và cập nhật lại";
+    }
+
     return ApiResponse.success({
       res,
-      data,
-      message: "Thêm thương hiệu sản phẩm thành công",
+      data: result.data,
+      message,
     });
   } catch (err) {
-    removeUploadedFiles(req.file);
+    if (req.file) {
+      removeUploadedFiles(req.file);
+    }
     next(err);
   }
 };
-
 exports.update = async (req, res, next) => {
   try {
     const brandId = req.params.id;
@@ -37,11 +48,11 @@ exports.update = async (req, res, next) => {
 exports.remove = async (req, res, next) => {
   try {
     const brandId = req.params.id;
-    const data = await brandService.delete(brandId);
+    await brandService.delete(brandId);
 
     return ApiResponse.success({
       res,
-      data,
+      data: true,
       message: "Xóa thương hiệu thành công",
     });
   } catch (err) {

@@ -16,29 +16,43 @@ class BrandService {
     if (!file) {
       throw ErrorCode.LOGO_BRAND_REQUIRED();
     }
-    const { name } = payload;
 
+    const { name } = payload;
     const slug = slugName(name);
 
     const existBrand = await Brand.findOne({ slug });
+
+    // RESTORE
     if (existBrand) {
       if (existBrand.isDeleted) {
         existBrand.isDeleted = false;
         existBrand.isActive = true;
 
+        existBrand.name = name;
+        existBrand.logo = file.path.replace(/\\/g, "/");
+
         await existBrand.save();
 
-        return existBrand;
+        return {
+          data: existBrand,
+          action: "restored",
+        };
       }
+
       throw ErrorCode.BRAND_ALREADY_EXISTS();
     }
 
-    payload.logo = file?.path.replace(/\\/g, "/") || null;
-
-    return Brand.create({
+    // CREATE
+    const brand = await Brand.create({
       ...payload,
+      logo: file.path.replace(/\\/g, "/"),
       slug,
     });
+
+    return {
+      data: brand,
+      action: "created",
+    };
   }
 
   async update(id, payload, file) {
@@ -55,7 +69,7 @@ class BrandService {
 
       const existBrand = await Brand.findOne({
         slug,
-        _id: { $ne: categoryId },
+        _id: { $ne: id },
         isDeleted: false,
       });
 

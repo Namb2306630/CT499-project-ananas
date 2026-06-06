@@ -4,14 +4,26 @@ const { removeUploadedFiles } = require("../utils/uploadImage.util");
 
 exports.create = async (req, res, next) => {
   try {
-    const data = await categoryService.create(req.body, req.file);
+    const result = await categoryService.create(req.body, req.file);
+
+    let message = "";
+
+    if (result.action === "created") {
+      message = "Tạo danh mục thành công";
+    }
+
+    if (result.action === "restored") {
+      message =
+        "Danh mục đã tồn tại trước đó, hệ thống đã khôi phục và cập nhật lại";
+    }
+
     return ApiResponse.success({
       res,
-      data,
-      message: "Tạo danh mục thành công",
+      data: result.data,
+      message,
     });
   } catch (err) {
-    removeUploadedFiles(req.file);
+    if (req.file) removeUploadedFiles(req.file);
     next(err);
   }
 };

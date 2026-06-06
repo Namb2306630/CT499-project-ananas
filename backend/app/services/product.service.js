@@ -31,44 +31,8 @@ class ProductService {
     return product;
   }
 
-  async create(payload) {
-    const { name, categories = [], productLine, styles = [], _id } = payload;
-    const existID = await Product.findById(_id);
-    // Tạo slug
-
-    // Kiểm tra sản phẩm đã tồn tại chưa
-
-    if (existID) {
-      // Nếu đã ngừng kinh doanh thì mở lại
-      if (existID.status === "discontinued") {
-        existID.status = "active";
-
-        //ko cần dùng này
-        // updateFields(existProduct, payload, [
-        //   "description",
-        //   "categories",
-        //   "productLine",
-        //   "costPrice",
-        //   "sellingPrice",
-        //   "gender",
-        //   "discountPercent",
-        //   "styles",
-        //   "isBestSeller",
-        //   "isNewArrival",
-        //   "isSale",
-        //   "defaultColor",
-        // ]);
-
-        await existID.save();
-
-        return existID;
-      }
-    }
-
-    const slug = slugName(name);
-
-    const existSlug = await Product.findOne({ slug });
-    if (existSlug) throw ErrorCode.PRODUCT_SLUG_ALREADY_EXISTS();
+  async validateRelations(payload) {
+    const { categories = [], productLine, styles = [] } = payload;
 
     const existProductLine = await ProductLine.findOne({
       _id: productLine,
@@ -99,56 +63,87 @@ class ProductService {
       }
     }
 
-    const system = await systemConfigService.get();
+    return payload;
+  }
 
-    const basePrice = calculateBasePrice({
-      costPrice: payload.costPrice,
-      vatPercent: system.vatPercent,
-      operatingCostPercent: system.operatingCostPercent,
-      profitPercent: system.profitPercent,
-    });
+  async create(payload) {
+    const { name, categories = [], productLine, styles = [] } = payload;
 
-    const sellingPrice = calculateSellingPrice(
-      basePrice,
-      payload.discountPercent,
-    );
+    const slug = slugName(name);
 
-    return Product.create({
-      ...payload,
-      slug,
-      basePrice,
-      sellingPrice,
-    });
+    const exist = await Product.findOne({ slug });
+
+    // CREATE NEW
+    if (!exist) {
+      const validated = await this.validateRelations(payload);
+
+      const system = await systemConfigService.get();
+
+      const basePrice = calculateBasePrice({
+        costPrice: payload.costPrice,
+        vatPercent: system.vatPercent,
+        operatingCostPercent: system.operatingCostPercent,
+        profitPercent: system.profitPercent,
+      });
+
+      const sellingPrice = calculateSellingPrice(
+        basePrice,
+        payload.discountPercent,
+      );
+
+      const product = await Product.create({
+        ...validated,
+        slug,
+        basePrice,
+        sellingPrice,
+        status: "active",
+      });
+
+      return { data: product, action: "created" };
+    }
+
+    //  RESTORE (soft delete)
+    if (exist.status === "discontinued") {
+      exist.status = "active";
+
+      await exist.save();
+
+      return { data: exist, action: "restored" };
+    }
+
+    throw ErrorCode.PRODUCT_ALREADY_EXISTS();
   }
 
   async update(id, payload) {
     const product = await this.getByIdOrThrow(id);
 
-    const { name } = payload;
+    const { name, costPrice, discountPercent } = payload;
 
     if (name) {
       const slug = slugName(name);
 
-      const existProduct = await Product.findOne({
+      const exist = await Product.findOne({
         slug,
         _id: { $ne: id },
       });
 
-      if (existProduct) {
+      if (exist) {
         throw ErrorCode.PRODUCT_ALREADY_EXISTS();
       }
 
       product.name = name;
       product.slug = slug;
     }
+
+    if (payload.categories || payload.productLine || payload.styles) {
+      await this.validateRelations(payload);
+    }
+
     updateFields(product, payload, [
       "description",
       "categories",
       "productLine",
-      "costPrice",
       "gender",
-      "discountPercent",
-      "styles",
       "isBestSeller",
       "isNewArrival",
       "isSale",
@@ -157,33 +152,27 @@ class ProductService {
     ]);
 
     const system = await systemConfigService.get();
+    if (!system) throw ErrorCode.SYSTEM_NOT_EXISTS();
 
-    if (!system) {
-      throw ErrorCode.SYSTEM_NOT_EXISTS();
-    }
+    let newBasePrice = product.basePrice;
 
-    let basePrice = product.basePrice;
-
-    if (payload.costPrice !== undefined) {
-      basePrice = calculateBasePrice({
-        costPrice: payload.costPrice,
+    if (costPrice !== undefined) {
+      newBasePrice = calculateBasePrice({
+        costPrice,
         vatPercent: system.vatPercent,
         operatingCostPercent: system.operatingCostPercent,
         profitPercent: system.profitPercent,
       });
 
-      product.basePrice = basePrice;
+      product.basePrice = newBasePrice;
     }
 
-    const discountPercent =
-      payload.discountPercent ?? product.discountPercent ?? 0;
+    const finalDiscount = discountPercent ?? product.discountPercent ?? 0;
 
-    if (
-      payload.costPrice !== undefined ||
-      payload.discountPercent !== undefined
-    ) {
-      product.sellingPrice = calculateSellingPrice(basePrice, discountPercent);
+    if (costPrice !== undefined || discountPercent !== undefined) {
+      product.sellingPrice = calculateSellingPrice(newBasePrice, finalDiscount);
     }
+
     await product.save();
 
     return product;

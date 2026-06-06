@@ -3,12 +3,22 @@ const ApiResponse = require("../constants/api-response");
 
 exports.create = async (req, res, next) => {
   try {
-    const data = await productService.create(req.body);
+    const result = await productService.create(req.body);
+
+    let message = "";
+
+    if (result.action === "created") {
+      message = "Tạo sản phẩm thành công";
+    }
+
+    if (result.action === "restored") {
+      message = "Sản phẩm đã được khôi phục";
+    }
 
     return ApiResponse.success({
       res,
-      data,
-      message: "Tạo sản phẩm thành công",
+      data: result.data,
+      message,
     });
   } catch (err) {
     next(err);

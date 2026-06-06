@@ -28,43 +28,50 @@ class ProductLineService {
     const { name } = payload;
     const slug = slugName(name);
 
-    const productLine = await ProductLine.findOne({ slug });
+    const exist = await ProductLine.findOne({ slug });
 
-    if (productLine) {
-      if (productLine.isDeleted) {
-        productLine.isDeleted = false;
-        productLine.isActive = true;
+    // CREATE NEW
+    if (!exist) {
+      const doc = await ProductLine.create({
+        ...payload,
+        slug,
+      });
 
-        await productLine.save();
-
-        return productLine;
-      }
-      throw ErrorCode.PRODUCT_LINE_ALREADY_EXISTS();
+      return { data: doc, action: "created" };
     }
-    return ProductLine.create({
-      ...payload,
-      slug,
-    });
+
+    // RESTORE + UPDATE
+    if (exist.isDeleted) {
+      exist.isDeleted = false;
+      exist.isActive = true;
+
+      exist.name = name;
+      exist.slug = slug;
+
+      await exist.save();
+
+      return { data: exist, action: "restored" };
+    }
+
+    throw ErrorCode.PRODUCT_LINE_ALREADY_EXISTS();
   }
 
   async update(id, payload) {
     const productLine = await this.getByIdOrThrow(id);
 
-    const { name, slug, brand, description, isActive } = payload;
+    if (payload.name) {
+      const newSlug = slugName(payload.name);
 
-    if (name) {
-      const slug = slugName(name);
-
-      const eixisProductLine = await ProductLine.findOne({
-        slug,
+      const exist = await ProductLine.findOne({
+        slug: newSlug,
         _id: { $ne: id },
         isDeleted: false,
       });
 
-      if (eixisProductLine) throw ErrorCode.PRODUCT_LINE_ALREADY_EXISTS();
+      if (exist) throw ErrorCode.PRODUCT_LINE_ALREADY_EXISTS();
 
-      productLine.name = name;
-      productLine.slug = slug;
+      productLine.name = payload.name;
+      productLine.slug = newSlug;
     }
 
     updateFields(productLine, payload, ["brand", "description", "isActive"]);

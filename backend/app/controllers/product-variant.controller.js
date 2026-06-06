@@ -4,18 +4,25 @@ const { removeUploadedFiles } = require("../utils/uploadImage.util");
 
 exports.create = async (req, res, next) => {
   try {
-    const data = await service.create(req.body, req.files);
+    const result = await service.create(req.body, req.files);
+
+    let message = "Tạo biến thể sản phẩm thành công";
+
+    if (result.action === "restored") {
+      message = "Khôi phục biến thể sản phẩm thành công";
+    }
 
     return ApiResponse.success({
       res,
-      data,
-      message: "Tạo sản phẩm thành công",
+      data: result.data,
+      message,
     });
   } catch (err) {
-    removeUploadedFiles(req.files);
+    if (req.files) removeUploadedFiles(req.files);
     next(err);
   }
 };
+
 exports.update = async (req, res, next) => {
   try {
     const id = req.params.id;
@@ -24,10 +31,10 @@ exports.update = async (req, res, next) => {
     return ApiResponse.success({
       res,
       data,
-      message: "Cập nhật thông tin sản phẩm thành công",
+      message: "Cập nhật biến thể sản phẩm thành công",
     });
   } catch (err) {
-    removeUploadedFiles(req.files);
+    if (req.files) removeUploadedFiles(req.files);
     next(err);
   }
 };
@@ -39,7 +46,7 @@ exports.remove = async (req, res, next) => {
     return ApiResponse.success({
       res,
       data: true,
-      message: "Cập nhật sản phẩm ngừng king doanh thành công",
+      message: "Ngừng kinh doanh biến thể sản phẩm thành công",
     });
   } catch (err) {
     next(err);

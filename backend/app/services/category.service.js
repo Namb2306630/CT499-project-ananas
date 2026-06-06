@@ -28,29 +28,43 @@ const buildCategoryTree = (categories, parent = null) => {
 class CategoryService {
   async create(payload, file) {
     const { name } = payload;
-
     const slug = slugName(name);
 
     const existCategory = await Category.findOne({ slug });
 
-    if (existCategory) {
-      if (existCategory.isDeleted) {
-        existCategory.isDeleted = false;
-        existCategory.isActive = true;
+    // Cchưa tồn tại  create
+    if (!existCategory) {
+      const category = await Category.create({
+        ...payload,
+        slug,
+        image: file?.path.replace(/\\/g, "/") || null,
+      });
 
-        await existCategory.save();
-
-        return existCategory;
-      }
-      throw ErrorCode.CATEGORY_ALREADY_EXISTS();
+      return {
+        data: category,
+        action: "created",
+      };
     }
 
-    payload.image = file?.path.replace(/\\/g, "/") || null;
+    // tồn tại nhưng bị xoá mềm  restore + update
+    if (existCategory.isDeleted) {
+      existCategory.isDeleted = false;
+      existCategory.isActive = true;
 
-    return Category.create({
-      ...payload,
-      slug,
-    });
+      existCategory.name = name;
+      existCategory.image =
+        file?.path.replace(/\\/g, "/") || existCategory.image;
+
+      await existCategory.save();
+
+      return {
+        data: existCategory,
+        action: "restored",
+      };
+    }
+
+    // tồn tại active
+    throw ErrorCode.CATEGORY_ALREADY_EXISTS();
   }
 
   async update(categoryId, payload, file) {
@@ -83,14 +97,9 @@ class CategoryService {
       const oldImage = category.image;
 
       category.image = file.path.replace(/\\/g, "/");
-
-      await category.save();
-
       if (oldImage) {
         deleteImage(oldImage);
       }
-
-      return category;
     }
 
     updateFields(category, payload, ["image", "parent", "isActive"]);

@@ -7,9 +7,6 @@ exports.getProvinces = async (req, res) => {
 
     res.json(data);
   } catch {
-    
-    //console.log(error.response?.data);
-    //console.log(error.message);
 
     res.status(500).json({
       message: "Lỗi lấy tỉnh",

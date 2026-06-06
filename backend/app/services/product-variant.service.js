@@ -15,103 +15,119 @@ class ProductVariantService {
     return productVari;
   }
 
+  validateFiles(files) {
+    if (!files?.mainImage?.length) throw ErrorCode.MAIN_IMAGE_REQUIRED();
+
+    if (!files?.hoverImage?.length) throw ErrorCode.HOVER_IMAGE_REQUIRED();
+
+    if (!files?.images?.length) throw ErrorCode.IMAGES_REQUIRED();
+
+    if (files.images.length > 10) throw ErrorCode.MAX_IMAGES();
+  }
+
   async create(payload, files) {
     const { product, colorCode } = payload;
-    if (!files?.mainImage?.length) {
-      throw ErrorCode.MAIN_IMAGE_REQUIRED();
-    }
-    if (!files?.hoverImage?.length) {
-      throw ErrorCode.HOVER_IMAGE_REQUIRED();
-    }
-    if (!files?.images?.length) {
-      throw ErrorCode.IMAGES_REQUIRED();
-    }
 
-    if (files?.images?.length > 10) {
-      throw ErrorCode.MAX_IMAGES();
-    }
+    this.validateFiles(files);
 
     const existPro = await Product.findById(product);
     if (!existPro) throw ErrorCode.PRODUCT_NOT_EXISTS();
 
-    const existProVari = await ProductVariant.findOne({
+    const exist = await ProductVariant.findOne({
       product,
       colorCode,
     });
 
-    if (existProVari) {
-      if (existProVari.status === "discontinued") {
-        existProVari.status = "active";
+    if (!exist) {
+      const created = await ProductVariant.create({
+        ...payload,
+        mainImage: files.mainImage[0].path.replace(/\\/g, "/"),
+        hoverImage: files.hoverImage[0].path.replace(/\\/g, "/"),
+        images: files.images.map((f) => f.path.replace(/\\/g, "/")),
+      });
 
-        await existProVari.save();
-
-        return existProVari;
-      }
-      throw ErrorCode.PRODUCT_VARI_ALREADY_EXISTS();
+      return {
+        data: created,
+        action: "created",
+      };
     }
 
-    payload.mainImage = files?.mainImage?.[0]?.path.replace(/\\/g, "/") || null;
+    if (exist.status === "discontinued") {
+      exist.status = "active";
 
-    payload.hoverImage =
-      files?.hoverImage?.[0]?.path.replace(/\\/g, "/") || null;
+      exist.colorName = payload.colorName;
+      exist.colorCode = colorCode;
 
-    payload.images =
-      files?.images?.map((file) => file.path.replace(/\\/g, "/")) || [];
+      exist.mainImage = files.mainImage[0].path.replace(/\\/g, "/");
+      exist.hoverImage = files.hoverImage[0].path.replace(/\\/g, "/");
+      exist.images = files.images.map((f) => f.path.replace(/\\/g, "/"));
 
-    const proVari = await ProductVariant.create({
-      ...payload,
-    });
+      await exist.save();
 
-    return proVari;
+      return {
+        data: exist,
+        action: "restored",
+      };
+    }
+
+    throw ErrorCode.PRODUCT_VARI_ALREADY_EXISTS();
   }
   async update(id, payload, files) {
-    const { colorCode, product } = payload;
     const proVari = await this.getByIdOrThrow(id);
 
-    if (product) {
-      const existPro = await Product.findById(product);
-      if (!existPro) throw ErrorCode.PRODUCT_NOT_EXISTS();
+    const oldFiles = {
+      mainImage: proVari.mainImage,
+      hoverImage: proVari.hoverImage,
+      images: [...proVari.images],
+    };
+
+    // validate product
+    if (payload.product) {
+      const exist = await Product.findById(payload.product);
+      if (!exist) throw ErrorCode.PRODUCT_NOT_EXISTS();
     }
-    if (colorCode) {
-      const existProVari = await ProductVariant.findOne({
+
+    // validate color
+    if (payload.colorCode) {
+      const exist = await ProductVariant.findOne({
         product: payload.product || proVari.product,
-        colorCode,
+        colorCode: payload.colorCode,
         _id: { $ne: id },
       });
 
-      if (existProVari) throw ErrorCode.PRODUCT_VARI_ALREADY_EXISTS();
+      if (exist) throw ErrorCode.PRODUCT_VARI_ALREADY_EXISTS();
     }
+
+    // update images
     if (files?.mainImage) {
-      deleteImage(proVari.mainImage);
-      payload.mainImage = files.mainImage[0].path.replace(/\\/g, "/");
+      proVari.mainImage = files.mainImage[0].path.replace(/\\/g, "/");
     }
 
     if (files?.hoverImage) {
-      deleteImage(proVari.hoverImage);
-      payload.hoverImage = files.hoverImage[0].path.replace(/\\/g, "/");
+      proVari.hoverImage = files.hoverImage[0].path.replace(/\\/g, "/");
     }
 
     if (files?.images) {
-      if (files?.images?.length > 10) {
-        throw ErrorCode.MAX_IMAGES();
-      }
+      if (files.images.length > 10) throw ErrorCode.MAX_IMAGES();
 
-      proVari.images.forEach((img) => deleteImage(img));
-      payload.images = files.images.map((file) =>
-        file.path.replace(/\\/g, "/"),
-      );
+      proVari.images = files.images.map((f) => f.path.replace(/\\/g, "/"));
     }
+
     updateFields(proVari, payload, [
       "product",
       "colorName",
       "colorCode",
-      "mainImage",
-      "hoverImage",
-      "images",
       "status",
     ]);
 
-    return await proVari.save();
+    await proVari.save();
+
+    // DELETE OLD FILES AFTER SUCCESS
+    if (files?.mainImage) deleteImage(oldFiles.mainImage);
+    if (files?.hoverImage) deleteImage(oldFiles.hoverImage);
+    if (files?.images) oldFiles.images.forEach(deleteImage);
+
+    return proVari;
   }
   async remove(id) {
     const proVari = await this.getByIdOrThrow(id);
