@@ -134,7 +134,20 @@ const productSchema = new mongoose.Schema(
     },
     // Số lượng review
   },
-  { timestamps: true },
+  {
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+    //Cho phép field ảo (virtual) xuất hiện trong JSON
+    id: false,
+  },
 );
+//Mongoose tạo field ảo để  populate được
+productSchema.virtual("variants", {
+  //Tạo field ảo tên variants
+  ref: "ProductVariant",
+  localField: "_id", //lấy _id của Product
+  foreignField: "product", //tìm trong ProductVariant field product
+});
 
 module.exports = mongoose.model("Product", productSchema);
