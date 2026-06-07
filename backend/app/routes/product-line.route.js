@@ -29,13 +29,13 @@ router.delete(
   roleMiddleware(role.SUPER_ADMIN),
   productLineController.remove,
 );
+router.get("/", productLineController.getAllForUser);
 router.get(
   "/admin",
   authMiddleware,
   roleMiddleware(role.SUPER_ADMIN),
   productLineController.getAllForAdmin,
 );
-router.get("/", productLineController.getAllForUser);
 router.get(
   "/:id",
   authMiddleware,
