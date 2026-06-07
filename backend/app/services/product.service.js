@@ -8,6 +8,7 @@ const ErrorCode = require("../constants/errors");
 const slugify = require("slugify");
 const updateFields = require("../utils/updateFields.until");
 const systemConfigService = require("./system-config.service");
+const ProductVari = require("../models/product-variant.model");
 
 const {
   calculateBasePrice,
@@ -239,6 +240,19 @@ class ProductService {
     }).sort({
       createdAt: -1,
     });
+  }
+
+  async getVariants(idProduct) {
+    const exist = await this.getByIdOrThrow(idProduct);
+    if (!exist) {
+      throw ErrorCode.PRODUCT_NOT_EXISTS();
+    }
+
+    const product = await Product.findOne({
+      _id: idProduct,
+      status: { $ne: "inactive" },
+    }).populate("variants");
+    return product.variants;
   }
 }
 

@@ -132,3 +132,25 @@ exports.search = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.getVariants = async (req, res, next) => {
+  try {
+    const idProduct = req.params.id;
+    const data = await productService.getVariants(idProduct);
+
+    if (data.length === 0) {
+      return ApiResponse.success({
+        res,
+        data: [],
+        message: "Không có biến thể sản phẩm nào thuộc sản phẩm này hết",
+      });
+    }
+
+    return ApiResponse.success({
+      res,
+      data,
+    });
+  } catch (err) {
+    next(err);
+  }
+};

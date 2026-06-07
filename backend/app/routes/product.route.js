@@ -37,6 +37,7 @@ router.get(
   roleMiddleware(role.SUPER_ADMIN),
   productController.getAllForAdmin,
 );
+router.get("/:id/variants", productController.getVariants);
 router.get("/:slug", productController.getBySlug);
 router.get("/", productController.getAllForUser);
 
