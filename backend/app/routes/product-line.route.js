@@ -37,7 +37,7 @@ router.get(
   productLineController.getAllForAdmin,
 );
 router.get(
-  "/:id",
+  "admin/:id",
   authMiddleware,
   roleMiddleware(role.SUPER_ADMIN),
   productLineController.getById,
