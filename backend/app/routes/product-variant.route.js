@@ -40,7 +40,7 @@ router.delete(
 );
 
 router.get(
-  "/admin/:id",
+  "/:id",
   authMiddleware,
   roleMiddleware(role.SUPER_ADMIN),
   controller.getById,
