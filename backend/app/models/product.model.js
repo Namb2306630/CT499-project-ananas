@@ -105,11 +105,11 @@ const productSchema = new mongoose.Schema(
       default: false,
     },
 
-    defaultColor: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "ProductVariant",
-      default: null,
-    },
+    // defaultColor: {
+    //   type: mongoose.Schema.Types.ObjectId,
+    //   ref: "ProductVariant",
+    //   default: null,
+    // },
     // Màu mặc định hiển thị ngoài trang list
 
     status: {
