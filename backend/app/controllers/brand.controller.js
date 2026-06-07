@@ -118,3 +118,17 @@ exports.getById = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.getByBrand = async (req, res, next) => {
+  try {
+    const id = req.params.brandId;
+    const data = await brandService.getByBrand(id);
+    return ApiResponse.success({
+      res,
+      data,
+      message: "Lấy các dòng sản phẩn của một thương hiệu thành công",
+    });
+  } catch (err) {
+    next(err);
+  }
+};

@@ -3,6 +3,7 @@ const slugify = require("slugify");
 const ErrorCode = require("../constants/errors");
 const updateFields = require("../utils/updateFields.until");
 const { deleteImage } = require("../utils/uploadImage.util");
+const ProductLine = require("../models/product-line.model");
 
 const slugName = (name) =>
   slugify(name, {
@@ -128,6 +129,22 @@ class BrandService {
     if (!brand) throw ErrorCode.BRAND_NOT_EXISTS();
 
     return brand;
+  }
+
+  async getByBrand(id) {
+    const brand = await Brand.findOne({
+      _id: id,
+      isDeleted: false,
+      isActive: true,
+    });
+
+    const productLines = await ProductLine.find({
+      brand: id,
+      isDeleted: false,
+      isActive: true,
+    }).select("name slug");
+
+    if (!brand) throw ErrorCode.BRAND_NOT_EXISTS();
   }
 }
 

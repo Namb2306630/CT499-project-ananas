@@ -29,12 +29,14 @@ router.put(
   validate(updateBrandSchema),
   brandController.update,
 );
+router.get("/:brandId/lines", brandController.getByBrand);
 router.get(
   "/admin",
   authMiddleware,
   roleMiddleware(role.SUPER_ADMIN),
   brandController.getAllForAdmin,
 );
+
 router.get("/", brandController.getAllForUser);
 router.get(
   "/admin/:id",
@@ -42,6 +44,7 @@ router.get(
   roleMiddleware(role.SUPER_ADMIN),
   brandController.getById,
 );
+
 router.delete(
   "/:id",
   authMiddleware,
