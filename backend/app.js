@@ -11,6 +11,7 @@ const productLineRouter = require("./app/routes/product-line.route");
 const styleRouter = require("./app/routes/style.route");
 const productRouter = require("./app/routes/product.route");
 const productVariantRouter = require("./app/routes/product-variant.route");
+const collectionRouter = require("./app/routes/collection.route");
 
 const AppError = require("./app/constants/app-error");
 const multer = require("multer");
@@ -33,6 +34,7 @@ app.use("/api/categories", categoryRouter);
 app.use("/api/brands", brandRouter);
 app.use("/api/product-lines", productLineRouter);
 app.use("/api/styles", styleRouter);
+app.use("/api/collections", collectionRouter);
 app.use("/api/products", productRouter);
 app.use("/api/product-variants", productVariantRouter);
 
