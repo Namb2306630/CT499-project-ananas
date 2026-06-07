@@ -77,7 +77,10 @@ class ProductService {
   }
 
   async create(payload) {
-    const { name, categories = [], productLine, styles = [] } = payload;
+    const { name, categories = [], productLine, styles = [], _id } = payload;
+    const existID = await Product.findById(_id);
+
+    if (existID) throw ErrorCode.PRODUCT_ID_ALREADY_EXISTS();
 
     const slug = slugName(name);
 
@@ -121,7 +124,7 @@ class ProductService {
       return { data: exist, action: "restored" };
     }
 
-    throw ErrorCode.PRODUCT_ALREADY_EXISTS();
+    throw ErrorCode.PRODUCT_SLUG_ALREADY_EXISTS();
   }
 
   async update(id, payload) {
@@ -138,7 +141,7 @@ class ProductService {
       });
 
       if (exist) {
-        throw ErrorCode.PRODUCT_ALREADY_EXISTS();
+        throw ErrorCode.PRODUCT_SLUG_ALREADY_EXISTS();
       }
 
       product.name = name;
