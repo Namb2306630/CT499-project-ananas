@@ -106,6 +106,13 @@ exports.getProducts = async (req, res, next) => {
   try {
     const id = req.params.id;
     const data = await service.getProducts(id);
+    if (data.length === 0) {
+      return ApiResponse.success({
+        res,
+        data: [],
+        message: "Không có sản phẩm nào thuộc bộ sưu tập này",
+      });
+    }
     return ApiResponse.success({
       res,
       data,
