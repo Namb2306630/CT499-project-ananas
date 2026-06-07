@@ -2,6 +2,8 @@ const ProductLine = require("../models/product-line.model.js");
 const ErrorCode = require("../constants/errors");
 const slugify = require("slugify");
 const updateFields = require("../utils/updateFields.until");
+const Product = require("../models/product.model.js");
+
 const slugName = (name) =>
   slugify(name, {
     lower: true,
@@ -103,6 +105,15 @@ class ProductLineService {
     const productLine = await this.getByIdOrThrow(id);
 
     return productLine;
+  }
+
+  async getProducts(idLine) {
+    const products = await Product.find({
+      productLine: idLine,
+      status: { $ne: "inactive" },
+    }).populate("variants");
+
+    return products;
   }
 }
 module.exports = new ProductLineService();

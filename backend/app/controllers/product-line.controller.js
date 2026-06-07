@@ -109,3 +109,21 @@ exports.remove = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.getProducts = async (req, res, next) => {
+  const idLine = req.params.id;
+  const data = await productLineService.getProducts(idLine);
+
+  if (data.length === 0) {
+    return ApiResponse.success({
+      res,
+      data: [],
+      message: "Không có sản phẩm nào thuộc dòng sản phẩm này",
+    });
+  }
+
+  return ApiResponse.success({
+    res,
+    data,
+  });
+};

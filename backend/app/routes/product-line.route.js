@@ -43,4 +43,6 @@ router.get(
   productLineController.getById,
 );
 
+router.get("/:id/products", productLineController.getProducts);
+
 module.exports = router;
