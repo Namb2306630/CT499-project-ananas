@@ -150,11 +150,7 @@ class ProductVariantService {
 
     return proVari;
   }
-  async getProductVariants(idProduct) {
-    return await ProductVariant.find({
-      product: idProduct,
-    });
-  }
+
   async updateOutOfStock(id) {
     const proVari = await this.getByIdOrThrow(id);
     proVari.status = "out_of_stock";

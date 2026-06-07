@@ -87,20 +87,7 @@ exports.getById = async (req, res, next) => {
     next(err);
   }
 };
-exports.getProductVariants = async (req, res, next) => {
-  try {
-    const idProduct = req.params.id;
-    const data = await service.getProductVariants(idProduct);
 
-    return ApiResponse.success({
-      res,
-      data,
-      message: "Lấy tất cả sản phẩm thành công",
-    });
-  } catch (err) {
-    next(err);
-  }
-};
 exports.updateOutOfStock = async (req, res, next) => {
   try {
     const id = req.params.id;

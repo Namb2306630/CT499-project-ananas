@@ -39,15 +39,9 @@ router.delete(
   controller.remove,
 );
 
-router.get(
-  "/:id",
-  authMiddleware,
-  roleMiddleware(role.SUPER_ADMIN),
-  controller.getById,
-);
+router.get("/:id", controller.getById);
 router.get("/", controller.getAll);
 
-router.get("/:id/variants", controller.getProductVariants);
 router.get("/check/admin", controller.checkExist);
 router.get("/:id/:colorCode", controller.getProductColor);
 router.get("/:colorCode", controller.getColors);
