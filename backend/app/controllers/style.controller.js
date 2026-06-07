@@ -3,11 +3,20 @@ const ApiResponse = require("../constants/api-response");
 
 exports.create = async (req, res, next) => {
   try {
-    const data = await styleService.create(req.body);
+    const result = await styleService.create(req.body);
+    let message = "";
+
+    if (result.acction === "created") {
+      message = "Thêm kiểu dáng sản phẩm thành công";
+    }
+    if (result.action === "restored") {
+      message =
+        "Kiểu dán sản phẩm đã tồn tại trước đó, hệ thống đã khôi phục và cập nhật lại";
+    }
     return ApiResponse.success({
       res,
       data,
-      message: "Tạo kiểu dáng cho sản phẩm thành công",
+      message,
     });
   } catch (err) {
     next(err);

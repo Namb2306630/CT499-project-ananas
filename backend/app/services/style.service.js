@@ -33,15 +33,28 @@ class StyleService {
         style.isActive = true;
         style.isDeleted = false;
 
+        style.name = name;
+        if (payload.description) {
+          style.description = payload.description;
+        }
+
         await style.save();
 
-        return style;
+        return {
+          data: style,
+          action: "restored",
+        };
       }
       throw ErrorCode.STYLE_ALREADY_EXISTS();
     }
-    return Style.create({
+
+    const styleCreate = await Style.create({
       ...payload,
       slug,
+    });
+    return Style.create({
+      data: styleCreate,
+      action: "created",
     });
   }
   async update(id, payload) {
