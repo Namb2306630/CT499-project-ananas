@@ -2,6 +2,11 @@ const Joi = require("joi");
 const REGEX = require("../utils/regex.util");
 
 const createProductVariantSchema = Joi.object({
+  _id: Joi.string().trim().required().messages({
+    "string.base": "Mã sản phẩm phải là string",
+    "string.empty": "Mã sản phẩm không được rỗng",
+    "any.required": "Mã sản phẩm là bắt buộc",
+  }),
   product: Joi.string().required().messages({
     "string.base": "Product phải là string",
     "any.required": "Product là bắt buộc",

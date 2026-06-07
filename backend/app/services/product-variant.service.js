@@ -26,7 +26,11 @@ class ProductVariantService {
   }
 
   async create(payload, files) {
-    const { product, colorCode } = payload;
+    const { product, colorCode, _id } = payload;
+
+    const existID = await Product.findById(_id);
+
+    if (existID) throw ErrorCode.PRODUCT_ID_ALREADY_EXISTS();
 
     this.validateFiles(files);
 

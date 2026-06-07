@@ -2,6 +2,11 @@ const mongoose = require("mongoose");
 
 const productVariantSchema = new mongoose.Schema(
   {
+    _id: {
+      type: String,
+      required: true,
+      trim: true,
+    },
     product: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Product",

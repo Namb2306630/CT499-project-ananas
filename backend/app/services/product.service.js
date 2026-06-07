@@ -77,10 +77,7 @@ class ProductService {
   }
 
   async create(payload) {
-    const { name, categories = [], productLine, styles = [], _id } = payload;
-    const existID = await Product.findById(_id);
-
-    if (existID) throw ErrorCode.PRODUCT_ID_ALREADY_EXISTS();
+    const { name, categories = [], productLine, styles = [] } = payload;
 
     const slug = slugName(name);
 

@@ -2,11 +2,7 @@ const Joi = require("joi");
 const REGEX = require("../utils/regex.util");
 
 exports.createProductSchema = Joi.object({
-  _id: Joi.string().trim().required().messages({
-    "string.base": "Mã sản phẩm phải là string",
-    "string.empty": "Mã sản phẩm không được rỗng",
-    "any.required": "Mã sản phẩm là bắt buộc",
-  }),
+
   name: Joi.string().required().messages({
     "string.empty": "Tên sản phẩm không được để trống",
     "any.required": "Tên sản phẩm là bắt buộc",
