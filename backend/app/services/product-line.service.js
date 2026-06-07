@@ -2,7 +2,6 @@ const ProductLine = require("../models/product-line.model.js");
 const ErrorCode = require("../constants/errors");
 const slugify = require("slugify");
 const updateFields = require("../utils/updateFields.until");
-
 const slugName = (name) =>
   slugify(name, {
     lower: true,
@@ -106,5 +105,4 @@ class ProductLineService {
     return productLine;
   }
 }
-
 module.exports = new ProductLineService();
