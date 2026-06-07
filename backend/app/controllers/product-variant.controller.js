@@ -131,3 +131,36 @@ exports.checkExist = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.getProductColor = async (req, res, next) => {
+  try {
+    const idProduct = req.params.id;
+    const colorCode = req.params.colorCode.startsWith("#")
+      ? req.params.colorCode.toUpperCase()
+      : `#${req.params.colorCode.toUpperCase()}`;
+    const data = await service.getProductColor(idProduct, colorCode);
+
+    return ApiResponse.success({
+      res,
+      data,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.getColors = async (req, res, next) => {
+  try {
+    const colorCode = req.params.colorCode.startsWith("#")
+      ? req.params.colorCode.toUpperCase()
+      : `#${req.params.colorCode.toUpperCase()}`;
+    const data = await service.getColors(colorCode);
+
+    return ApiResponse.success({
+      res,
+      data,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
