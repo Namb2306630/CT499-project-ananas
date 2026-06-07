@@ -38,9 +38,9 @@ exports.createProductSchema = Joi.object({
     "string.pattern.base": "Mã product line không hợp lệ",
   }),
 
-  defaultColor: Joi.string().regex(REGEX._ID).allow(null).optional().messages({
-    "string.pattern.base": "Mã màu không hợp lệ",
-  }),
+  // defaultColor: Joi.string().regex(REGEX._ID).allow(null).optional().messages({
+  //   "string.pattern.base": "Mã màu không hợp lệ",
+  // }),
 
   costPrice: Joi.number().min(0).required().messages({
     "number.base": "Giá nhập phải là số",
@@ -75,9 +75,9 @@ exports.updateProductSchema = Joi.object({
     "string.pattern.base": "Mã product line không hợp lệ",
   }),
 
-  defaultColor: Joi.string().regex(REGEX._ID).allow(null).messages({
-    "string.pattern.base": "Mã màu không hợp lệ",
-  }),
+  // defaultColor: Joi.string().regex(REGEX._ID).allow(null).messages({
+  //   "string.pattern.base": "Mã màu không hợp lệ",
+  // }),
 
   costPrice: Joi.number().min(0).messages({
     "number.base": "Giá nhập phải là số",
