@@ -47,8 +47,10 @@ router.get(
 );
 router.get("/", controller.getAll);
 
-//Lấy tất cả variant của 1 product
 router.get("/:id/variants", controller.getProductVariants);
 router.get("/check/admin", controller.checkExist);
+router.get("/:id/:colorCode", controller.getProductColor);
+router.get("/:colorCode", controller.getColors);
+//Lấy tất cả variant của 1 product
 
 module.exports = router;

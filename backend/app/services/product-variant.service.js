@@ -177,6 +177,19 @@ class ProductVariantService {
       data: exist,
     };
   }
+
+  async getProductColor(idProduct, colorCode) {
+    return await ProductVariant.findOne({
+      product: idProduct,
+      colorCode: colorCode,
+    });
+  }
+
+  async getColors(colorCode) {
+    return await ProductVariant.find({
+      colorCode: colorCode,
+    });
+  }
 }
 
 module.exports = new ProductVariantService();
