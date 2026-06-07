@@ -7,9 +7,11 @@ const uploadProductVariantImage = uploadImage("product-variant").fields([
   { name: "hoverImage", maxCount: 1 },
   { name: "images", maxCount: 20 },
 ]);
+const uploadCollectionImage = uploadImage("collection").single("banner");
 
 module.exports = {
   uploadBrandLogo,
   uploadCategoryImage,
   uploadProductVariantImage,
+  uploadCollectionImage,
 };
