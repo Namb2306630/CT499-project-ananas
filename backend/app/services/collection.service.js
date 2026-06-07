@@ -108,13 +108,13 @@ class CollectionService {
     return collection;
   }
   async getProducts(collectionId) {
-    const all = await Product.find();
+    // const all = await Product.find();
 
-    console.log(all);
+    // console.log(all);
 
     const products = await Product.find({
       collection: collectionId,
-      status: { $ne: "discontinued" },
+      status: { $ne: "inactive" },
     }).populate("variants");
 
     return products;
