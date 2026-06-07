@@ -83,6 +83,9 @@ const ErrorCode = {
 
   COLLECTION_NOT_EXISTS: () => new AppError(1035, "Bộ sưu tập không tồn tại"),
   COLLECTION_ALREADY_EXISTS: () => new AppError(1036, "Bộ sưu tập đã tồn tại"),
+
+  COLLECTION_SLUG_ALREADY_EXISTS: () =>
+    new AppError(1037, "Tên bộ sưu tập đã tồn tại"),
 };
 
 module.exports = ErrorCode;
