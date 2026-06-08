@@ -86,6 +86,14 @@ const ErrorCode = {
 
   COLLECTION_SLUG_ALREADY_EXISTS: () =>
     new AppError(1037, "Tên bộ sưu tập đã tồn tại"),
+
+  PROVARI_ITEM_NOT_EXISTS: () =>
+    new AppError(1038, "Sản phẩm ko tồn tại không tồn tại"),
+  PROVARI_ITEM_SIZE_ALREADY_EXISTS: () =>
+    new AppError(1039, "Size sản phẩm đã tồn tại!"),
+
+  PRODUCT_OUT_OF_STOCK: () =>
+    new AppError(1040, "Số lượng mua vượt quá số lựng kho!"),
 };
 
 module.exports = ErrorCode;
