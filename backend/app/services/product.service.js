@@ -207,9 +207,7 @@ class ProductService {
   async getAllForUser() {
     return Product.find({
       status: "active",
-    })
-      .populate("defaultColor")
-      .sort({ createdAt: -1 });
+    }).sort({ createdAt: -1 });
   }
 
   async getBySlug(slug) {
@@ -219,9 +217,7 @@ class ProductService {
     })
       .populate("categories")
       .populate("styles")
-      .populate("productLine")
-      .populate("defaultColor");
-
+      .populate("productLine");
     if (!product) {
       throw ErrorCode.PRODUCT_NOT_EXISTS();
     }
