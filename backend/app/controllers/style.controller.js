@@ -93,3 +93,20 @@ exports.getById = async (req, res, next) => {
     message: "Lấy sản kiểu dáng sản phẩm thành công",
   });
 };
+
+exports.getProducts = async (req, res, next) => {
+  const idStyle = req.params.id;
+  const data = await styleService.getProducts(idStyle);
+
+  if (data.length === 0) {
+    return ApiResponse.success({
+      res,
+      data: [],
+      message: "Không tìm thấy sản phẩm thuộc kiểu dáng này!",
+    });
+  }
+  return ApiResponse.success({
+    res,
+    data,
+  });
+};

@@ -52,8 +52,7 @@ router.get(
   styleController.getById,
 );
 
-/* ================= USER ================= */
-
 router.get("/", styleController.getAllForUser);
+router.get("/:id/products", styleController.getProducts);
 
 module.exports = router;

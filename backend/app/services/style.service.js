@@ -2,6 +2,8 @@ const Style = require("../models/style.model");
 const ErrorCode = require("../constants/errors");
 const updateFields = require("../utils/updateFields.until.js");
 const slugify = require("slugify");
+const Product = require("../models/product.model");
+
 const slugName = (name) =>
   slugify(name, {
     lower: true,
@@ -104,6 +106,15 @@ class StyleService {
     const style = await this.getByIdOrThrow(id);
 
     return style;
+  }
+
+  async getProducts(idStyle) {
+    const products = await Product.find({
+      styles: idStyle,
+      status: { $ne: "inactive" },
+    }).populate("variants");
+
+    return products;
   }
 }
 
