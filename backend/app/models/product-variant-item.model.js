@@ -1,28 +1,41 @@
 const mongoose = require("mongoose");
 
-const productSkuSchema = new mongoose.Schema({
-  variant: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "ProductVariant",
-    required: true,
-  },
+const productVariantItemSchema = new mongoose.Schema(
+  {
+    variant: {
+      type: String,
+      ref: "ProductVariant",
+      required: true,
+      index: true,
+    },
 
-  size: {
-    type: String,
-    required: true,
-  },
+    size: {
+      type: String,
+      required: true,
+      trim: true,
+    },
 
-  sku: {
-    type: String,
-    required: true,
-    unique: true,
-  },
+    sku: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+    },
 
-  stock: {
-    type: Number,
-    default: 0,
-  },
-});
+    stock: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
 
-module.exports = mongoose.model("ProductVariantItem", productSkuSchema);
-// mỗi màu có một số lượng riêng
+    isInStock: {
+      type: Boolean,
+      default: true,
+    },
+  },
+  {
+    timestamps: true,
+  },
+);
+
+module.exports = mongoose.model("ProductVariantItem", productVariantItemSchema);
