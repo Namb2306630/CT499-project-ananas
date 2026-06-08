@@ -61,5 +61,11 @@ const productVariantSchema = new mongoose.Schema(
   },
   { timestamps: true },
 );
-
+// //Mongoose tạo field ảo để  populate được
+// productVariantSchema.virtual("items", {
+//   //Tạo field ảo tên variants
+//   ref: "ProductVariantItem",
+//   localField: "_id", //lấy _id của Product
+//   foreignField: "variant", //tìm trong ProductVariant field product
+// });
 module.exports = mongoose.model("ProductVariant", productVariantSchema);
