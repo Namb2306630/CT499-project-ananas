@@ -15,10 +15,10 @@ const slugName = (name) =>
 const buildCategoryTree = (categories, parent = null) => {
   return categories
     .filter((item) => {
-      if (parent === null) {
-        return item.parent === null;
-      }
-      return item.parent?.toString() === parent.toString();
+      const itemParent = item.parent ? item.parent.toString() : null;
+      const parentId = parent ? parent.toString() : null;
+
+      return itemParent === parentId;
     })
     .map((item) => ({
       ...item,
@@ -129,10 +129,12 @@ class CategoryService {
       isDeleted: false,
       isActive: true,
     })
-      .sort({ createdAt: -1 })
+      .sort({ slug: -1 })
+      .populate("parent")
       .lean();
 
-    return buildCategoryTree(categories);
+    // return buildCategoryTree(categories);
+    return categories;
   }
 
   async getById(categoryId) {
