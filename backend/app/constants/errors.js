@@ -94,6 +94,15 @@ const ErrorCode = {
 
   PRODUCT_OUT_OF_STOCK: () =>
     new AppError(1040, "Số lượng mua vượt quá số lựng kho!"),
+
+  WISHLIST_NOT_EXISTS: () => ({
+    code: 1041,
+    message: "Sản phẩm yêu thích ko tồn tại!",
+  }),
+  WISHLIST_ITEM_NOT_EXISTS: () => ({
+    code: 1042,
+    message: "Sản phẩm yêu thích ko tồn tại!",
+  }),
 };
 
 module.exports = ErrorCode;
