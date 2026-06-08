@@ -3,7 +3,7 @@ const ErrorCode = require("../constants/errors");
 const updateFields = require("../utils/updateFields.until");
 const { deleteImage, uploadImg } = require("../utils/uploadImage.util");
 const Product = require("../models/product.model");
-
+const ProductVariantItem = require("../models/product-variant-item.model");
 class ProductVariantService {
   async getByIdOrThrow(id) {
     const productVari = await ProductVariant.findById(id);
@@ -189,6 +189,19 @@ class ProductVariantService {
     return await ProductVariant.find({
       colorCode: colorCode,
     });
+  }
+
+  async syncVariantStatus(variantId) {
+    const hasStock = await ProductVariantItem.exists({
+      variant: variantId,
+      stock: { $gt: 0 }, //$gt = greater than = lớn hơn
+    });
+
+    // có ít nhất một size còn hàng thì active
+    const status = hasStock ? "active" : "out_of_stock";
+
+    await ProductVariant.updateOne({ _id: variantId }, { status });
+    return status;
   }
 }
 
