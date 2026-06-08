@@ -5,26 +5,22 @@ const wishlistSchema = new mongoose.Schema(
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
+      required: true,
+      unique: true,
     },
-    // Chủ wishlist
 
     items: [
       {
-        product: {
+        productVariantItem: {
           type: mongoose.Schema.Types.ObjectId,
-          ref: "Product",
+          ref: "ProductVariantItem",
+          required: true,
         },
-        // Sản phẩm yêu thích
 
-        productColor: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "ProductColor",
-        },
-        // màu yêu thích
-
-        createdAt: {
-          type: Date,
-          default: Date.now,
+        quantity: {
+          type: Number,
+          default: 1,
+          min: 1,
         },
       },
     ],
