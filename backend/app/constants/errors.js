@@ -87,8 +87,7 @@ const ErrorCode = {
   COLLECTION_SLUG_ALREADY_EXISTS: () =>
     new AppError(1037, "Tên bộ sưu tập đã tồn tại"),
 
-  PROVARI_ITEM_NOT_EXISTS: () =>
-    new AppError(1038, "Sản phẩm ko tồn tại không tồn tại"),
+  PROVARI_ITEM_NOT_EXISTS: () => new AppError(1038, "Sản phẩm ko tồn tại!"),
   PROVARI_ITEM_SIZE_ALREADY_EXISTS: () =>
     new AppError(1039, "Size sản phẩm đã tồn tại!"),
 
@@ -102,6 +101,19 @@ const ErrorCode = {
   WISHLIST_ITEM_NOT_EXISTS: () => ({
     code: 1042,
     message: "Sản phẩm yêu thích ko tồn tại!",
+  }),
+
+  CART_NOT_EXISTS: () => ({
+    code: 1041,
+    message: "Sản phẩm trong giỏ hàng ko tồn tại!",
+  }),
+  CART_ITEM_NOT_EXISTS: () => ({
+    code: 1042,
+    message: "Sản phẩm trong giỏ hàng ko tồn tại!",
+  }),
+  OUT_OF_STOCK: () => ({
+    code: 1043,
+    message: "Sản phẩm đã hết hàng",
   }),
 };
 
