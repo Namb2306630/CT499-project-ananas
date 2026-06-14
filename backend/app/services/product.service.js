@@ -34,7 +34,12 @@ class ProductService {
   }
 
   async validateRelations(payload) {
-    const { categories = [], productLine, styles = [], collection } = payload;
+    const {
+      categories = [],
+      productLine,
+      styles = [],
+      productCollection,
+    } = payload;
 
     const existProductLine = await ProductLine.findOne({
       _id: productLine,
@@ -55,7 +60,7 @@ class ProductService {
     }
 
     const existCollection = await Collection.findOne({
-      _id: collection,
+      _id: productCollection,
       isDeleted: false,
     });
 

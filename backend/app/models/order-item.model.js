@@ -2,65 +2,101 @@ const mongoose = require("mongoose");
 
 const orderItemSchema = new mongoose.Schema(
   {
+    // Đơn hàng
     order: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Order",
       required: true,
+      index: true,
     },
-    // Đơn hàng chứa sản phẩm này
 
+    // ===== RELATION =====
+
+    // Product gốc
     product: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Product",
       required: true,
     },
-    // Sản phẩm gốc
+
+    // Variant màu
+    variant: {
+      type: String,
+      ref: "ProductVariant",
+      required: true,
+    },
+
+    // Variant item (size)
+    variantItem: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "ProductVariantItem",
+      required: true,
+    },
+
+    // ===== SNAPSHOT DATA =====
+    // dữ liệu tại thời điểm mua
 
     productName: {
       type: String,
       required: true,
       trim: true,
     },
-    // Tên sản phẩm tại thời điểm đặt hàng
 
     colorName: {
       type: String,
       required: true,
       trim: true,
     },
-    // Màu sản phẩm
 
     size: {
       type: String,
       required: true,
       trim: true,
     },
-    // Size sản phẩm
+
+    sku: {
+      type: String,
+      required: true,
+      trim: true,
+      uppercase: true,
+    },
+
+    productImage: {
+      type: String,
+      default: null,
+      trim: true,
+    },
+
+    // ===== PRICE =====
 
     quantity: {
       type: Number,
       required: true,
       min: 1,
     },
-    // Số lượng mua
 
+    // Giá tại thời điểm mua
     unitPrice: {
       type: Number,
       required: true,
       min: 0,
     },
-    // Giá của 1 sản phẩm tại lúc đặt
 
+    // quantity * unitPrice
     totalPrice: {
       type: Number,
       required: true,
       min: 0,
     },
-    // Tổng tiền item = quantity * unitPrice
   },
   {
     timestamps: true,
   },
 );
+
+// tối ưu query
+orderItemSchema.index({
+  order: 1,
+});
 
 module.exports = mongoose.model("OrderItem", orderItemSchema);

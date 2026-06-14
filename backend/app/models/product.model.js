@@ -28,7 +28,7 @@ const productSchema = new mongoose.Schema(
       required: true,
     },
 
-    collection: {
+    productCollection: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Collection",
     },
