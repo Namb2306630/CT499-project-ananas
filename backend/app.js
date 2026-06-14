@@ -14,7 +14,9 @@ const productVariantRouter = require("./app/routes/product-variant.route");
 const collectionRouter = require("./app/routes/collection.route");
 const ProVariItemRouter = require("./app/routes/product-variant-item.route");
 const wishlistRouter = require("./app/routes/wishlist.route");
-
+const cartRouter = require("./app/routes/cart.route");
+const orderRouter = require("./app/routes/order.route");
+const orderItemRouter = require("./app/routes/order-item.route");
 const AppError = require("./app/constants/app-error");
 const multer = require("multer");
 
@@ -41,6 +43,9 @@ app.use("/api/products", productRouter);
 app.use("/api/product-variants", productVariantRouter);
 app.use("/api/product-variant-items", ProVariItemRouter);
 app.use("/api/wishlists", wishlistRouter);
+app.use("/api/carts", cartRouter);
+app.use("/api/orders", orderRouter);
+app.use("/api/order-items", orderItemRouter);
 
 app.use((req, res, next) => {
   return next(new AppError(404, "Resource not found"));
