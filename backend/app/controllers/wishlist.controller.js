@@ -79,3 +79,15 @@ exports.getAll = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.moveToCart = async (req, res, next) => {
+  //id là id của yêu thích
+  const id = req.params.id;
+  const idUser = req.user._id;
+  await service.moveToCart(id, idUser);
+
+  return ApiResponse.success({
+    res,
+    data: true,
+  });
+};
