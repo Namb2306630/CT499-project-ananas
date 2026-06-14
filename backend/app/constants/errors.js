@@ -115,6 +115,20 @@ const ErrorCode = {
     code: 1043,
     message: "Sản phẩm đã hết hàng",
   }),
+
+  ORDER_NOT_EXISTS: () => new AppError(1044, "Đơn hàng không tồn tại"),
+  ORDEr_ALREADY_EXISTS: () => new AppError(1045, "Mã đơn hàng đã tồn tại"),
+
+  ORDER_ITEM_NOT_EXISTS: () =>
+    new AppError(1046, "Chi tiết đơn hàng không tồn tại"),
+  ORDER_ITEM_ALREADY_EXISTS: () =>
+    new AppError(1047, "Mã chi tiết đơn hàng đã tồn tại"),
+
+  FORBIDDEN: (message = "Bạn không có quyền truy cập") => ({
+    code: 403,
+    message,
+  }),
+  BAD_REQUEST: (message = "Lỗi") => new AppError(9998, message),
 };
 
 module.exports = ErrorCode;
