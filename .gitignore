@@ -148,3 +148,4 @@ note/
 uploads/
 
 .vscode/settings.json
+/frontend/.vscode/
