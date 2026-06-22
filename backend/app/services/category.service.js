@@ -1,7 +1,7 @@
 const Category = require("../models/category.model");
 const ErrorCode = require("../constants/errors");
 const slugify = require("slugify");
-const updateFields = require("../utils/updateFields.until");
+const updateFields = require("../utils/updateFields.util");
 
 const { deleteImage } = require("../utils/uploadImage.util");
 
