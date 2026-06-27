@@ -1,7 +1,7 @@
 const ProductLine = require("../models/product-line.model.js");
 const ErrorCode = require("../constants/errors");
 const slugify = require("slugify");
-const updateFields = require("../utils/updateFields.until");
+const updateFields = require("../utils/updateFields.util");
 const Product = require("../models/product.model.js");
 
 const slugName = (name) =>

@@ -1,6 +1,6 @@
 const Style = require("../models/style.model");
 const ErrorCode = require("../constants/errors");
-const updateFields = require("../utils/updateFields.until.js");
+const updateFields = require("../utils/updateFields.util.js");
 const slugify = require("slugify");
 const Product = require("../models/product.model");
 

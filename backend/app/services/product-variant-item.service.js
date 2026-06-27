@@ -1,6 +1,6 @@
 const ProVariItem = require("../models/product-variant-item.model");
 const ErrorCode = require("../constants/errors");
-const updateFields = require("../utils/updateFields.until");
+const updateFields = require("../utils/updateFields.util");
 const ProVariant = require("../models/product-variant.model");
 const ProVariantService = require("./product-variant.service");
 const ProductVariant = require("../models/product-variant.model");

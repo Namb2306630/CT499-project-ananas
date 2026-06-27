@@ -1,7 +1,7 @@
 const Address = require("../models/address.model");
 const ErrorCode = require("../constants/errors");
 const REGEX = require("../utils/regex.util");
-const updateFields = require("../utils/updateFields.until");
+const updateFields = require("../utils/updateFields.util");
 class AddressService {
   //lấy địa chỉ
   async getAddresses(userId) {

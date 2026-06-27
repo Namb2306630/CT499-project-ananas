@@ -1,7 +1,7 @@
 const Collection = require("../models/collection.model");
 const ErrorCode = require("../constants/errors");
 const Slugify = require("slugify");
-const updateFields = require("../utils/updateFields.until");
+const updateFields = require("../utils/updateFields.util");
 const Product = require("../models/product.model");
 const slugName = (name) => {
   return Slugify(name, {

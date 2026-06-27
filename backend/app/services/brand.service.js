@@ -1,7 +1,7 @@
 const Brand = require("../models/brand.model");
 const slugify = require("slugify");
 const ErrorCode = require("../constants/errors");
-const updateFields = require("../utils/updateFields.until");
+const updateFields = require("../utils/updateFields.util");
 const { deleteImage } = require("../utils/uploadImage.util");
 const ProductLine = require("../models/product-line.model");
 

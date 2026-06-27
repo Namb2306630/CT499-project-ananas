@@ -1,6 +1,6 @@
 const ProductVariant = require("../models/product-variant.model");
 const ErrorCode = require("../constants/errors");
-const updateFields = require("../utils/updateFields.until");
+const updateFields = require("../utils/updateFields.util");
 const { deleteImage, uploadImg } = require("../utils/uploadImage.util");
 const Product = require("../models/product.model");
 const ProductVariantItem = require("../models/product-variant-item.model");

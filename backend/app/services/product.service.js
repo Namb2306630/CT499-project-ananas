@@ -6,7 +6,7 @@ const Style = require("../models/style.model");
 const Collection = require("../models/collection.model");
 const ErrorCode = require("../constants/errors");
 const slugify = require("slugify");
-const updateFields = require("../utils/updateFields.until");
+const updateFields = require("../utils/updateFields.util");
 const systemConfigService = require("./system-config.service");
 const ProductVari = require("../models/product-variant.model");
 
