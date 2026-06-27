@@ -1,0 +1,84 @@
+:root {
+  /* Colors */
+  --primary-color: #42b883;
+  --secondary-color: #35495e;
+
+  --text-color: #333;
+  --bg-color: #fff;
+  --bg-footer-color: #444;
+  --bg-sidebar-admin-color: #444;
+  --color-bg-dark: #333;
+  --text-red: #f13d3d;
+  --bg-hover-red: #de8787;
+  --bg-color-while-1: #eee;
+  --bg-color-while-2: #fafafa;
+  --bg-color-red: #ff0000;
+  --bg-color-red-hover: #e50808;
+  --bg-color-3: #f2f2f2;
+  --bg-color-4: #ccc;
+
+
+  --text-color-red: #ff0000;
+  --text-error: red;
+
+  --text-white: #fff;
+  --text-gray: #ccc;
+  --text-grey: #222;
+  --text-gray-3: #666;
+  --text-gray-4: #444;
+  --text-green: #0ca334;
+
+  --border-gray: #666;
+  --border-gray-2: #eee;
+  --border-gray-3: #ccc;
+
+  --text-hover: #ff6633;
+  --color-bg-orange: #ff6633;
+  --bg-hover: #666;
+  --bg-active: #124ae5;
+  --bg-green: #8bf88b;
+  --bg-focus-black: #666;
+
+  /* color */
+  --color-bule: #4f46e5;
+  --color-bule-2: #1d4ed8;
+  --color-while: #ddd;
+
+  /* Font */
+  --font-size-ssm: 10px;
+  --font-size-sm: 14px;
+  --font-size-md: 16px;
+  --font-size-lg: 24px;
+
+  --font-width-sm: 500;
+  --font-width-md: 600;
+  --font-width-lg: 700;
+  --font-width-xxl: 800;
+
+  /* Layout width */
+  --container-width: 1600px;
+  --section-width: 1400px;
+  --image-width: 1600px;
+
+  /* Spacing */
+  --padding-x: 20px;
+
+  /* shadown */
+  --shadow-black: 0 4px 15px rgba(0, 0, 0, 0.5);
+  --shadow-orange: 0 4px 15px rgba(255, 165, 0, 0.4);
+  --shadow-red: 0 4px 15px rgba(241, 94, 45, 0.4);
+  --shadow-blue: 0 4px 15px rgba(0, 123, 255, 0.4);
+  --shadow-white: 0 4px 15px rgba(255, 255, 255, 0.3);
+  --shadow-gray: 0 2px 3px rgba(0, 0, 0, 0.2);
+}
+/*
+solid    liền 
+dashed   đứt khúc 
+dotted  chấm chấm 
+double  2 đường
+*/
+
+/* 991px tablet
+767px mobile
+
+*/
