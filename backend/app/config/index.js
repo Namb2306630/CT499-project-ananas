@@ -3,6 +3,7 @@ require("dotenv").config();
 const config = {
   app: {
     port: process.env.PORT || 3000,
+    frontendUrl: process.env.FRONTEND_URL,
     provinceApiUrl: process.env.PROVINCE_API_URL,
   },
   db: {

@@ -19,9 +19,16 @@ const orderRouter = require("./app/routes/order.route");
 const orderItemRouter = require("./app/routes/order-item.route");
 const AppError = require("./app/constants/app-error");
 const multer = require("multer");
-
+const config = require("./app/config");
 const app = express();
-app.use(cors()); // cho phép khác port gọi B
+
+//cho phép gửi cookie và khác port gọi BE CORS
+app.use(
+  cors({
+    origin: config.app.frontendUrl, //Cho phép request đến từ địa chỉ FE này
+    credentials: true, //cho phép gửi thông tin xác thực kèm request
+  }),
+);
 
 app.use(express.json()); //Express tự động đọc dữ liệu JSON từ request
 
