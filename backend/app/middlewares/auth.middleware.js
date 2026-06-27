@@ -4,17 +4,21 @@ const ErrorCode = require("../constants/errors");
 
 const authMiddleware = async (req, res, next) => {
   try {
-    const authHeader = req.headers.authorization;
+    //lấy từ Local
+    // const authHeader = req.headers.authorization;
 
-    if (!authHeader) {
+    // lấy token từ cookie
+    const token = req.cookies[config.jwt.accessToken];
+
+    if (!token) {
       return next(ErrorCode.UNAUTHORIZED());
     }
 
-    if (!authHeader.startsWith("Bearer ")) {
+    if (!token) {
       return next(ErrorCode.UNAUTHORIZED());
     }
-
-    const token = authHeader.split(" ")[1];
+    //cho local
+    // const token = authHeader.split(" ")[1];
 
     const decoded = jwt.verify(token, config.jwt.accessSecret);
 

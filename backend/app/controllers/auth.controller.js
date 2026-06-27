@@ -1,6 +1,7 @@
 const authService = require("../services/auth.service");
 const ApiResponse = require("../constants/api-response");
-
+const config = require("../config/index");
+const ms = require("ms");
 exports.register = async (req, res, next) => {
   try {
     const user = await authService.register(req.body);
@@ -20,9 +21,33 @@ exports.login = async (req, res, next) => {
   try {
     const result = await authService.login(req.body);
 
+    // lưu access token vào cookie
+    res.cookie(config.jwt.accessToken, result.accessToken, {
+      //JavaScript ở FE không được phép đọc cookie này
+      httpOnly: true,
+      //cookie có chỉ được gửi qua HTTPS không
+      secure: false, //khi môi trường pro ghì true
+      //Chống gửi cookie từ website khác
+      sameSite: "strict",
+
+      maxAge: ms(config.jwt.accessExpires),
+    });
+
+    //lưu refreshToken
+    res.cookie(config.jwt.refreshToken, result.refreshToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "strict",
+
+      maxAge: ms(config.jwt.refreshExpires),
+    });
+
     return ApiResponse.success({
       res,
-      data: result,
+
+      data: {
+        user: result.user,
+      },
       message: "Đăng nhập thành công",
       statusCode: 200,
     });
@@ -33,11 +58,32 @@ exports.login = async (req, res, next) => {
 
 exports.refreshToken = async (req, res, next) => {
   try {
-    const result = await authService.refreshToken(req.body.refreshToken);
+    const result = await authService.refreshToken(
+      req.cookies[config.jwt.refreshToken],
+    );
+
+    //tạo token mới
+    (res.cookie(config.jwt.accessToken, result.accessToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "strict",
+
+      maxAge: ms(config.jwt.accessExpires),
+    }),
+      //refreshToken mới
+      res.cookie(config.jwt.refreshToken, result.refreshToken, {
+        httpOnly: true,
+        secure: false,
+        sameSite: "strict",
+
+        maxAge: ms(config.jwt.refreshExpires),
+      }));
 
     return ApiResponse.success({
       res,
-      data: result,
+
+      data: null,
+
       message: "Refresh token thành công",
     });
   } catch (err) {
@@ -46,9 +92,25 @@ exports.refreshToken = async (req, res, next) => {
 };
 
 exports.logout = (req, res) => {
-  res.send({ message: "đăng xuất" });
+  res.clearCookie("accessToken");
+
+  res.clearCookie("refreshToken");
+
+  res.send({ message: "Đăng xuất thành công" });
 };
 
 exports.forgotPassword = (req, res) => {
   res.send({ message: "quên mật khẩu" });
+};
+
+exports.me = async (req, res, next) => {
+  try {
+    return ApiResponse.success({
+      res,
+      data: req.user,
+      message: "Lấy thông tin user thành công",
+    });
+  } catch (err) {
+    next(err);
+  }
 };

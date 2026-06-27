@@ -13,6 +13,8 @@ const config = {
     refreshSecret: process.env.JWT_REFRESH_SECRET,
     accessExpires: process.env.JWT_ACCESS_EXPIRES_IN,
     refreshExpires: process.env.JWT_REFRESH_EXPIRES_IN,
+    accessToken: process.env.ACCESS_TOKEN,
+    refreshToken: process.env.REFRESH_TOKEN,
   },
   img: {
     size: 2,
