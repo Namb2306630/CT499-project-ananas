@@ -1,0 +1,251 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: var(--bg-color);
+  color: var(--text-color);
+}
+.app-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* phần giữa header + footer */
+.content {
+  flex: 1;
+}
+
+/* quan trọng: ép full height */
+.row {
+  min-height: 100%;
+}
+
+.main-content {
+  min-height: 100%;
+  padding: 20px;
+}
+
+html,
+body {
+  overflow-x: hidden;
+  overflow-y: overlay;
+}
+/*  overflow-x ẩn trục x*/
+
+/* Chrome, Edge */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #666;
+}
+
+.admin-container {
+  margin: 20px;
+}
+
+.upload-error,
+.error {
+  color: var(--text-error);
+  font-size: var(--font-size-sm);
+}
+
+/* =====================
+   DIALOG COMMON
+===================== */
+dialog {
+  width: 500px;
+  border: none;
+  border-radius: 16px;
+  padding: 0;
+  box-shadow: var(--shadow-black);
+  opacity: 0;
+  transform: translateY(-30px) scale(0.95);
+  z-index: 999;
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
+}
+
+dialog.show {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+dialog form {
+  background: var(--bg-color);
+}
+
+/* nền mờ phía sau */
+dialog::backdrop {
+  background: rgba(0, 0, 0, 0.3);
+  -webkit-backdrop-filter: blur(2px);
+  backdrop-filter: blur(2px);
+  animation: backdropShow 0.3s ease;
+  z-index: 998;
+}
+
+@keyframes backdropShow {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+/* header */
+.dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border-gray-2);
+}
+
+.dialog-header h4 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: var(--font-width-md);
+}
+
+.close-btn {
+  width: 35px;
+  height: 35px;
+  border: none;
+  border-radius: 50%;
+  background: var(--bg-color-while-2);
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.fa-xmark {
+  transition: 0.3s ease;
+}
+
+.close-btn:hover {
+  background: var(--bg-color-while-1);
+}
+
+.close-btn:hover .fa-xmark {
+  transform: rotate(180deg);
+  color: red;
+}
+
+/* body */
+.dialog-body {
+  padding: 24px;
+}
+
+/* form */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.form-group label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-gray-4);
+}
+
+input:hover:not(.checkbox-input),
+select:hover {
+  border-color: var(--color-bule);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+input:hover:not(.checkbox-input),
+select:focus {
+  border-color: var(--color-bule);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+/* footer */
+.dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 18px 24px;
+  border-top: 1px solid var(--border-gray-3);
+}
+
+.dialog-footer button {
+  height: 42px;
+  padding: 0 25px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.cancel-btn {
+  background: var(--bg-color-red);
+  color: var(--text-white);
+  transition: 0.3s ease;
+}
+
+.save-btn {
+  background: #2563eb;
+  color: var(--text-white);
+  transition: 0.3s ease;
+}
+
+.save-btn:hover {
+  background: var(--color-bule-2);
+  box-shadow: var(--shadow-blue);
+}
+
+.cancel-btn:hover {
+  background: var(--bg-color-red-hover);
+  box-shadow: var(--shadow-red);
+}
+
+/* ICON SELECT */
+.select-box {
+  position: relative;
+}
+
+.select-box select {
+  width: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+  padding-right: 35px;
+}
+
+.select-box i {
+  position: absolute;
+  right: 14px;
+  transform: translateY(-50%);
+
+  pointer-events: none;
+  font-size: 12px;
+  color: #777;
+}
+
+/* bile */
+@media (max-width: 767px) {
+  dialog {
+    width: calc(100% - 30px);
+    max-width: none;
+    border-radius: 14px;
+  }
+}
+dialog::-webkit-scrollbar {
+  display: none; /* Chrome, Edge, Safari */
+}
