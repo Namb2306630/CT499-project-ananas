@@ -2,46 +2,65 @@
 import { ref, watch } from 'vue'
 import UploadImage from '@/components/admin/forms/UploadImage.vue'
 
+const dialog = ref(null)
+const formData = ref({})
+const showPassword = ref({})
+const uploadImage = ref(null)
+
+const hidePassword = (name) => {
+  showPassword.value[name] = !showPassword.value[name]
+}
 const props = defineProps({
   title: String,
-
   titleImg: String,
-
   contentImg: String,
-
   fields: {
     type: Array,
     default: () => [],
   },
-
   show: Boolean,
-
   showImage: {
     type: Boolean,
     default: false,
   },
-
   errors: {
     type: Object,
     default: () => ({}),
   },
+  generalError: {
+    type: String,
+    default: '',
+  },
 })
 
-const dialog = ref(null)
-const formData = ref({})
-const showPassword = ref({})
+const resetForm = () => {
+  const data = {}
 
-const hidePassword = (name) => {
-  showPassword.value[name] = !showPassword.value[name]
+  props.fields.forEach((field) => {
+    if (field.type === 'checkbox') {
+      data[field.name] = []
+    } else {
+      data[field.name] = ''
+    }
+  })
+
+  emit('clearError')
+  data.image = null
+  formData.value = data
+  uploadImage.value?.reset()
 }
 
 watch(
   () => props.show,
   (value) => {
+    if (!dialog.value) return
+
     if (value) {
       dialog.value.showModal()
     } else {
       dialog.value.close()
+
+      resetForm()
     }
   },
 )
@@ -49,47 +68,32 @@ watch(
 watch(
   () => props.fields,
   (fields) => {
-    const data = {}
-
+    if (!fields) return
+    // Chỉ khởi tạo các key nếu formData hiện tại chưa có, tránh overwrite sạch sẽ data cũ
     fields.forEach((field) => {
-      if (field.type === 'checkbox') {
-        data[field.name] = []
-      } else {
-        data[field.name] = ''
+      if (formData.value[field.name] === undefined) {
+        formData.value[field.name] = field.type === 'checkbox' ? [] : ''
       }
     })
-
-    formData.value = data
   },
   {
-    immediate: true,
+    immediate: true, // chạy lần đầu khi component chạy
+    // deep: true, // Để theo dõi sâu nếu options bên trong thay đổi
   },
 )
 
-const emit = defineEmits(['submit', 'close'])
+const emit = defineEmits(['submit', 'close', 'clearError'])
 
 const submitForm = () => {
-  emit('submit', formData.value)
+  emit('submit', formData.value, () => {
+    resetForm()
+  })
 }
-
-// const submitForm = () => {
-//   const data = new FormData()
-
-//   Object.keys(formData.value).forEach((key) => {
-//     if (Array.isArray(formData.value[key])) {
-//       formData.value[key].forEach((item) => {
-//         data.append(`${key}[]`, item)
-//       })
-//     } else {
-//       data.append(key, formData.value[key])
-//     }
-//   })
-
-//   emit('submit', data)
-// }
 
 const closeDialog = () => {
   emit('close')
+  // resetForm()
+  // uploadImage.value?.reset()
 }
 </script>
 
@@ -106,6 +110,7 @@ const closeDialog = () => {
 
       <div class="dialog-body">
         <UploadImage
+          ref="uploadImage"
           v-if="showImage"
           @change="formData.image = $event"
           :titleImg="titleImg"
@@ -122,7 +127,7 @@ const closeDialog = () => {
             <select v-model="formData[field.name]" :id="formData[field.name]">
               <option value="" disabled>Chọn {{ field.label }}</option>
 
-              <option v-for="item in field.options" :key="item.id" :value="item.id">
+              <option v-for="item in field.options" :key="item._id" :value="item._id">
                 {{ item.name }}
               </option>
             </select>
@@ -178,10 +183,13 @@ const closeDialog = () => {
             :placeholder="field.placeholder"
           ></textarea>
 
-          <p v-if="errors[field.name]" class="error">
+          <p v-if="errors?.[field.name]" class="error p-0 m-0">
             {{ errors[field.name] }}
           </p>
         </div>
+        <p v-if="generalError && Object.keys(errors).length === 0" class="error p-0 m-0">
+          {{ generalError }}
+        </p>
       </div>
 
       <div class="dialog-footer">
