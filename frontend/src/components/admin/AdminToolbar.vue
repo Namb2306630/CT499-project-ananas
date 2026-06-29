@@ -34,7 +34,7 @@ defineProps({
   },
 })
 
-const emit = defineEmits(['add'])
+const emit = defineEmits(['add', 'edit', 'delete'])
 </script>
 
 <template>
@@ -42,7 +42,14 @@ const emit = defineEmits(['add'])
     <LoadingState v-if="loading || error.code === 500" :loading="loading" :error="error" />
     <!-- card data -->
     <div class="card-grid" :class="{ 'no-sidebar': !showSidebar }">
-      <CardItem v-for="item in items" :key="item._id" :item="item" :fields="fields" />
+      <CardItem
+        v-for="item in items"
+        :key="item._id"
+        :item="item"
+        :fields="fields"
+        @edit="emit('edit', $event)"
+        @delete="emit('delete', $event)"
+      />
 
       <AddCard v-if="showAddCard" :content="content" @click="emit('add')" />
     </div>

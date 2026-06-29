@@ -5,13 +5,16 @@ import AppAdminPageHeader from '@/components/admin/AppAdminPageHeader.vue'
 import AdminToolbar from '@/components/admin/AdminToolbar.vue'
 import DialogForm from '@/components/admin/forms/DialogForm.vue'
 import { useCategoryStore } from '@/stores/caterory'
-import { storeToRefs } from 'pinia' // giúp giữ tính reactive - tự cập nhật giao diện khi lấy dl từ pinia
+import { storeToRefs } from 'pinia' // giúp giữ tính reactive - tự cập nhật giao diện khi lấy dl từ pinia như ref
 import { useToastStore } from '@/stores/toast'
+import ConfirmDialog from '@/components/common/ConfirmDialog.vue'
 
 const toastStore = useToastStore()
 const categoryStore = useCategoryStore()
 const { categories, loading, error } = storeToRefs(categoryStore)
 const showForm = ref(false)
+const showConfirm = ref(false)
+const deleteItem = ref(null)
 
 const loadData = async () => {
   await categoryStore.fetchCategories()
@@ -53,12 +56,32 @@ const addCategory = async (data) => {
     await loadData()
   } else {
     const message =
-      categoryStore.error.general ||
       Object.values(categoryStore.error.errors)[0] ||
+      categoryStore.error.general ||
       'Thêm danh mục thất bại!'
 
     toastStore.showToast(message, 'error')
   }
+}
+
+const openDelete = (item) => {
+  deleteItem.value = item
+  showConfirm.value = true
+}
+
+const confirmDelete = async () => {
+  const result = await categoryStore.deleteCategory(deleteItem.value._id)
+  if (result) {
+    toastStore.showToast('Xóa danh mục thành công', 'success')
+  } else {
+    const message =
+      Object.values(categoryStore.error.errors)[0] ||
+      categoryStore.error.general ||
+      'Xóa danh mục thất bại'
+
+    toastStore.showToast(message, 'error')
+  }
+  showConfirm.value = false
 }
 const clearError = () => {
   categoryStore.error = {}
@@ -115,6 +138,7 @@ const clearError = () => {
         },
       ]"
       @add="openAddForm"
+      @delete="openDelete"
     />
   </div>
   <DialogForm
@@ -129,5 +153,14 @@ const clearError = () => {
     :errors="error.errors"
     :general-error="error.general"
     @clearError="clearError"
+  />
+  <ConfirmDialog
+    :show="showConfirm"
+    title="Xóa danh mục"
+    message="Bạn có chắc muốn xóa danh mục này?"
+    note="Không thể hoàn tác dữ liệu sau khi xóa"
+    @confirm="confirmDelete"
+    @cancel="showConfirm = false"
+    :name="deleteItem?.name"
   />
 </template>

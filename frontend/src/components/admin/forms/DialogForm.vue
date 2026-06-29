@@ -98,7 +98,7 @@ const closeDialog = () => {
 </script>
 
 <template>
-  <dialog ref="dialog" :class="{ show: show }">
+  <dialog ref="dialog" :class="{ show: show }" class="dialog-form">
     <form @submit.prevent="submitForm">
       <div class="dialog-header">
         <h3>{{ title }}</h3>

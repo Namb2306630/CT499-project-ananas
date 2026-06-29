@@ -1,15 +1,24 @@
 <script setup>
 const BASE_URL = import.meta.env.VITE_BACKEND
 
-defineProps({
+const props = defineProps({
   item: Object,
-
   fields: Array,
 })
+
+const emit = defineEmits(['edit', 'delete'])
+
+const handleEdit = () => {
+  emit('edit', props.item)
+}
+
+const handleDelete = () => {
+  emit('delete', props.item)
+}
 </script>
 
 <template>
-  <div class="card-item">
+  <div class="card-item" @click.stop="handleEdit">
     <div v-for="field in fields" :key="field.name">
       <div class="card-image">
         <img
@@ -42,6 +51,15 @@ defineProps({
         {{ item[field.name] ? 'Hoạt động' : 'Ẩn' }}
       </span>
     </div>
+    <div class="card-actions">
+      <button class="edit" @click.stop="handleEdit">
+        <i class="fa-solid fa-pen"></i>
+      </button>
+
+      <button class="delete" @click.stop="handleDelete">
+        <i class="fa-solid fa-trash"></i>
+      </button>
+    </div>
   </div>
 </template>
 
@@ -69,7 +87,7 @@ defineProps({
 .no-image {
   width: 100%;
   height: 200px;
-  object-fit: cover;
+  object-fit: cover; /* cắt ảnh cho vừa */
   display: block;
   transition: transform 0.4s ease;
 }
@@ -141,5 +159,42 @@ p {
 }
 .count-product {
   font-weight: var(--font-width-md);
+}
+
+/* action */
+.card-actions {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  display: flex;
+  gap: 8px;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: 0.3s ease;
+}
+
+.card-item:hover .card-actions {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.card-actions button {
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  color: var(--text-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.edit {
+  background: var(--bg-active);
+}
+
+.delete {
+  background: var(--bg-color-red);
 }
 </style>
