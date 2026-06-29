@@ -76,16 +76,19 @@ app.use((err, req, res, next) => {
 
   // Lỗi AppError của hệ thống
   if (err instanceof AppError) {
-    return res.status(err.statusCode || 400).json({
-      code: err.code,
-      message: err.message,
+    // Lỗi khác
+    return res.status(err.statusCode || 500).json({
+      code: err.code || 9999,
+      message: err.message || "Internal Server Error",
+      errors: err.errors || {},
     });
   }
 
-  // Lỗi khác
-  return res.status(500).json({
-    code: 9999,
+  // Lỗi khác (bao gồm Joi validate)
+  return res.status(err.statusCode || 500).json({
+    code: err.code || 9999,
     message: err.message || "Internal Server Error",
+    errors: err.errors || {},
   });
 });
 

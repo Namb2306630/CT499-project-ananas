@@ -26,6 +26,10 @@ const categorySchema = new mongoose.Schema(
       trim: true,
     },
     // Ảnh đại diện danh mục
+    productCount: {
+      type: Number,
+      default: 0,
+    },
 
     parent: {
       type: mongoose.Schema.Types.ObjectId,

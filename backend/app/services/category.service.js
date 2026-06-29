@@ -119,9 +119,13 @@ class CategoryService {
   }
 
   async getAllForAdmin() {
-    return await Category.find({ isDeleted: false }).sort({
-      createdAt: -1,
-    });
+    return await Category.find({
+      isDeleted: false,
+    })
+      .populate("parent")
+      .sort({
+        createdAt: -1,
+      });
   }
 
   async getAllForUser() {

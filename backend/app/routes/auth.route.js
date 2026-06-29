@@ -7,7 +7,7 @@ const {
   loginSchema,
 } = require("../validations/auth.validation");
 const router = express.Router();
-router.get("/me", authMiddleware, authController.me);
+router.get("/me", authMiddleware, auth.me);
 router.post("/register", validate(registerSchema), auth.register);
 router.post("/login", validate(loginSchema), auth.login);
 router.post("/refresh-token", authMiddleware, auth.refreshToken);

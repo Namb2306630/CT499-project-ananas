@@ -115,16 +115,50 @@ class ProductService {
         status: "active",
       });
 
+      // tăng productCount
+      await Category.updateMany(
+        {
+          _id: {
+            $in: categories,
+          },
+        },
+        {
+          $inc: {
+            productCount: 1,
+          },
+        },
+      );
+
       return { data: product, action: "created" };
     }
 
     //  RESTORE (soft delete)
     if (exist.status === "discontinued") {
+      await this.validateRelations({
+        categories: exist.categories,
+      });
+
       exist.status = "active";
 
       await exist.save();
 
-      return { data: exist, action: "restored" };
+      await Category.updateMany(
+        {
+          _id: {
+            $in: exist.categories,
+          },
+        },
+        {
+          $inc: {
+            productCount: 1,
+          },
+        },
+      );
+
+      return {
+        data: exist,
+        action: "restored",
+      };
     }
 
     throw ErrorCode.PRODUCT_SLUG_ALREADY_EXISTS();
@@ -132,6 +166,9 @@ class ProductService {
 
   async update(id, payload) {
     const product = await this.getByIdOrThrow(id);
+
+    // lưu category cũ trước khi update
+    const oldCategories = product.categories.map((id) => id.toString());
 
     const { name, costPrice, discountPercent } = payload;
 
@@ -167,6 +204,11 @@ class ProductService {
       "status",
     ]);
 
+    // cập nhật productCount nếu đổi category
+    if (Array.isArray(payload.categories)) {
+      await this.updateCategoryCount(oldCategories, payload.categories);
+    }
+
     const system = await systemConfigService.get();
     if (!system) throw ErrorCode.SYSTEM_NOT_EXISTS();
 
@@ -197,9 +239,27 @@ class ProductService {
   async remove(id) {
     const product = await this.getByIdOrThrow(id);
 
+    // đã xóa rồi thì không làm nữa
+    if (product.status === "discontinued") {
+      return;
+    }
+
     product.status = "discontinued";
 
     await product.save();
+
+    await Category.updateMany(
+      {
+        _id: {
+          $in: product.categories,
+        },
+      },
+      {
+        $inc: {
+          productCount: -1,
+        },
+      },
+    );
   }
 
   async getAllForAdmin() {
@@ -254,6 +314,48 @@ class ProductService {
       status: { $ne: "inactive" },
     }).populate("variants");
     return product.variants;
+  }
+
+  async updateCategoryCount(oldCategories = [], newCategories = []) {
+    // category bị bỏ đi
+    const removed = oldCategories.filter(
+      (id) => !newCategories.includes(id.toString()),
+    );
+
+    // category thêm mới
+    const added = newCategories.filter(
+      (id) => !oldCategories.map((x) => x.toString()).includes(id.toString()),
+    );
+
+    if (removed.length > 0) {
+      await Category.updateMany(
+        {
+          _id: {
+            $in: removed,
+          },
+        },
+        {
+          $inc: {
+            productCount: -1,
+          },
+        },
+      );
+    }
+
+    if (added.length > 0) {
+      await Category.updateMany(
+        {
+          _id: {
+            $in: added,
+          },
+        },
+        {
+          $inc: {
+            productCount: 1,
+          },
+        },
+      );
+    }
   }
 }
 
