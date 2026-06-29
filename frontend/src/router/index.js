@@ -23,6 +23,7 @@ import ProductVariantItemPage from '@/views/admin/ProductVariantItemPage.vue'
 import NotFoudPage from '@/views/NotFoundPage.vue'
 
 //
+import { useAuthStore } from '@/stores/auth'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -127,6 +128,26 @@ const router = createRouter({
       ],
     },
   ],
+})
+//kiểm tra trước
+router.beforeEach(async (to) => {
+  const authStore = useAuthStore()
+  if (to.meta.requiresAuth) {
+    // chưa có user thì hỏi BE
+    if (!authStore.user) {
+      try {
+        await authStore.getMe()
+      } catch {
+        return '/login'
+      }
+    }
+    //so sánh quyền của user hiện tại với quyền yêu cầu của route
+    if (authStore.user.role !== to.meta.role) {
+      return '/'
+    }
+  }
+
+  return true
 })
 
 export default router
