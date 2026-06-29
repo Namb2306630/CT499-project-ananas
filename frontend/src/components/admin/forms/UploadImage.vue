@@ -8,6 +8,16 @@ const fileInput = ref(null)
 const image = ref(null)
 const error = ref('')
 
+const reset = () => {
+  image.value = null
+  error.value = ''
+  if (fileInput.value) {
+    fileInput.value.value = ''
+  }
+}
+defineExpose({
+  reset,
+})
 
 const clickUpload = () => {
   fileInput.value.click()
