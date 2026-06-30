@@ -4,6 +4,7 @@ import api from '@/api/axios'
 export const useCategoryStore = defineStore('category', {
   state: () => ({
     categories: [],
+    category: null,
     loading: false,
     error: {
       code: null,
@@ -42,51 +43,83 @@ export const useCategoryStore = defineStore('category', {
     async createCategories(form) {
       try {
         this.clearError()
+
         const formData = new FormData()
+
         formData.append('name', form.name)
+
         if (form.parent) {
           formData.append('parent', form.parent)
         }
+
         if (form.image) {
           formData.append('image', form.image)
         }
+
         const res = await api.post('/categories/admin', formData)
+
         this.categories.push(res.data.result)
-        return true
+
+        return {
+          success: true,
+          message: res.data.message,
+        }
       } catch (error) {
         const data = error.response?.data
+
         this.error = {
           code: data?.code || 500,
           general: data?.message || 'Thêm danh mục thất bại!',
           errors: data?.errors || {},
         }
-        return false
+
+        return {
+          success: false,
+        }
       }
     },
 
     async updateCategory(id, form) {
       try {
         this.clearError()
+
         const formData = new FormData()
+
         formData.append('name', form.name)
+        formData.append('slug', form.slug)
+        formData.append('isActive', form.isActive)
+
+        if (form.parent) {
+          formData.append('parent', form.parent)
+        }
+
         if (form.image) {
           formData.append('image', form.image)
         }
 
         const res = await api.put(`/categories/admin/${id}`, formData)
+
         const index = this.categories.findIndex((item) => item._id === id)
+
         if (index !== -1) {
           this.categories[index] = res.data.result
         }
-        return true
+        return {
+          success: true,
+          message: res.data.message,
+        }
       } catch (error) {
         const data = error.response?.data
+
         this.error = {
           code: data?.code || 500,
           general: data?.message || 'Cập nhật thất bại!',
           errors: data?.errors || {},
         }
-        return false
+
+        return {
+          success: false,
+        }
       }
     },
 
@@ -104,6 +137,27 @@ export const useCategoryStore = defineStore('category', {
           errors: data?.errors || {},
         }
         return false
+      }
+    },
+
+    async getCategoryById(id) {
+      try {
+        this.loading = true
+        this.clearError()
+
+        const res = await api.get(`/categories/admin/${id}`)
+
+        this.category = res.data.result
+        return this.category
+      } catch (error) {
+        const data = error.response?.data
+        this.error = {
+          code: data?.code || 500,
+          general: data?.message || 'Lỗi lấy dữ liệu danh mục!',
+          errors: data?.errors || {},
+        }
+      } finally {
+        this.loading = false
       }
     },
   },
