@@ -1,44 +1,20 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { validateImage } from '@/utils/validateFile'
 import UploadBg from '@/assets/images/upload-bg.png'
-
+const BASE_URL = import.meta.env.VITE_BACKEND
 const emit = defineEmits(['change'])
 const fileInput = ref(null)
-const image = ref(null)
 const error = ref('')
 
-const reset = () => {
-  image.value = null
-  error.value = ''
-  if (fileInput.value) {
-    fileInput.value.value = ''
-  }
-}
-defineExpose({
-  reset,
-})
+const props = defineProps({
+  //gửi ảnh lên
+  modelValue: {
+    type: String,
+    default: '',
+  },
 
-const clickUpload = () => {
-  fileInput.value.click()
-}
-
-const upload = (e) => {
-  const file = e.target.files[0]
-  error.value = ''
-  if (!file) return
-  const err = validateImage(file)
-  if (err) {
-    error.value = err
-    e.target.value = ''
-    return
-  }
-
-  image.value = URL.createObjectURL(file)
-  emit('change', file) // gửi ra compo cha
-}
-
-defineProps({
+  //---------------------
   //nội dung trên input
   titleImg: {
     type: String,
@@ -81,12 +57,71 @@ defineProps({
     default: '300px',
   },
 
+  width: {
+    type: String,
+    default: '100%',
+  },
+
   //bg icon ảnh
   showIconBG: {
     type: Boolean,
     default: true,
   },
+
+  //hiện icon và nội dung trên ảnh
+  showContentInImage: {
+    type: Boolean,
+    default: true,
+  },
 })
+
+const image = ref('')
+
+watch(
+  () => props.modelValue,
+  (newValue) => {
+    if (!newValue) return
+
+    if (!image.value) {
+      if (!image.value) {
+        image.value = `${BASE_URL}/${newValue}`
+      }
+    }
+  },
+  {
+    immediate: true,
+  },
+)
+
+const reset = () => {
+  image.value = null
+  error.value = ''
+  if (fileInput.value) {
+    fileInput.value.value = ''
+  }
+}
+defineExpose({
+  reset,
+})
+
+const clickUpload = () => {
+  fileInput.value.click()
+}
+
+const upload = (e) => {
+  const file = e.target.files[0]
+  error.value = ''
+  if (!file) return
+  const err = validateImage(file)
+  if (err) {
+    error.value = err
+    e.target.value = ''
+    return
+  }
+  // hiện ảnh mới ngay
+  image.value = URL.createObjectURL(file)
+  emit('change', file) // gửi ra compo cha
+}
 </script>
 
 <template>
@@ -97,14 +132,22 @@ defineProps({
       class="upload-box"
       :class="{ uploaded: image }"
       :style="{
-        backgroundImage:
-          showBGImage && !image ? `url(${UploadBg})` : image ? `url(${image})` : 'none',
         height: height,
+        width: width,
         marginTop: containerBox ? '8px' : '0px',
       }"
       @click="clickUpload"
     >
-      <div class="title-upload">
+      <img v-if="image" class="preview-image" :src="image" alt="Ảnh đã tải lên" />
+
+      <img
+        v-else-if="showBGImage"
+        class="preview-image default-bg"
+        :src="UploadBg"
+        alt="Ảnh nền tải lên"
+      />
+
+      <div v-if="showContentInImage" class="title-upload">
         <div :class="[image ? 'icon-tick' : 'icon-camera', { 'no-icon-bg': !showIconBG }]">
           <span class="material-symbols-outlined" :class="{ check_circle: image }">
             {{ image ? 'check_circle' : icon }}
@@ -140,15 +183,6 @@ defineProps({
 </template>
 
 <style scoped>
-.container-img,
-.container-field {
-  border: 2px solid var(--border-gray-2);
-  padding: 5px 10px 10px 10px;
-  border-radius: 10px;
-  box-shadow: var(--shadow-gray);
-  margin-bottom: 18px;
-}
-
 .upload-box {
   display: flex;
   justify-content: center;
@@ -156,10 +190,36 @@ defineProps({
   position: relative;
   overflow: hidden;
   border-radius: 12px;
-  background-size: cover;
-  background-position: center;
   border: 2px solid var(--border-gray-2);
   transition: 0.3s ease;
+}
+
+.preview-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+  pointer-events: none;
+}
+
+.upload-box:hover .preview-image {
+  transform: scale(1.08);
+}
+
+.title-upload {
+  position: relative;
+  z-index: 2;
+}
+
+.container-img,
+.container-field {
+  border: 2px solid var(--border-gray-2);
+  padding: 5px 10px 10px 10px;
+  border-radius: 10px;
+  box-shadow: var(--shadow-gray);
+  margin-bottom: 18px;
 }
 
 .upload-box:hover,
@@ -226,6 +286,7 @@ defineProps({
   font-size: var(--font-size-sm);
   text-transform: none;
   font-weight: normal;
+  text-align: center;
 }
 
 .icon-camera {
@@ -291,5 +352,33 @@ dialog::-webkit-scrollbar {
 }
 .check_circle {
   color: var(--text-green) !important;
+}
+
+@media (max-width: 450px) {
+  .container-img {
+    width: 100%;
+  }
+
+  .upload-box {
+    width: 220px !important;
+    height: 220px !important;
+    margin: auto;
+  }
+
+  .content-upload .pload-heading {
+    font-size: 12px;
+    text-align: center;
+  }
+
+  .desc-upload {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 350px) {
+  .upload-box {
+    width: 180px !important;
+    height: 180px !important;
+  }
 }
 </style>

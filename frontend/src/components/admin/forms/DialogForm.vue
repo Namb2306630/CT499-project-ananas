@@ -31,8 +31,14 @@ const props = defineProps({
     type: String,
     default: '',
   },
+  //EDIT
+  data: {
+    type: Object,
+    default: () => ({}),
+  },
 })
 
+//reset form
 const resetForm = () => {
   const data = {}
 
@@ -44,12 +50,12 @@ const resetForm = () => {
     }
   })
 
-  emit('clearError')
   data.image = null
   formData.value = data
   uploadImage.value?.reset()
+  emit('clearError')
 }
-
+//mở dialog
 watch(
   () => props.show,
   (value) => {
@@ -64,7 +70,7 @@ watch(
     }
   },
 )
-
+//from dl
 watch(
   () => props.fields,
   (fields) => {
@@ -273,5 +279,22 @@ select {
 /* icon SELECT */
 .select-box i {
   top: 50%;
+}
+
+@media (max-width: 767px) {
+  .dialog-form {
+    width: 500px;
+    height: 600px;
+  }
+}
+@media (max-width: 667px) {
+  .dialog-form {
+    width: 450px;
+  }
+}
+@media (max-width: 450px) {
+  .dialog-form {
+    width: 300px;
+  }
 }
 </style>
