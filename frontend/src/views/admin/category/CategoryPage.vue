@@ -1,0 +1,180 @@
+<script setup>
+import { ref, computed } from 'vue'
+// ref = lưu dữ liệu
+// computed = lấy dữ liệu đó rồi xử lý ra dữ liệu mới -> dữ liệu thay đổi thì nó chạy lại
+import AppAdminPageHeader from '@/components/admin/AppAdminPageHeader.vue'
+import AdminToolbar from '@/components/admin/AdminToolbar.vue'
+import DialogForm from '@/components/admin/forms/DialogForm.vue'
+import { useCategoryStore } from '@/stores/caterory'
+import { storeToRefs } from 'pinia' // giúp giữ tính reactive - tự cập nhật giao diện khi lấy dl từ pinia như ref
+import { useToastStore } from '@/stores/toast'
+import ConfirmDialog from '@/components/common/ConfirmDialog.vue'
+import { useRouter } from 'vue-router'
+import { useDelete } from '@/composables/useDelete'
+
+const { showConfirm, deleteItem, openDelete, closeDelete } = useDelete()
+
+const router = useRouter()
+const toastStore = useToastStore()
+const categoryStore = useCategoryStore()
+const { categories, loading, error } = storeToRefs(categoryStore)
+const showForm = ref(false)
+
+const title = ref('Thêm danh mục mới')
+const loadData = async () => {
+  await categoryStore.fetchCategories()
+}
+
+loadData()
+
+defineProps({
+  showSidebar: Boolean,
+})
+
+const openAddForm = () => {
+  title.value = 'Thêm danh mục mới'
+  showForm.value = true
+  categoryStore.clearError()
+}
+
+const openEdit = (category) => {
+  router.push(`/admin/categories/${category._id}`)
+}
+
+const fields = computed(() => {
+  let options = categories.value
+  return [
+    {
+      name: 'name',
+      label: 'Tên danh mục *',
+      type: 'text',
+      placeholder: 'Nhập tên danh mục',
+    },
+
+    {
+      name: 'parent',
+      label: 'Danh mục cha',
+      type: 'select',
+      options,
+    },
+  ]
+})
+
+const saveCategory = async (data) => {
+  let result
+
+  result = await categoryStore.createCategories(data)
+
+  if (result?.success) {
+    showForm.value = false
+
+    toastStore.showToast(result.message, 'success')
+
+    await loadData()
+  } else {
+    const message =
+      Object.values(categoryStore.error.errors)[0] ||
+      categoryStore.error.general ||
+      'Thêm danh mục thất bại!'
+
+    toastStore.showToast(message, 'error')
+  }
+}
+
+const confirmDelete = async () => {
+  const result = await categoryStore.deleteCategory(deleteItem.value._id)
+  if (result) {
+    toastStore.showToast('Xóa danh mục thành công', 'success')
+  } else {
+    const message =
+      Object.values(categoryStore.error.errors)[0] ||
+      categoryStore.error.general ||
+      'Xóa danh mục thất bại'
+
+    toastStore.showToast(message, 'error')
+  }
+  closeDelete()
+}
+const clearError = () => {
+  categoryStore.clearError()
+}
+</script>
+
+<template>
+  <div class="admin-container">
+    <AppAdminPageHeader
+      title="Quản Lý Danh Mục"
+      description="Quản lý và sắp xếp cấu trúc danh mục sản phẩm của bạn"
+      button-text="THÊM DANH MỤC"
+      place-holder="Tìm danh mục..."
+      :filters="[
+        {
+          label: 'Chọn trạng thái',
+          options: ['Hoạt động', 'Đã ẩn'],
+        },
+      ]"
+      @click="openAddForm"
+    />
+    <AdminToolbar
+      content="Thêm danh mục"
+      :items="categories"
+      :loading="loading"
+      :error="error"
+      :showAddCard="true"
+      :showSidebar="showSidebar"
+      :fields="[
+        {
+          name: 'image',
+          type: 'image',
+        },
+
+        {
+          name: 'name',
+          type: 'title',
+        },
+        {
+          name: 'productCount',
+          type: 'count',
+        },
+        {
+          name: 'parent',
+          type: 'ref',
+        },
+        {
+          name: 'description',
+          type: 'text',
+        },
+        {
+          name: 'isActive',
+          type: 'status',
+        },
+      ]"
+      @add="openAddForm"
+      @edit="openEdit"
+      @delete="openDelete"
+    />
+  </div>
+  <DialogForm
+    :show="showForm"
+    :showImage="true"
+    :title="title"
+    :fields="fields"
+    :data="editData"
+    @submit="saveCategory"
+    @close="showForm = false"
+    title-img="Ảnh danh mục (nếu có)"
+    content-img="Thêm ảnh danh mục"
+    :errors="error.errors"
+    :general-error="error.general"
+    @clearError="clearError"
+  />
+  <ConfirmDialog
+    :show="showConfirm"
+    title="Xóa danh mục"
+    message="Bạn có chắc muốn xóa danh mục này?"
+    note="Không thể hoàn tác dữ liệu sau khi xóa"
+    @confirm="confirmDelete"
+    @cancel="showConfirm = false"
+    :name="deleteItem?.name"
+  />
+</template>
