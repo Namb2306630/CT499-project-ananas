@@ -128,6 +128,15 @@ const ErrorCode = {
     code: 403,
     message,
   }),
+
+  CATEGORY_INVALID_PARENT: () =>
+    new AppError(1049, "Danh mục cha không hợp lệ hoặc không tồn tại"),
+
+  CATEGORY_HAS_CHILD: () =>
+    new AppError(
+      1050,
+      "Không thể xóa danh mục này vì đang có danh mục con thuộc về nó",
+    ),
   BAD_REQUEST: (message = "Lỗi") => new AppError(9998, message),
 };
 
