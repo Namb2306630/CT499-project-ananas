@@ -25,10 +25,41 @@ const buildCategoryTree = (categories, parent = null) => {
       children: buildCategoryTree(categories, item._id),
     }));
 };
+
+const checkChild = async (parentId, categoryId) => {
+  const child = await Category.find({
+    parent: categoryId,
+    isDeleted: false,
+  });
+
+  for (const item of child) {
+    // parent mới chính là con của category hiện tại
+    if (item._id.toString() === parentId.toString()) {
+      return true;
+    }
+
+    if (await checkChild(parentId, item._id)) {
+      return true;
+    }
+  }
+  return false;
+};
 class CategoryService {
   async create(payload, file) {
-    const { name } = payload;
+    const { name, parent } = payload;
     const slug = slugName(name);
+
+    // kiểm tra parent có tồn tại không
+    if (parent) {
+      const parentCategory = await Category.findOne({
+        _id: parent,
+        isDeleted: false,
+      });
+
+      if (!parentCategory) {
+        throw ErrorCode.CATEGORY_NOT_EXISTS();
+      }
+    }
 
     const existCategory = await Category.findOne({ slug });
 
@@ -76,6 +107,17 @@ class CategoryService {
     if (!category) throw ErrorCode.CATEGORY_NOT_EXISTS();
 
     const { name, image, parent, isActive } = payload;
+
+    if (parent && parent.toString() === categoryId.toString()) {
+      throw ErrorCode.CATEGORY_INVALID_PARENT();
+    }
+    if (parent) {
+      const isLoop = await checkChild(parent, categoryId);
+
+      if (isLoop) {
+        throw ErrorCode.CATEGORY_INVALID_PARENT();
+      }
+    }
     if (name) {
       const slug = slugName(name);
 
@@ -110,11 +152,26 @@ class CategoryService {
   }
 
   async remove(categoryId) {
-    const category = await Category.findOne({ _id: categoryId });
-    if (!category) throw ErrorCode.CATEGORY_NOT_EXISTS();
+    const category = await Category.findOne({
+      _id: categoryId,
+    });
+
+    if (!category) {
+      throw ErrorCode.CATEGORY_NOT_EXISTS();
+    }
+
+    const hasChild = await Category.exists({
+      parent: categoryId,
+      isDeleted: false,
+    });
+
+    if (hasChild) {
+      throw ErrorCode.CATEGORY_HAS_CHILD();
+    }
 
     category.isDeleted = true;
     category.isActive = false;
+
     await category.save();
   }
 
