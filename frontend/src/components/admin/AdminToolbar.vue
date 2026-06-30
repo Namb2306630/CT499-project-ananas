@@ -39,7 +39,7 @@ const emit = defineEmits(['add', 'edit', 'delete'])
 
 <template>
   <div class="container-tool">
-    <LoadingState v-if="loading || error.code === 500" :loading="loading" :error="error" />
+    <LoadingState v-if="loading || error?.code === 500" :loading="loading" :error="error" />
     <!-- card data -->
     <div class="card-grid" :class="{ 'no-sidebar': !showSidebar }">
       <CardItem
