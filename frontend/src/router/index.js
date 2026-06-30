@@ -7,18 +7,20 @@ import AboutView from '@/views/user/AboutView.vue'
 //admin
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import DashBoardPage from '@/views/admin/DashBoardPage.vue'
-import CategoryPage from '@/views/admin/CategoryPage.vue'
-import CollectionPage from '@/views/admin/CollectionPage.vue'
-import SettingPage from '@/views/admin/SettingPage.vue'
-import StylePage from '@/views/admin/StylePage.vue'
-import OrderPage from '@/views/admin/OrderPage.vue'
-import ProductLinePage from '@/views/admin/ProductLinePage.vue'
-import ProductPage from '@/views/admin/ProductPage.vue'
-import UserPage from '@/views/admin/UserPage.vue'
-import BrandPage from '@/views/admin/BrandPage.vue'
-import ProductVariantPage from '@/views/admin/ProductVariantPage.vue'
-import ProductVariantItemPage from '@/views/admin/ProductVariantItemPage.vue'
+import CategoryPage from '@/views/admin/category/CategoryPage.vue'
+import CollectionPage from '@/views/admin/collection/CollectionPage.vue'
+import SettingPage from '@/views/admin/setting/SettingPage.vue'
+import StylePage from '@/views/admin/style/StylePage.vue'
+import OrderPage from '@/views/order/OrderPage.vue'
+import ProductLinePage from '@/views/admin/product/ProductLinePage.vue'
+import ProductPage from '@/views/admin/product/ProductPage.vue'
+import UserPage from '@/views/admin/user/UserPage.vue'
+import BrandPage from '@/views/admin/brand/BrandPage.vue'
+import ProductVariantPage from '@/views/admin/product/ProductVariantPage.vue'
 
+//nhap
+import ProductVariantItemPage from '@/views/admin/product/ProductVariantItemPage.vue'
+import CategoryDetail from '@/views/admin/category/CategoryDetail.vue'
 //notfound
 import NotFoudPage from '@/views/NotFoundPage.vue'
 
@@ -126,6 +128,11 @@ const router = createRouter({
           component: () => NotFoudPage,
         },
       ],
+    },
+    {
+      path: '/admin/categories/:id',
+      name: 'category.detail',
+      component: () => CategoryDetail,
     },
   ],
 })
