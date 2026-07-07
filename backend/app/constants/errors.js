@@ -35,7 +35,8 @@ const ErrorCode = {
 
   // INVALID_FREE_SHIPPING_THRESHOLD: () =>
   //   new AppError(1014, "Ngưỡng miễn phí vận chuyển không hợp lệ"),
-
+  BRAND_EXIST_PRODUCT: () =>
+    new AppError(1014, "Thương hiệu đã tồn tại sản phẩm, không thể xóa"),
   CATEGORY_ALREADY_EXISTS: () => new AppError(1015, "Tên danh mục đã tồn tại"),
   CATEGORY_NOT_EXISTS: () => new AppError(1016, "Danh mục không tồn tại"),
   BRAND_NOT_EXISTS: () => new AppError(1017, "Thương hiệu không tồn tại"),

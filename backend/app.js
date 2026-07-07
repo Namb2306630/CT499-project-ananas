@@ -93,3 +93,14 @@ app.use((err, req, res, next) => {
 });
 
 module.exports = app;
+//npm i cookie-parser
+//const cookieParser = require("cookie-parser");
+//sau => app.use(express.json());
+//thêm app.use(cookieParser());
+//thay app.use(express.json()); =>
+// app.use(express.json({
+//   limit: "10mb"
+//}));
+//
+//
+//

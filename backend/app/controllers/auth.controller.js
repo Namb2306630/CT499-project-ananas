@@ -28,7 +28,7 @@ exports.login = async (req, res, next) => {
       //cookie có chỉ được gửi qua HTTPS không
       secure: false, //khi môi trường pro ghì true
       //Chống gửi cookie từ website khác
-      sameSite: "strict",
+      sameSite: "strict", //=> origin sheme:domain:port phải giống nhau
 
       maxAge: ms(config.jwt.accessExpires),
     });
@@ -38,8 +38,7 @@ exports.login = async (req, res, next) => {
       httpOnly: true,
       secure: false,
       sameSite: "strict",
-
-      maxAge: ms(config.jwt.refreshExpires),
+      path: "/api/auth/refresh-token",
     });
 
     return ApiResponse.success({
@@ -92,9 +91,9 @@ exports.refreshToken = async (req, res, next) => {
 };
 
 exports.logout = (req, res) => {
-  res.clearCookie("accessToken");
+  res.clearCookie(config.jwt.accessToken);
 
-  res.clearCookie("refreshToken");
+  res.clearCookie(config.jwt.refreshToken);
 
   res.send({ message: "Đăng xuất thành công" });
 };

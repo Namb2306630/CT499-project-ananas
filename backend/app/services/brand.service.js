@@ -104,8 +104,17 @@ class BrandService {
 
   async delete(id) {
     const brand = await Brand.findOne({ _id: id });
-    if (!brand) throw ErrorCode.BRAND_NOT_EXISTS();
 
+    if (!brand) throw ErrorCode.BRAND_NOT_EXISTS();
+    const productLines = await ProductLine.find({
+      brand: id,
+      isDeleted: false,
+      isActive: true,
+    });
+
+    if (productLines.length > 0) {
+      throw ErrorCode.BRAND_EXIST_PRODUCT();
+    }
     brand.isActive = false;
     brand.isDeleted = true;
 
@@ -145,6 +154,8 @@ class BrandService {
     }).select("name slug");
 
     if (!brand) throw ErrorCode.BRAND_NOT_EXISTS();
+
+    return productLines;
   }
 }
 
