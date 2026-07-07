@@ -1,5 +1,6 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+import { ROUTE_NAMES } from '@/constants/routes'
 // ref = lưu dữ liệu
 // computed = lấy dữ liệu đó rồi xử lý ra dữ liệu mới -> dữ liệu thay đổi thì nó chạy lại
 import AppAdminPageHeader from '@/components/admin/AppAdminPageHeader.vue'
@@ -25,7 +26,9 @@ const loadData = async () => {
   await categoryStore.fetchCategories()
 }
 
-loadData()
+onMounted(async () => {
+  await loadData()
+})
 
 defineProps({
   showSidebar: Boolean,
@@ -38,7 +41,12 @@ const openAddForm = () => {
 }
 
 const openEdit = (category) => {
-  router.push(`/admin/categories/${category._id}`)
+  router.push({
+    name: ROUTE_NAMES.CATEGORY_DETAIL,
+    params: {
+      id: category._id,
+    },
+  })
 }
 
 const fields = computed(() => {
