@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import api from '@/api/axios'
+import CategoryService from '@/services/category.service'
 
 export const useCategoryStore = defineStore('category', {
   state: () => ({
@@ -26,7 +26,7 @@ export const useCategoryStore = defineStore('category', {
       try {
         this.loading = true
         this.clearError()
-        const res = await api.get('/categories/admin')
+        const res = await CategoryService.getAll()
         this.categories = res.data.result
       } catch (error) {
         const data = error.response?.data
@@ -56,7 +56,7 @@ export const useCategoryStore = defineStore('category', {
           formData.append('image', form.image)
         }
 
-        const res = await api.post('/categories/admin', formData)
+        const res = await CategoryService.create(formData)
 
         this.categories.push(res.data.result)
 
@@ -97,7 +97,7 @@ export const useCategoryStore = defineStore('category', {
           formData.append('image', form.image)
         }
 
-        const res = await api.put(`/categories/admin/${id}`, formData)
+        const res = await CategoryService.update(id, formData)
 
         const index = this.categories.findIndex((item) => item._id === id)
 
@@ -126,7 +126,7 @@ export const useCategoryStore = defineStore('category', {
     async deleteCategory(id) {
       try {
         this.clearError()
-        const res = await api.delete(`/categories/admin/${id}`)
+        const res = await CategoryService.delete(id)
         this.categories = this.categories.filter((item) => item._id !== id)
         return res.data.message
       } catch (error) {
@@ -145,7 +145,7 @@ export const useCategoryStore = defineStore('category', {
         this.loading = true
         this.clearError()
 
-        const res = await api.get(`/categories/admin/${id}`)
+        const res = await CategoryService.getById(id)
 
         this.category = res.data.result
         return this.category
