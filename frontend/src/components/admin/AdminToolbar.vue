@@ -23,6 +23,11 @@ defineProps({
     default: () => [],
   },
 
+  countLabel: {
+    type: String,
+    default: 'Sản phẩm',
+  },
+
   showAddCard: {
     type: Boolean,
     default: true,
@@ -49,6 +54,7 @@ const emit = defineEmits(['add', 'edit', 'delete'])
         :fields="fields"
         @edit="emit('edit', $event)"
         @delete="emit('delete', $event)"
+        :count-label="countLabel"
       />
 
       <AddCard v-if="showAddCard" :content="content" @click="emit('add')" />
