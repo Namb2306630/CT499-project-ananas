@@ -10,6 +10,10 @@ import { useToastStore } from '@/stores/toast'
 import router from '@/router'
 import { createSlug } from '@/utils/slug'
 import { useDelete } from '@/composables/useDelete'
+import DetailLayout from '@/components/admin/detail/DetailLayout.vue'
+import DetailActions from '@/components/admin/detail/DetailActions.vue'
+import DetailStatus from '@/components/admin/detail/DetailStatus.vue'
+import DetailStats from '@/components/admin/detail/DetailStats.vue'
 
 const { showConfirm, deleteItem, openDelete, closeDelete } = useDelete()
 
@@ -37,12 +41,6 @@ watch(
     }
   },
 )
-
-const formatDate = (date) => {
-  if (!date) return ''
-  return new Date(date).toLocaleDateString('vi-VN')
-}
-
 onMounted(async () => {
   const id = route.params.id
   await categoryStore.fetchCategories()
@@ -113,96 +111,71 @@ const confirmDelete = async () => {
     />
 
     <div class="detail-grid">
-      <div class="basic-info-card">
-        <div class="info-card-1">
-          <h3>Thông tin cơ bản</h3>
+      <DetailLayout title="Thông tin cơ bản">
+        <div class="top-info">
+          <div class="image-box">
+            <UploadImage
+              :modelValue="category.image"
+              @change="handleUpload"
+              height="200px"
+              width="200px"
+              :show-content-in-image="false"
+              :show-b-g-image="false"
+            />
+          </div>
 
-          <div class="top-info">
-            <div class="image-box">
-              <UploadImage
-                :modelValue="category.image"
-                @change="handleUpload"
-                height="200px"
-                width="200px"
-                :show-content-in-image="false"
-                :show-b-g-image="false"
-              />
-            </div>
+          <div class="form">
+            <label class="p-0 m-0" for=""> Tên danh mục </label>
 
-            <div class="form">
-              <label class="p-0 m-0" for=""> Tên danh mục </label>
+            <input id="" v-model="category.name" />
+            <p v-if="errors.name" class="error p-0 m-0">
+              {{ errors.name }}
+            </p>
 
-              <input id="" v-model="category.name" />
-              <p v-if="errors.name" class="error p-0 m-0">
-                {{ errors.name }}
+            <label class="p-0 m-0" for=""> Đường dẫn thân thiện (Slug) </label>
+
+            <input id="" v-model="category.slug" />
+            <p v-if="errors.slug" class="error p-0 m-0">
+              {{ errors.slug }}
+            </p>
+
+            <div class="parent">
+              <label for="" class="mr-3"> Danh mục cha </label>
+
+              <select id="" v-model="category.parent">
+                <option value="">Không có</option>
+
+                <option v-for="cate in parentCategories" :key="cate._id" :value="cate._id">
+                  {{ cate.name }}
+                </option>
+              </select>
+              <p v-if="errors.parent" class="error p-0 m-0">
+                {{ errors.parent }}
               </p>
-
-              <label class="p-0 m-0" for=""> Đường dẫn thân thiện (Slug) </label>
-
-              <input id="" v-model="category.slug" />
-              <p v-if="errors.slug" class="error p-0 m-0">
-                {{ errors.slug }}
-              </p>
-
-              <div class="parent">
-                <label for="" class="mr-3"> Danh mục cha </label>
-
-                <select id="" v-model="category.parent">
-                  <option value="">Không có</option>
-
-                  <option v-for="cate in parentCategories" :key="cate._id" :value="cate._id">
-                    {{ cate.name }}
-                  </option>
-                </select>
-                <p v-if="errors.parent" class="error p-0 m-0">
-                  {{ errors.parent }}
-                </p>
-              </div>
             </div>
           </div>
         </div>
-      </div>
+      </DetailLayout>
 
       <div class="row info-card-2">
-        <div class="card stats">
-          <div>
-            <p class="p-0 m-0">Sản phẩm hiện có</p>
+        <DetailStats
+          :count="category.productCount"
+          :created-at="category.createdAt"
+          count-label="Sản phẩm hiện có"
+        />
 
-            <b>
-              {{ category.productCount }}
-            </b>
-          </div>
-
-          <div>
-            <p class="p-0 m-0">Tạo lúc</p>
-
-            <b>
-              {{ formatDate(category.createdAt) }}
-            </b>
-          </div>
-        </div>
-
-        <div class="card status">
-          <h3>Trạng thái</h3>
-
-          <label class="switch-container">
-            <div>
-              <h5 class="p-0 m-0">Hiển thị trên website</h5>
-              <p class="p-0 m-0">Khách hàng có thể thấy danh mục này</p>
-            </div>
-
-            <div class="switch">
-              <input type="checkbox" v-model="category.isActive" />
-              <span class="slider"></span>
-            </div>
-          </label>
-        </div>
+        <DetailStatus
+          title="Trạng thái"
+          label="Hiển thị trên website"
+          description="Khách hàng có thể thấy danh mục này"
+        />
       </div>
-      <div class="actions">
-        <button class="cancel" @click="router.back()">Hủy bỏ</button>
-
-        <button class="save" @click="saveCategory">Lưu thay đổi</button>
-      </div>
+      <DetailActions
+        cancel-text="Hủy bỏ"
+        save-text="Lưu thay đổi"
+        @save="saveCategory"
+        @cancel="router.back()"
+      />
     </div>
   </div>
 
@@ -225,17 +198,6 @@ const confirmDelete = async () => {
   flex-direction: column;
 }
 
-.basic-info-card {
-  background-color: white;
-  border-radius: 12px;
-  border: 1px solid var(--border-gray-3);
-  box-shadow: var(--shadow-gray);
-}
-
-.info-card-1 {
-  padding: 30px;
-}
-
 .info-card-2 {
   padding: 15px;
 }
@@ -245,11 +207,6 @@ const confirmDelete = async () => {
   max-width: 1000px;
   margin: auto;
   padding: 30px 0 30px 0;
-}
-.card {
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: var(--shadow-gray);
 }
 
 .top-info {
@@ -294,85 +251,6 @@ select {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 20px;
-}
-
-.stats {
-  display: flex;
-  justify-content: space-between;
-}
-
-.actions {
-  display: flex;
-  justify-content: end;
-  margin-top: 20px;
-  gap: 20px;
-}
-
-button {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 8px;
-}
-
-.cancel {
-  background: var(--color-6);
-}
-
-.cancel:hover {
-  background: var(--color-7);
-}
-.save {
-  background: var(--color-8);
-  color: white;
-  transition: 0.3s ease;
-}
-.save:hover {
-  transform: translateY(-5px);
-}
-/* nút hiển thị website */
-.switch-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  cursor: pointer;
-}
-
-.switch {
-  position: relative;
-  width: 45px;
-  height: 24px;
-}
-
-.switch input {
-  display: none;
-}
-
-.slider {
-  position: absolute;
-  inset: 0;
-  background: var(--color-7);
-  border-radius: 30px;
-  transition: 0.3s;
-}
-
-.slider::before {
-  content: '';
-  position: absolute;
-  width: 18px;
-  height: 18px;
-  left: 3px;
-  top: 3px;
-  background: white;
-  border-radius: 50%;
-  transition: 0.3s;
-}
-
-.switch input:checked + .slider {
-  background: var(--color-4);
-}
-
-.switch input:checked + .slider::before {
-  transform: translateX(21px);
 }
 
 @media (max-width: 767px) {
