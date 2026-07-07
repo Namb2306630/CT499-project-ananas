@@ -4,6 +4,8 @@ import HomeView from '../views/user/HomeView.vue'
 import UserLayout from '@/layouts/UserLayout.vue'
 import AboutView from '@/views/user/AboutView.vue'
 
+import { ROUTE_NAMES } from '@/constants/routes.js'
+
 //admin
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import DashBoardPage from '@/views/admin/DashBoardPage.vue'
@@ -21,6 +23,7 @@ import ProductVariantPage from '@/views/admin/product/ProductVariantPage.vue'
 //nhap
 import ProductVariantItemPage from '@/views/admin/product/ProductVariantItemPage.vue'
 import CategoryDetail from '@/views/admin/category/CategoryDetail.vue'
+import BrandDetail from '@/views/admin/brand/BrandDetail.vue'
 //notfound
 import NotFoudPage from '@/views/NotFoundPage.vue'
 
@@ -131,8 +134,14 @@ const router = createRouter({
     },
     {
       path: '/admin/categories/:id',
-      name: 'category.detail',
+      name: ROUTE_NAMES.CATEGORY_DETAIL,
       component: () => CategoryDetail,
+    },
+
+    {
+      path: '/admin/brands/:id',
+      name: ROUTE_NAMES.BRAND_DETAIL,
+      component: () => BrandDetail,
     },
   ],
 })
