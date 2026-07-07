@@ -4,6 +4,7 @@ const BASE_URL = import.meta.env.VITE_BACKEND
 const props = defineProps({
   item: Object,
   fields: Array,
+  countLabel: String,
 })
 
 const emit = defineEmits(['edit', 'delete'])
@@ -40,12 +41,24 @@ const handleDelete = () => {
       </p>
 
       <p v-else-if="field.type === 'count'" class="count-product">
-        {{ item[field.name] }} - Sản phầm
+        {{ item[field.name] }} - {{ countLabel }}
       </p>
 
       <p v-else-if="field.type === 'ref'" class="ref">
         {{ item[field.name]?.name ? `Thuộc: ${item[field.name].name}` : 'Không có' }}
       </p>
+
+      <div v-else-if="field.type === 'tags'" class="tag-list">
+        <template v-if="Array.isArray(item[field.name])">
+          <span v-for="line in item[field.name].slice(0, 3)" :key="line._id" class="tag">
+            {{ line.name }}
+          </span>
+
+          <span v-if="item[field.name].length > 3" class="tag more">
+            +{{ item[field.name].length - 3 }}
+          </span>
+        </template>
+      </div>
 
       <span v-else-if="field.type === 'status'" :class="item[field.name] ? 'active' : 'inactive'">
         {{ item[field.name] ? 'Hoạt động' : 'Ẩn' }}
@@ -64,6 +77,27 @@ const handleDelete = () => {
 </template>
 
 <style scoped>
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 0 15px;
+  margin-top: 10px;
+}
+
+.tag {
+  padding: 4px 10px;
+  border-radius: 20px;
+  background: var(--bg-color-3);
+  color: var(--text-gray-2);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.more {
+  background: var(--bg-active);
+  color: white;
+}
 .card-item {
   position: relative;
   border: 1px solid var(--border-gray-3);
