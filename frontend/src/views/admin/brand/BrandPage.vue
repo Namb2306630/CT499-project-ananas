@@ -1,13 +1,34 @@
 <script setup>
 import AppAdminPageHeader from '@/components/admin/AppAdminPageHeader.vue'
-import AdmiToolbar from '@/components/admin/AdminToolbar.vue'
+import AdminToolbar from '@/components/admin/AdminToolbar.vue'
 import DialogForm from '@/components/admin/forms/DialogForm.vue'
-import { ref } from 'vue'
-import { data } from 'jquery'
+import ConfirmDialog from '@/components/common/ConfirmDialog.vue'
+import { useBrandStore } from '@/stores/brand'
+import { useToastStore } from '@/stores/toast'
+import { storeToRefs } from 'pinia'
+import { ref, computed, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { useDelete } from '@/composables/useDelete'
+import { ROUTE_NAMES } from '@/constants/routes'
+const router = useRouter()
 
-const brands = ref([])
-const errors = ref([])
+const { showConfirm, deleteItem, openDelete, closeDelete } = useDelete()
+const toastStore = useToastStore()
+const brandStore = useBrandStore()
+const { brands, productLines, loading, error } = storeToRefs(brandStore)
 const showForm = ref(false)
+const title = ref('Thêm thương hiệu mới mới')
+
+const loadData = async () => {
+  await brandStore.fetchAdminBrands()
+}
+onMounted(async () => {
+  await loadData()
+})
+
+defineProps({
+  showSidebar: Boolean,
+})
 
 const fields = [
   {
@@ -25,11 +46,58 @@ const fields = [
 ]
 
 const openAddForm = () => {
-  showForm.value = !showForm.value
+  title.value = 'Thêm thương hiệu mới'
+  showForm.value = true
+  brandStore.clearError()
 }
 
-const addBrand = (data) => {
-  console.log(data)
+const openEdit = (brand) => {
+  router.push({
+    name: ROUTE_NAMES.BRAND_DETAIL,
+    params: {
+      id: brand._id,
+    },
+  })
+}
+
+const saveBrand = async (data) => {
+  let result
+
+  result = await brandStore.createBrand(data)
+
+  if (result?.success) {
+    showForm.value = false
+
+    toastStore.showToast(result.message, 'success')
+
+    await loadData()
+  } else {
+    const message =
+      Object.values(brandStore.error.errors)[0] ||
+      brandStore.error.general ||
+      'Thêm thương hiệu sản phẩm thất bại!'
+
+    toastStore.showToast(message, 'error')
+  }
+}
+
+const confirmDelete = async () => {
+  const res = await brandStore.delete(deleteItem.value._id)
+  if (res) {
+    toastStore.showToast('Xóa thương hiệu sản phẩm thành công!')
+  } else {
+    const message =
+      Object.values(brandStore.error.errors)[0] ||
+      brandStore.error.general ||
+      'Xóa thương hiệu sản phẩm thất bại!'
+
+    toastStore.showToast(message, 'error')
+  }
+  closeDelete()
+}
+
+const clearError = () => {
+  brandStore.clearError()
 }
 </script>
 
@@ -48,7 +116,39 @@ const addBrand = (data) => {
       button-text="Thêm thương hiệu"
       @click="openAddForm"
     />
-    <AdmiToolbar content="Thêm thương hiệu" @add="openAddForm" :items="brands" />
+    <AdminToolbar
+      content="Thêm thương hiệu"
+      @add="openAddForm"
+      :items="brands"
+      :error="error"
+      :loading="loading"
+      :show-sidebar="showSidebar"
+      @edit="openEdit"
+      @delete="openDelete"
+      count-label="Dòng sản phẩm"
+      :fields="[
+        {
+          name: 'logo',
+          type: 'image',
+        },
+        {
+          name: 'name',
+          type: 'title',
+        },
+        {
+          name: 'productLines',
+          type: 'count',
+        },
+        {
+          name: 'productLineNames',
+          type: 'tags',
+        },
+        {
+          name: 'isActive',
+          type: 'status',
+        },
+      ]"
+    />
   </div>
   <DialogForm
     :show="showForm"
@@ -58,9 +158,19 @@ const addBrand = (data) => {
     title="Thêm thương hiệu"
     :fields="fields"
     @close="showForm = false"
-    @submit="addBrand"
-    :errors="errors"
+    @submit="saveBrand"
+    :errors="error.errors"
+    :general-error="error.general"
+    @clear-error="clearError"
+    :data="editData"
+  />
+
+  <ConfirmDialog
+    :show="showConfirm"
+    title="Xóa thương hiệu sản phẩm"
+    message="Bạn có chắc chắn muốn xóa thương hiệu sản phẩm này?"
+    :name="deleteItem?.name"
+    @confirm="confirmDelete"
+    @cancel="showConfirm = false"
   />
 </template>
-
-<style scoped></style>
