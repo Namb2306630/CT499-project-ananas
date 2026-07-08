@@ -1,6 +1,5 @@
 <script setup>
 import ToastMessage from '@/components/common/ToastMessage.vue'
-console.log(ToastMessage)
 </script>
 
 <template>
