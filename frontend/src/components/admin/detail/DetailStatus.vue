@@ -1,7 +1,7 @@
 <script setup>
 const model = defineModel({
   type: Boolean,
-  default: true,
+  default: false,
 })
 
 defineProps({
@@ -27,7 +27,7 @@ defineProps({
     <h3>{{ title }}</h3>
 
     <label class="switch-container">
-      <div>
+      <div class="content">
         <h5 class="p-0 m-0">
           {{ label }}
         </h5>
@@ -60,12 +60,19 @@ defineProps({
   justify-content: space-between;
   align-items: center;
   cursor: pointer;
+  gap: 16px;
+}
+
+.content {
+  flex: 1;
+  min-width: 0;
 }
 
 .switch {
-  position: relative;
+  flex-shrink: 0;
   width: 45px;
   height: 24px;
+  position: relative;
 }
 
 .switch input {
