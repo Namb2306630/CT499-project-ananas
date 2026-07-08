@@ -14,6 +14,11 @@ defineProps({
     type: String,
     default: '',
   },
+
+  productLineNames: {
+    type: String,
+    default: '',
+  },
 })
 
 const formatDate = (date) => {
@@ -33,6 +38,18 @@ const formatDate = (date) => {
       <b>
         {{ count }}
       </b>
+
+      <template v-if="productLineNames">
+        <div class="product-lines">
+          <p class="label p-0 m-0">Dòng sản phẩm</p>
+
+          <div class="tags">
+            <span v-for="name in productLineNames.split(',')" :key="name" class="tag">
+              {{ name.trim() }}
+            </span>
+          </div>
+        </div>
+      </template>
     </div>
 
     <div>
@@ -56,5 +73,31 @@ const formatDate = (date) => {
 .stats {
   display: flex;
   justify-content: space-between;
+}
+
+.product-lines {
+  margin-top: 16px;
+}
+
+.label {
+  color: var(--text-gray-3);
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 8px !important;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tag {
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: var(--bg-active);
+  color: var(--text-white);
+  font-size: 13px;
+  font-weight: 500;
 }
 </style>
