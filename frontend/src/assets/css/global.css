@@ -163,17 +163,42 @@ dialog::backdrop {
   color: var(--text-gray-4);
 }
 
+/* FORM INPUT,... */
+
 input:hover:not(.checkbox-input),
 select:hover {
   border-color: var(--color-bule);
   box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
 }
 
-input:hover:not(.checkbox-input),
+input:focus:not(.checkbox-input),
 select:focus {
   border-color: var(--color-bule);
   box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
 }
+
+/* TEXTAREA */
+textarea {
+  padding: 10px;
+  border: 1px solid var(--border-gray-4);
+  border-radius: 8px;
+  outline: none;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+textarea:hover {
+  border-color: var(--color-bule);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+textarea:focus {
+  border-color: var(--color-bule);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+}
+
+/* ==================================================== */
 
 /* footer */
 .dialog-footer {
@@ -237,6 +262,43 @@ select:focus {
   font-size: 12px;
   color: #777;
 }
+/* ---------------------------------------- */
+/* DETAIL */
+.container-detail {
+  background: var(--color-5);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.detail-grid {
+  width: 100%;
+  max-width: 1000px;
+  margin: auto;
+  padding: 30px 0 30px 0;
+}
+
+.top-info {
+  display: flex;
+  gap: 30px;
+  align-items: center;
+}
+
+.image-box {
+  position: relative;
+}
+
+.image-box img {
+  width: 120px;
+  height: 120px;
+  border-radius: 10px;
+  object-fit: cover;
+}
+.info-card-2 {
+  padding: 15px;
+}
+
+/* ---------------------------------------- */
 
 /* bile */
 @media (max-width: 767px) {
@@ -245,6 +307,24 @@ select:focus {
     max-width: none;
     border-radius: 14px;
   }
+
+  /* DETAIL */
+  /* -------------------------------------- */
+  .top-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .info-card-2 {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .detail-grid {
+    padding: 20px;
+  }
+
+  /* -------------------------------------- */
 }
 dialog::-webkit-scrollbar {
   display: none; /* Chrome, Edge, Safari */
