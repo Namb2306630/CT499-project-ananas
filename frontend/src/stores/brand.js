@@ -14,6 +14,10 @@ export const useBrandStore = defineStore('brand', {
     },
   }),
 
+  persist: {
+    paths: ['brands', 'brand'], // những biến nào trong state được lưu lại thay vì lưu toàn bộ
+  },
+
   actions: {
     clearError() {
       this.error = {
@@ -60,9 +64,10 @@ export const useBrandStore = defineStore('brand', {
         formData.append('name', form.name)
         formData.append('slug', form.slug)
         formData.append('isActive', form.isActive)
+        formData.append('description', form.description)
 
-        if (form.image) {
-          formData.append('logo', form.image)
+        if (form.logo) {
+          formData.append('logo', form.logo)
         }
 
         const res = await BrandService.update(id, formData)
@@ -127,6 +132,7 @@ export const useBrandStore = defineStore('brand', {
 
     async getById(id) {
       try {
+        this.loading = true
         this.clearError()
         const res = await BrandService.getById(id)
 
@@ -140,6 +146,8 @@ export const useBrandStore = defineStore('brand', {
           general: data?.message || 'Lỗi lấy thương hiệu!',
           errors: data?.errors || {},
         }
+      } finally {
+        this.loading = false
       }
     },
 
