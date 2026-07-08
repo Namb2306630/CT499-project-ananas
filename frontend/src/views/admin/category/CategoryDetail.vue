@@ -52,8 +52,6 @@ onMounted(async () => {
       parent: data.parent?._id || data.parent || '',
     }
   }
-
-  console.log('parent:', category.value.parent)
 })
 const handleUpload = (image) => {
   category.value.image = image
@@ -165,6 +163,7 @@ const confirmDelete = async () => {
         />
 
         <DetailStatus
+          v-model="category.isActive"
           title="Trạng thái"
           label="Hiển thị trên website"
           description="Khách hàng có thể thấy danh mục này"
@@ -191,47 +190,6 @@ const confirmDelete = async () => {
 </template>
 
 <style scoped>
-.container-detail {
-  background: var(--color-5);
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-.info-card-2 {
-  padding: 15px;
-}
-
-.detail-grid {
-  width: 100%;
-  max-width: 1000px;
-  margin: auto;
-  padding: 30px 0 30px 0;
-}
-
-.top-info {
-  display: flex;
-  gap: 30px;
-}
-
-.image-box {
-  position: relative;
-}
-
-.image-box img,
-.no-image {
-  width: 120px;
-  height: 120px;
-  border-radius: 10px;
-  object-fit: cover;
-}
-
-.no-image {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 .form {
   flex: 1;
   display: flex;
@@ -251,21 +209,5 @@ select {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 20px;
-}
-
-@media (max-width: 767px) {
-  .top-info {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-  }
-  .info-card-2 {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
-  .detail-grid {
-    padding: 20px;
-  }
 }
 </style>
