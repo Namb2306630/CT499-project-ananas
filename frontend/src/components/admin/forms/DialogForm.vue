@@ -182,7 +182,7 @@ const closeDialog = () => {
 
           <!-- textarea -->
           <textarea
-            class="textarea"
+            class="textarea description"
             id=""
             v-if="field.type === 'textarea'"
             v-model="formData[field.name]"
@@ -248,7 +248,9 @@ select {
   padding: 0 12px;
   outline: none;
   font-size: 14px;
-  transition: 0.2s;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .checkbox-box label {
@@ -258,22 +260,13 @@ select {
   cursor: pointer;
 }
 
-.textarea {
+.description {
   width: 100%;
   min-height: 120px;
   resize: vertical;
   padding: 12px;
-  border: 1px solid var(--color-while);
-  border-radius: 8px;
   outline: none;
   font-size: 14px;
-  transition: 0.3s;
-  margin-bottom: 15px;
-  font-family: inherit;
-}
-
-.textarea:focus {
-  border-color: #333;
 }
 
 /* icon SELECT */
