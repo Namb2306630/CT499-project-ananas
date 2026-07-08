@@ -23,6 +23,12 @@ const loadData = async () => {
   await brandStore.fetchAdminBrands()
 }
 onMounted(async () => {
+  // Hiển thị cache ngay
+  if (brandStore.brands.length > 0) {
+    // Không làm gì vì UI đang lấy từ Pinia
+  }
+
+  // Luôn gọi API ở nền để cập nhật
   await loadData()
 })
 
