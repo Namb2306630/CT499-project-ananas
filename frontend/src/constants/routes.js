@@ -7,4 +7,7 @@ export const ROUTE_NAMES = {
 
   BRAND: 'brand',
   BRAND_DETAIL: 'brand.detail',
+
+  PRODUCT_LINE: 'product-line',
+  PRODUCT_LINE_DETAIL: 'product-line.detail',
 }
