@@ -226,9 +226,7 @@ class ProductLineService {
   }
 
   async getBySlug(slug) {
-    // const productLine = await this.getByIdOrThrow(id);
-    console.log("slug:", slug);
-
+  
     return ProductLine.aggregate([
       {
         $match: {

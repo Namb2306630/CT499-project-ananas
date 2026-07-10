@@ -6,7 +6,7 @@ exports.create = async (req, res, next) => {
     const result = await styleService.create(req.body);
     let message = "";
 
-    if (result.acction === "created") {
+    if (result.action === "created") {
       message = "Thêm kiểu dáng sản phẩm thành công";
     }
     if (result.action === "restored") {
@@ -15,7 +15,7 @@ exports.create = async (req, res, next) => {
     }
     return ApiResponse.success({
       res,
-      data,
+      data: result.data,
       message,
     });
   } catch (err) {

@@ -54,10 +54,11 @@ class StyleService {
       ...payload,
       slug,
     });
-    return Style.create({
+
+    return {
       data: styleCreate,
       action: "created",
-    });
+    };
   }
   async update(id, payload) {
     const style = await this.getByIdOrThrow(id);
@@ -83,6 +84,15 @@ class StyleService {
   async remove(id) {
     const style = await this.getByIdOrThrow(id);
 
+    const hasProduct = await Product.exists({
+      productLine: id,
+      status: { $ne: "inactive" },
+    });
+
+    if (hasProduct) {
+      throw ErrorCode.PRODUCT_LINE_HAS_PRODUCTS();
+    }
+
     style.isActive = false;
     style.isDeleted = true;
 
@@ -90,16 +100,105 @@ class StyleService {
   }
 
   async getAllForUser() {
-    return await Style.find({
-      isDeleted: false,
-      isActive: true,
-    }).sort({ createdAt: -1 });
+    // return await Style.find({
+    //   isDeleted: false,
+    //   isActive: true,
+    // }).sort({ createdAt: -1 });
+
+    return Style.aggregate([
+      {
+        $match: {
+          isDeleted: false,
+          isActive: true,
+        },
+      },
+      {
+        $lookup: {
+          from: "products",
+          let: {
+            styleId: "$_id",
+          },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $eq: ["$styles", "$$styleId"],
+                },
+                status: {
+                  $ne: "discontinued",
+                },
+              },
+            },
+            {
+              $count: "count",
+            },
+          ],
+          as: "productCount",
+        },
+      },
+      {
+        $addFields: {
+          productCount: {
+            $ifNull: [
+              {
+                $arrayElemAt: ["$productCount.count", 0],
+              },
+              0,
+            ],
+          },
+        },
+      },
+    ]);
   }
 
   async getAllForAdmin() {
-    return await Style.find({
-      isDeleted: false,
-    }).sort({ createdAt: -1 });
+    // return await Style.find({
+    //   isDeleted: false,
+    // }).sort({ createdAt: -1 });
+
+    return Style.aggregate([
+      {
+        $match: {
+          isDeleted: false,
+        },
+      },
+      {
+        $lookup: {
+          from: "products",
+          let: {
+            styleId: "$_id",
+          },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $eq: ["$styles", "$$styleId"],
+                },
+                status: {
+                  $ne: "discontinued",
+                },
+              },
+            },
+            {
+              $count: "count",
+            },
+          ],
+          as: "productCount",
+        },
+      },
+      {
+        $addFields: {
+          productCount: {
+            $ifNull: [
+              {
+                $arrayElemAt: ["$productCount.count", 0],
+              },
+              0,
+            ],
+          },
+        },
+      },
+    ]);
   }
 
   async getById(id) {
