@@ -1,0 +1,18 @@
+.dialog-form {
+  width: 500px;
+  border: none;
+  border-radius: 16px;
+  padding: 0;
+  box-shadow: var(--shadow-black);
+  opacity: 0;
+  transform: translateY(-30px) scale(0.95);
+  z-index: 999;
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
+}
+
+.dialog-form.show {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
