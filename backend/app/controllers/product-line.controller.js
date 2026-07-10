@@ -82,10 +82,10 @@ exports.getAllForUser = async (req, res, next) => {
   }
 };
 
-exports.getById = async (req, res, next) => {
+exports.getBySlug = async (req, res, next) => {
   try {
-    const id = req.params.id;
-    const data = await productLineService.getById(id);
+    const slug = req.params.slug;
+    const data = await productLineService.getBySlug(slug);
     return ApiResponse.success({
       res,
       data,

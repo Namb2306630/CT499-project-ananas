@@ -104,10 +104,10 @@ exports.getAllForUser = async (req, res, next) => {
   }
 };
 
-exports.getById = async (req, res, next) => {
+exports.getBySlug = async (req, res, next) => {
   try {
-    const brandId = req.params.id;
-    const data = await brandService.getById(brandId);
+    const slug = req.params.slug;
+    const data = await brandService.getBySlug(slug);
 
     return ApiResponse.success({
       res,

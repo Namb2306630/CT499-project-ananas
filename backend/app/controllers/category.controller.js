@@ -97,10 +97,10 @@ exports.getAllForAdmin = async (req, res, next) => {
   }
 };
 
-exports.getById = async (req, res, next) => {
+exports.getBySlug = async (req, res, next) => {
   try {
-    const categoryId = req.params.id;
-    const data = await categoryService.getById(categoryId);
+    const slug = req.params.slug;
+    const data = await categoryService.getBySlug(slug);
     return ApiResponse.success({
       res,
       data,
