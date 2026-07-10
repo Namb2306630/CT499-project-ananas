@@ -8,16 +8,15 @@ import DetailLayout from '@/components/admin/detail/DetailLayout.vue'
 import DetailActions from '@/components/admin/detail/DetailActions.vue'
 import DetailStatus from '@/components/admin/detail/DetailStatus.vue'
 import DetailStats from '@/components/admin/detail/DetailStats.vue'
-import { storeToRefs } from 'pinia'
+// import { storeToRefs } from 'pinia'
 import { ref, onMounted, watch } from 'vue'
-import HeaderDetail from '@/components/common/HeaderDetail.vue'
+import HeaderDetail from '@/components/admin/detail/HeaderDetail.vue'
 import UploadImage from '@/components/admin/forms/UploadImage.vue'
 import ConfirmDialog from '@/components/common/ConfirmDialog.vue'
 const { showConfirm, deleteItem, openDelete, closeDelete } = useDelete()
 
 const toastStore = useToastStore()
 const brandStore = useBrandStore()
-const { loading } = storeToRefs(brandStore)
 const errors = ref({})
 
 const route = useRoute() // lấy params
@@ -29,8 +28,8 @@ const brand = ref({
   logo: '',
   description: '',
   isActive: true,
-  productLines: 0,
-  productLineNames: '',
+  productLineCount: 0,
+  productLines: '',
   createdAt: '',
 })
 
@@ -44,17 +43,17 @@ watch(
 )
 
 onMounted(async () => {
-  const id = route.params.id
+  const slug = route.params.slug
 
   //kt dữ liệu có trong pinia chưa
-  if (brandStore.brand?._id === id) {
+  if (brandStore.brand?.slug === slug) {
     Object.assign(brand.value, brandStore.brand)
   }
 
-  const data = await brandStore.getById(id)
+  const data = await brandStore.getBySlug(slug)
 
-  if (data) {
-    Object.assign(brand.value, data)
+  if (data && data.length > 0) {
+    Object.assign(brand.value, data[0])
   }
 })
 
@@ -121,6 +120,7 @@ const confirmDelete = async () => {
               width="200px"
               :show-content-in-image="false"
               :show-b-g-image="false"
+              object-fit="contain"
             />
           </div>
           <div class="form">
@@ -129,12 +129,18 @@ const confirmDelete = async () => {
             <p v-if="errors.name" class="p-0 m-0 error">{{ errors.name }}</p>
 
             <label for="" class="p-0 m-0">Đường dẫn thân thiện (Slug)</label>
-            <input name="" id="" v-model="brand.slug" />
-            <p v-if="errors.name" class="p-0 m-0 error">{{ errors.slug }}</p>
+            <input name="" id="" v-model="brand.slug" readonly />
+            <p v-if="errors.slug" class="p-0 m-0 error">{{ errors.slug }}</p>
 
             <label for="" class="p-0 m-0">Mô tả thêm</label>
 
-            <textarea id="" v-model="brand.description" rows="5" class="description"></textarea>
+            <textarea
+              id=""
+              v-model="brand.description"
+              rows="5"
+              class="description"
+              placeholder="Thêm mô tả cho thương hiệu..."
+            ></textarea>
 
             <p v-if="errors.description" class="p-0 m-0 error">
               {{ errors.description }}
@@ -145,10 +151,10 @@ const confirmDelete = async () => {
 
       <div class="row info-card-2">
         <DetailStats
-          :count="brand.productLines"
+          :count="brand.productLineCount"
           :created-at="brand.createdAt"
           count-label="Dòng sản phẩm hiện có"
-          :product-line-names="brand.productLineNames"
+          :list="brand.productLines"
         />
 
         <DetailStatus
@@ -171,39 +177,11 @@ const confirmDelete = async () => {
     title="Xóa thương hiệu sản phẩm"
     message="Bạn có chắc muốn xóa thương hiệu sản phẩm này?"
     @confirm="confirmDelete"
-    @cancel="showConfirm.value = false"
+    @cancel="showConfirm = false"
     :name="deleteItem?.name"
   />
 </template>
 
 <style scoped>
-.form {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.description {
-  min-height: 70px;
-  max-height: 150px;
-  resize: vertical;
-}
-
-input {
-  padding: 10px;
-  border: 1px solid var(--border-gray-4);
-  border-radius: 8px;
-  outline: none;
-  transition:
-    border-color 0.2s ease,
-    box-shadow 0.2s ease;
-}
-
-.row {
-  margin-top: 10px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-}
+@import '../../../assets/css/detail-form.css';
 </style>
