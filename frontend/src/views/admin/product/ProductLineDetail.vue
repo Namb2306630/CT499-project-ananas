@@ -85,7 +85,7 @@ onMounted(async () => {
 const saveProductLine = async () => {
   const res = await productLineStore.update(productLine.value._id, productLine.value)
 
-  if (res?.success) {
+  if (res?.code === 200) {
     errors.value = {}
     toastStore.showToast('Cập nhật dòng sản phẩm thành công', 'success')
     setTimeout(() => {

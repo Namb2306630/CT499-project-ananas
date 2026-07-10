@@ -71,7 +71,7 @@ const saveBrand = async (data) => {
 
   result = await brandStore.createBrand(data)
 
-  if (result?.success) {
+  if (result?.code === 200) {
     showForm.value = false
 
     toastStore.showToast(result.message, 'success')
@@ -90,7 +90,8 @@ const saveBrand = async (data) => {
 const confirmDelete = async () => {
   const res = await brandStore.delete(deleteItem.value._id)
   if (res) {
-    toastStore.showToast('Xóa thương hiệu sản phẩm thành công!')
+    toastStore.showToast(res.message, 'success')
+    closeDelete()
   } else {
     const message =
       Object.values(brandStore.error.errors)[0] ||

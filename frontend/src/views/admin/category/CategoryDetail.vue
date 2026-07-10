@@ -67,7 +67,7 @@ const handleUpload = (image) => {
 
 const saveCategory = async () => {
   const result = await categoryStore.updateCategory(category.value._id, category.value)
-  if (result?.success) {
+  if (result?.code === 200) {
     errors.value = {}
     toastStore.showToast(result.message, 'success')
     setTimeout(() => {

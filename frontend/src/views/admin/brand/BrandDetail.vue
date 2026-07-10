@@ -65,7 +65,7 @@ const handleUpload = (image) => {
 const saveBrand = async () => {
   const res = await brandStore.updateBrand(brand.value._id, brand.value)
 
-  if (res?.success) {
+  if (res?.code === 200) {
     errors.value = {}
     toastStore.showToast(res.message, 'success')
     setTimeout(() => {
