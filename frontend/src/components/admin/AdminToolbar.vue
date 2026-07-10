@@ -1,9 +1,10 @@
 <script setup>
+import { computed } from 'vue'
 import LoadingState from '../common/LoadingState.vue'
-import AddCard from './AddCard.vue'
-import CardItem from './CardItem.vue'
-
-defineProps({
+import AddCard from '../common/AddCard.vue'
+import CardItem from '../common/CardItem.vue'
+import ListItem from '../common/ListItem.vue'
+const props = defineProps({
   content: String,
 
   items: {
@@ -32,30 +33,79 @@ defineProps({
     type: Boolean,
     default: true,
   },
+  showCardItem: {
+    type: Boolean,
+    default: true,
+  },
 
   showSidebar: {
     type: Boolean,
     default: true,
   },
+  objectFit: {
+    type: String,
+    default: 'cover',
+  },
 })
 
 const emit = defineEmits(['add', 'edit', 'delete'])
+
+const columns = computed(() => {
+  return [
+    ...props.fields.filter((f) => f.type !== 'isActive').map((f) => f.width || '1fr'),
+    '120px', // Trạng thái
+    '80px', // Thao tác
+  ].join(' ')
+})
 </script>
 
 <template>
   <div class="container-tool">
     <LoadingState v-if="loading || error?.code === 500" :loading="loading" :error="error" />
     <!-- card data -->
-    <div class="card-grid" :class="{ 'no-sidebar': !showSidebar }">
-      <CardItem
-        v-for="item in items"
-        :key="item._id"
-        :item="item"
-        :fields="fields"
-        @edit="emit('edit', $event)"
-        @delete="emit('delete', $event)"
-        :count-label="countLabel"
-      />
+    <div
+      :class="[
+        showCardItem ? 'card-grid' : 'list-container',
+        { 'no-sidebar': !showSidebar && showCardItem },
+      ]"
+    >
+      <template v-if="showCardItem">
+        <CardItem
+          v-for="item in items"
+          :key="item._id"
+          :item="item"
+          :fields="fields"
+          @edit="emit('edit', $event)"
+          @delete="emit('delete', $event)"
+          :count-label="countLabel"
+          :object-fit="objectFit"
+        />
+      </template>
+
+      <template v-if="!showCardItem">
+        <div class="list-item header" :style="{ gridTemplateColumns: columns }">
+          <div
+            v-for="field in fields.filter((f) => f.type !== 'isActive')"
+            :key="field.name"
+            class="cell"
+          >
+            {{ field.label }}
+          </div>
+
+          <div class="cell">Trạng thái</div>
+          <div class="cell">Thao tác</div>
+        </div>
+
+        <ListItem
+          v-for="item in items"
+          :key="item._id"
+          :item="item"
+          :fields="fields"
+          :count-label="countLabel"
+          @edit="emit('edit', $event)"
+          @delete="emit('delete', $event)"
+        />
+      </template>
 
       <AddCard v-if="showAddCard" :content="content" @click="emit('add')" />
     </div>
@@ -63,6 +113,7 @@ const emit = defineEmits(['add', 'edit', 'delete'])
 </template>
 
 <style scoped>
+@import '../../assets/css/list-item.css';
 .card-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -82,6 +133,13 @@ const emit = defineEmits(['add', 'edit', 'delete'])
 }
 .container-tool {
   margin-top: 10px;
+}
+
+.list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
 }
 
 @media (max-width: 1024px) {
