@@ -10,4 +10,7 @@ export const ROUTE_NAMES = {
 
   PRODUCT_LINE: 'product-line',
   PRODUCT_LINE_DETAIL: 'product-line.detail',
+
+  STYLE: 'style',
+  STYLE_DETAIL: 'style.detail',
 }
