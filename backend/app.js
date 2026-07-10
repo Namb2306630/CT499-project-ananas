@@ -1,22 +1,35 @@
 const express = require("express");
 const cors = require("cors");
+//chung
 const authRouter = require("./app/routes/auth.route");
 const provinceRouter = require("./app/routes/province.route");
 const addressRouter = require("./app/routes/address.route");
-const systemConfigRouter = require("./app/routes/system-config.route");
 const userRouter = require("./app/routes/user.route");
-const categoryRouter = require("./app/routes/category.route");
-const brandRouter = require("./app/routes/brand.route");
-const productLineRouter = require("./app/routes/product-line.route");
-const styleRouter = require("./app/routes/style.route");
-const productRouter = require("./app/routes/product.route");
-const productVariantRouter = require("./app/routes/product-variant.route");
-const collectionRouter = require("./app/routes/collection.route");
-const ProVariItemRouter = require("./app/routes/product-variant-item.route");
-const wishlistRouter = require("./app/routes/wishlist.route");
-const cartRouter = require("./app/routes/cart.route");
-const orderRouter = require("./app/routes/order.route");
-const orderItemRouter = require("./app/routes/order-item.route");
+
+//admin
+const systemConfigRouter = require("./app/routes/admin/system-config.route");
+const categoryRouter = require("./app/routes/admin/category.route");
+const brandRouter = require("./app/routes/admin/brand.route");
+const productLineRouter = require("./app/routes/admin/product-line.route");
+const styleRouter = require("./app/routes/admin/style.route");
+const productRouter = require("./app/routes/admin/product.route");
+const collectionRouter = require("./app/routes/admin/collection.route");
+const ProVariItemRouter = require("./app/routes/admin/product-variant-item.route");
+const productVariantRouter = require("./app/routes/admin/product-variant.route");
+//user
+const productLineUserRouter = require("./app/routes/user/product-line.route");
+const categoryUserRouter = require("./app/routes/user/category.route");
+const brandUserRouter = require("./app/routes/user/brand.route");
+const styleUserRouter = require("./app/routes/user/style.route");
+const productUserRouter = require("./app/routes/user/product.route");
+const collectionUserRouter = require("./app/routes/user/collection.route");
+const ProVariItemUserRouter = require("./app/routes/user/product-variant-item.route");
+const wishlistUserRouter = require("./app/routes/user/wishlist.route");
+const cartUserRouter = require("./app/routes/user/cart.route");
+const orderUserRouter = require("./app/routes/user/order.route");
+const orderItemUserRouter = require("./app/routes/user/order-item.route");
+const productVariantUserRouter = require("./app/routes/user/product-variant.route");
+
 const AppError = require("./app/constants/app-error");
 const multer = require("multer");
 const config = require("./app/config");
@@ -35,24 +48,38 @@ app.use(express.json()); //Express tự động đọc dữ liệu JSON từ req
 app.get("/", (req, res) => {
   res.json({ message: "Welcome to ananas" });
 });
+
 app.use("/uploads", express.static("uploads"));
+
+//chung
 app.use("/api/auth", authRouter);
 app.use("/api/provinces", provinceRouter);
 app.use("/api/addresses", addressRouter);
-app.use("/api/admin/system-config", systemConfigRouter);
 app.use("/api/users", userRouter);
-app.use("/api/categories", categoryRouter);
-app.use("/api/brands", brandRouter);
-app.use("/api/product-lines", productLineRouter);
-app.use("/api/styles", styleRouter);
-app.use("/api/collections", collectionRouter);
-app.use("/api/products", productRouter);
-app.use("/api/product-variants", productVariantRouter);
-app.use("/api/product-variant-items", ProVariItemRouter);
-app.use("/api/wishlists", wishlistRouter);
-app.use("/api/carts", cartRouter);
-app.use("/api/orders", orderRouter);
-app.use("/api/order-items", orderItemRouter);
+
+//admin
+app.use("/api/admin/system-config", systemConfigRouter);
+app.use("/api/admin/categories", categoryRouter);
+app.use("/api/admin/product-lines", productLineRouter);
+app.use("/api/admin/product-lines", productLineRouter);
+app.use("/api/admin/styles", styleRouter);
+app.use("/api/admin/collections", collectionRouter);
+app.use("/api/admin/products", productRouter);
+app.use("/api/admin/product-variant-items", ProVariItemRouter);
+app.use("/api/admin/brands", brandRouter);
+//user
+app.use("/api/brands", brandUserRouter);
+app.use("/api/categories", categoryUserRouter);
+app.use("/api/product-lines", productLineUserRouter);
+app.use("/api/product-lines", productLineUserRouter);
+app.use("/api/styles", styleUserRouter);
+app.use("/api/collections", collectionUserRouter);
+app.use("/api/products", productUserRouter);
+app.use("/api/wishlists", wishlistUserRouter);
+app.use("/api/carts", cartUserRouter);
+app.use("/api/orders", orderUserRouter);
+app.use("/api/order-items", orderItemUserRouter);
+app.use("/api/product-lines", productVariantUserRouter);
 
 app.use((req, res, next) => {
   return next(new AppError(404, "Resource not found"));
