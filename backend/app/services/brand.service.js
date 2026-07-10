@@ -4,7 +4,7 @@ const ErrorCode = require("../constants/errors");
 const updateFields = require("../utils/updateFields.util");
 const { deleteImage } = require("../utils/uploadImage.util");
 const ProductLine = require("../models/product-line.model");
-
+const mongoose = require("mongoose");
 const slugName = (name) =>
   slugify(name, {
     lower: true,
@@ -109,7 +109,6 @@ class BrandService {
     const productLines = await ProductLine.find({
       brand: id,
       isDeleted: false,
-      isActive: true,
     });
 
     if (productLines.length > 0) {
@@ -122,22 +121,114 @@ class BrandService {
   }
 
   async getAllForAdmin() {
-    return await Brand.find({ isDeleted: false }).sort({
-      createdAt: -1,
-    });
+    // return await Brand.find({ isDeleted: false }).sort({
+    //   createdAt: -1,
+    // });
+    return Brand.aggregate([
+      {
+        $match: {
+          isDeleted: false,
+        },
+      },
+      {
+        $lookup: {
+          from: "productlines",
+          let: { brandId: "$_id" },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $eq: ["$brand", "$$brandId"],
+                },
+                isDeleted: false,
+                // isActive: true,
+              },
+            },
+          ],
+          as: "productLines",
+        },
+      },
+      {
+        $addFields: {
+          productLines: {
+            $size: "$productLines",
+          },
+        },
+      },
+      {
+        $sort: {
+          createdAt: -1,
+        },
+      },
+    ]);
   }
 
   async getAllForUser() {
-    return await Brand.find({ isDeleted: false, isActive: true }).sort({
-      createdAt: -1,
-    });
+    // return await Brand.find({ isDeleted: false, isActive: true }).sort({
+    //   createdAt: -1,
+    // });
+    return Brand.aggregate([
+      {
+        $match: {
+          isDeleted: false,
+          isActive: true,
+        },
+      },
+      {
+        $lookup: {
+          from: "productlines",
+          localField: "_id",
+          foreignField: "brand",
+          pipeline: [
+            {
+              $match: {
+                isDeleted: false,
+                isActive: true,
+              },
+            },
+          ],
+          as: "productLines",
+        },
+      },
+    ]);
   }
 
-  async getById(id) {
-    const brand = await Brand.findById(id);
-    if (!brand) throw ErrorCode.BRAND_NOT_EXISTS();
+  async getBySlug(slug) {
+    // const brand = await Brand.findById(id);
+    // if (!brand) throw ErrorCode.BRAND_NOT_EXISTS();
 
-    return brand;
+    // return brand;
+
+    return Brand.aggregate([
+      {
+        $match: {
+          slug: slug,
+          isDeleted: false,
+        },
+      },
+      {
+        $lookup: {
+          from: "productlines",
+          localField: "_id",
+          foreignField: "brand",
+          pipeline: [
+            {
+              $match: {
+                isDeleted: false,
+              },
+            },
+          ],
+          as: "productLines",
+        },
+      },
+      {
+        $addFields: {
+          productLineCount: {
+            $size: "$productLines",
+          },
+        },
+      },
+    ]);
   }
 
   async getByBrand(id) {

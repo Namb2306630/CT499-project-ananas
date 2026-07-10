@@ -3,6 +3,7 @@ const ErrorCode = require("../constants/errors");
 const slugify = require("slugify");
 const updateFields = require("../utils/updateFields.util");
 const Product = require("../models/product.model.js");
+const mongoose = require("mongoose");
 
 const slugName = (name) =>
   slugify(name, {
@@ -30,12 +31,17 @@ class ProductLineService {
     const slug = slugName(name);
 
     const exist = await ProductLine.findOne({ slug });
+    const description =
+      payload.description && payload.description.trim() !== ""
+        ? payload.description
+        : "Không có";
 
-    // CREATE NEW
     if (!exist) {
+      // CREATE NEW
       const doc = await ProductLine.create({
         ...payload,
         slug,
+        description,
       });
 
       return { data: doc, action: "created" };
@@ -84,27 +90,205 @@ class ProductLineService {
 
   async delete(id) {
     const productLine = await this.getByIdOrThrow(id);
+
+    const hasProduct = await Product.exists({
+      productLine: id,
+      status: { $ne: "inactive" },
+    });
+
+    if (hasProduct) {
+      throw ErrorCode.PRODUCT_LINE_HAS_PRODUCTS();
+    }
+
     productLine.isActive = false;
     productLine.isDeleted = true;
+
     await productLine.save();
   }
 
   async getAllForAdmin() {
-    return ProductLine.find({ isDeleted: false }).sort({
-      name: -1,
-    });
+    return ProductLine.aggregate([
+      {
+        $match: {
+          isDeleted: false,
+        },
+      },
+      {
+        $lookup: {
+          from: "brands",
+          localField: "brand", //lấy id của brand
+          foreignField: "_id", //ss id của brand với id của productline
+          as: "brand",
+        },
+      },
+      {
+        // lookup trả về mảng -> unwind ép trả về đối tượng
+        $unwind: {
+          path: "$brand",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        // LEFT JOIN
+        $lookup: {
+          from: "products",
+          //gán id của productLine vào productLineId
+          let: {
+            productLineId: "$_id",
+          },
+          //duyệt vào product
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  //kt 2 id có = ko
+                  $eq: ["$productLine", "$$productLineId"],
+                },
+                status: {
+                  $ne: "discontinued",
+                },
+              },
+            },
+            {
+              $count: "count",
+            },
+          ],
+          as: "productCount",
+        },
+      },
+      {
+        //thêm field mới vào doccument
+        $addFields: {
+          productCount: {
+            $ifNull: [
+              {
+                $arrayElemAt: ["$productCount.count", 0],
+              },
+              0,
+            ],
+          },
+        },
+      },
+      {
+        $sort: {
+          name: -1,
+        },
+      },
+    ]);
   }
 
   async getAllForUser() {
-    return ProductLine.find({ isDeleted: false, isActive: true }).sort({
-      name: -1,
-    });
+    return ProductLine.aggregate([
+      {
+        $match: {
+          isDeleted: false,
+          isActive: true,
+        },
+      },
+      {
+        $lookup: {
+          from: "products",
+          localField: "_id",
+          foreignField: "productLine",
+          as: "products",
+        },
+      },
+      {
+        $addFields: {
+          productCount: {
+            //lấy độ dài của mảng
+            $size: {
+              //input: mảng cần duyệt (products).
+              //as: đặt tên cho từng phần tử khi duyệt là product.
+              //cond: điều kiện giữ lại.
+              $filter: {
+                input: "$products",
+                as: "product",
+                cond: {
+                  $eq: ["$$product.status", "active"],
+                },
+              },
+            },
+          },
+        },
+      },
+      {
+        $project: {
+          products: 0,
+        },
+      },
+      {
+        $sort: {
+          name: -1,
+        },
+      },
+    ]);
   }
 
-  async getById(id) {
-    const productLine = await this.getByIdOrThrow(id);
+  async getBySlug(slug) {
+    // const productLine = await this.getByIdOrThrow(id);
+    console.log("slug:", slug);
 
-    return productLine;
+    return ProductLine.aggregate([
+      {
+        $match: {
+          slug: slug,
+          isDeleted: false,
+        },
+      },
+      {
+        //hiển thị thông tin của brand
+        $lookup: {
+          from: "brands",
+          localField: "brand",
+          foreignField: "_id", //ss id của brand với id của productline
+          as: "brand",
+        },
+      },
+      {
+        // lookup trả về mảng -> unwind ép trả về đối tượng
+        $unwind: {
+          path: "$brand",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $lookup: {
+          from: "products",
+          let: {
+            productLineId: "$_id",
+          },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $eq: ["$productLine", "$$productLineId"],
+                },
+                status: {
+                  $ne: "discontinued",
+                },
+              },
+            },
+            {
+              $count: "count",
+            },
+          ],
+          as: "productCount",
+        },
+      },
+      {
+        $addFields: {
+          productCount: {
+            $ifNull: [
+              {
+                $arrayElemAt: ["$productCount.count", 0],
+              },
+              0,
+            ],
+          },
+        },
+      },
+    ]);
   }
 
   async getProducts(idLine) {

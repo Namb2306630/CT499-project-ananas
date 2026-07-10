@@ -198,8 +198,8 @@ class CategoryService {
     return categories;
   }
 
-  async getById(categoryId) {
-    const category = await Category.findOne({ _id: categoryId });
+  async getBySlug(slug) {
+    const category = await Category.findOne({ slug: slug });
     if (!category) throw ErrorCode.CATEGORY_NOT_EXISTS();
 
     return category;
