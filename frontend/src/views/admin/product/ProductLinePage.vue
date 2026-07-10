@@ -19,7 +19,6 @@ const productLineStore = useProductLineStore()
 const { brands } = storeToRefs(brandStore)
 const { productLines, loading, error } = storeToRefs(productLineStore)
 const showForm = ref(false)
-const title = ref('Thêm thương hiệu mới mới')
 
 const loadData = async () => {
   await productLineStore.fetchForAdmin()
@@ -33,7 +32,6 @@ onMounted(async () => {
 })
 
 const openAddForm = () => {
-  title.value = 'Thêm dòng sản phẩm mới'
   showForm.value = true
   productLineStore.clearError()
 }
@@ -64,7 +62,8 @@ const fields = [
 const confirmDelete = async () => {
   const res = await productLineStore.delete(deleteItem.value._id)
   if (res) {
-    toastStore.showToast('Xóa dòng sản phẩm thành công!')
+    toastStore.showToast(res.message, 'success')
+    closeDelete()
   } else {
     const message =
       Object.values(productLineStore.error.errors)[0] ||
@@ -92,14 +91,14 @@ const openEdit = (productLine) => {
 const save = async (data) => {
   const result = await productLineStore.create(data)
 
-  if (result?.success) {
+  if (result?.code === 200) {
     showForm.value = false
     toastStore.showToast(result.message, 'success')
   } else {
     const message =
       Object.values(productLineStore.error.errors)[0] ||
       productLineStore.error.general ||
-      'Lỗi tọa dữ liệu dòng sản phẩm'
+      'Lỗi thêm dữ liệu dòng sản phẩm'
 
     toastStore.showToast(message, 'error')
   }
@@ -115,6 +114,7 @@ const save = async (data) => {
       place-holder="Tìm dòng sản phẩm..."
       @click="openAddForm"
     />
+    <!--  :show-sidebar="showSidebar"  để ẩn hiện cái sidebar thì số ccarrd thay đổi theo -->
     <AdminToolbar
       content="Thêm dòng sản phẩm"
       :items="productLines"
@@ -175,7 +175,6 @@ const save = async (data) => {
     :errors="error.errors"
     :general-error="error.general"
     @clear-error="clearError"
-    :data="editData"
   />
 
   <ConfirmDialog
