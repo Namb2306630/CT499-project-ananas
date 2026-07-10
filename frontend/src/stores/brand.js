@@ -49,7 +49,7 @@ export const useBrandStore = defineStore('brand', {
         const data = error.response?.data
         this.error = {
           code: data?.code || 500,
-          general: data?.message || 'Lỗi tạo dữ liêu thương hiệu!',
+          general: data?.message || 'Lỗi tạo dữ liệu thương hiệu!',
           errors: data?.errors || {},
         }
       }
@@ -94,14 +94,13 @@ export const useBrandStore = defineStore('brand', {
       try {
         this.loading = true
         this.clearError()
+
         const res = await BrandService.getAll()
-        this.brands = res.data.result.map((brand) => ({
-          ...brand,
-          productLines: brand.productLines?.length || 0,
-          productLineNames: brand.productLines?.map((line) => line.name).join(', '),
-        }))
+
+        this.brands = res.data.result
       } catch (error) {
         const data = error.response?.data
+
         this.error = {
           code: data?.code || 500,
           general: data?.message || 'Lỗi lấy danh sách thương hiệu!',
@@ -130,11 +129,11 @@ export const useBrandStore = defineStore('brand', {
       }
     },
 
-    async getById(id) {
+    async getBySlug(slug) {
       try {
         this.loading = true
         this.clearError()
-        const res = await BrandService.getById(id)
+        const res = await BrandService.getBySlug(slug)
 
         this.brand = res.data.result
 

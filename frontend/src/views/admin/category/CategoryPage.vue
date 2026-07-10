@@ -44,7 +44,7 @@ const openEdit = (category) => {
   router.push({
     name: ROUTE_NAMES.CATEGORY_DETAIL,
     params: {
-      id: category._id,
+      slug: category.slug,
     },
   })
 }
@@ -62,6 +62,7 @@ const fields = computed(() => {
     {
       name: 'parent',
       label: 'Danh mục cha',
+      placeholder: '>-- Chọn danh mục cha (nếu có) --<',
       type: 'select',
       options,
     },

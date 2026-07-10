@@ -1,5 +1,5 @@
 <script setup>
-import HeaderDetail from '@/components/common/HeaderDetail.vue'
+import HeaderDetail from '@/components/admin/detail/HeaderDetail.vue'
 import UploadImage from '@/components/admin/forms/UploadImage.vue'
 import ConfirmDialog from '@/components/common/ConfirmDialog.vue'
 import { storeToRefs } from 'pinia'
@@ -42,9 +42,16 @@ watch(
   },
 )
 onMounted(async () => {
-  const id = route.params.id
+  const slug = route.params.slug
   await categoryStore.fetchCategories()
-  const data = await categoryStore.getCategoryById(id)
+  if (categoryStore.category?.slug === slug) {
+    Object.assign(category.value, categoryStore.category)
+  }
+  const data = await categoryStore.getCategoryBySlug(slug)
+
+  if (data && data.length > 0) {
+    Object.assign(category.value, data[0])
+  }
 
   if (data) {
     category.value = {
@@ -132,7 +139,7 @@ const confirmDelete = async () => {
 
             <label class="p-0 m-0" for=""> Đường dẫn thân thiện (Slug) </label>
 
-            <input id="" v-model="category.slug" />
+            <input id="" v-model="category.slug" readonly />
             <p v-if="errors.slug" class="error p-0 m-0">
               {{ errors.slug }}
             </p>
@@ -190,24 +197,5 @@ const confirmDelete = async () => {
 </template>
 
 <style scoped>
-.form {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-input,
-select {
-  padding: 10px;
-  border: 1px solid var(--border-gray-4);
-  border-radius: 8px;
-}
-
-.row {
-  margin-top: 10px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-}
+@import '../../../assets/css/detail-form.css';
 </style>

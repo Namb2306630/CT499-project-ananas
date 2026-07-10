@@ -18,7 +18,9 @@ const props = defineProps({
 })
 
 const dialog = ref(null)
-const formData = ref({})
+const formData = ref({
+  productId: '',
+})
 const colorCode = ref('#000000')
 const errors = ref({})
 
@@ -109,8 +111,9 @@ const uploadImages = (e) => {
         </div>
         <div class="form-group select-box">
           <label for="">Thuộc sản phẩm *</label>
-          <select name="" id="" v-model="formData.productId">
-            <option value="" disabled selected>Thuộc biến thế</option>
+          <select v-model="formData.productId">
+            <option disabled value="">-- Thuộc biến thể --</option>
+
             <option v-for="item in products" :key="item._id" :value="item._id">
               {{ item.name }}
             </option>
@@ -223,6 +226,7 @@ const uploadImages = (e) => {
 </template>
 
 <style scoped>
+@import '../../../assets/css/dialog.css';
 .label-image {
   display: flex;
   align-items: center;

@@ -24,7 +24,7 @@ defineProps({
 
 <template>
   <div class="card status">
-    <h3>{{ title }}</h3>
+    <h4>{{ title }}</h4>
 
     <label class="switch-container">
       <div class="content">
@@ -32,7 +32,7 @@ defineProps({
           {{ label }}
         </h5>
 
-        <p class="p-0 m-0">
+        <p class="p-0 m-0 description">
           {{ description }}
         </p>
       </div>
@@ -47,11 +47,19 @@ defineProps({
 </template>
 
 <style scoped>
+h4 {
+  border-left: 4px solid var(--bg-active);
+  padding-left: 10px;
+}
 .card {
   padding: 20px;
   border-radius: 12px;
   box-shadow: var(--shadow-gray);
   background: white;
+}
+
+.description {
+  color: var(--text-gray-3);
 }
 
 /* nút hiển thị website */
@@ -61,6 +69,7 @@ defineProps({
   align-items: center;
   cursor: pointer;
   gap: 16px;
+  margin-top: 10px;
 }
 
 .content {
@@ -103,6 +112,8 @@ defineProps({
   background: var(--color-4);
 }
 
+
+/* nút tròn */
 .switch input:checked + .slider::before {
   transform: translateX(21px);
 }

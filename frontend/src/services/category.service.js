@@ -2,26 +2,26 @@ import api from '@/api/axios'
 
 export default {
   getAll() {
-    return api.get('/categories/admin')
+    return api.get('/admin/categories')
   },
 
   getAllForUser() {
     return api.get('/categories')
   },
 
-  getById(id) {
-    return api.get(`/categories/admin/${id}`)
+  getBySlug(slug) {
+    return api.get(`/admin/categories/${slug}`)
   },
 
   create(formData) {
-    return api.post('/categories/admin', formData)
+    return api.post('/admin/categories', formData)
   },
 
   update(id, formData) {
-    return api.put(`/categories/admin/${id}`, formData)
+    return api.put(`/admin/categories/${id}`, formData)
   },
 
   delete(id) {
-    return api.delete(`/categories/admin/${id}`)
+    return api.delete(`/admin/categories/${id}`)
   },
 }

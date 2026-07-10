@@ -6,7 +6,7 @@ import ConfirmDialog from '@/components/common/ConfirmDialog.vue'
 import { useBrandStore } from '@/stores/brand'
 import { useToastStore } from '@/stores/toast'
 import { storeToRefs } from 'pinia'
-import { ref, computed, onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useDelete } from '@/composables/useDelete'
 import { ROUTE_NAMES } from '@/constants/routes'
@@ -15,7 +15,7 @@ const router = useRouter()
 const { showConfirm, deleteItem, openDelete, closeDelete } = useDelete()
 const toastStore = useToastStore()
 const brandStore = useBrandStore()
-const { brands, productLines, loading, error } = storeToRefs(brandStore)
+const { brands, loading, error } = storeToRefs(brandStore)
 const showForm = ref(false)
 const title = ref('Thêm thương hiệu mới mới')
 
@@ -61,7 +61,7 @@ const openEdit = (brand) => {
   router.push({
     name: ROUTE_NAMES.BRAND_DETAIL,
     params: {
-      id: brand._id,
+      slug: brand.slug,
     },
   })
 }
@@ -132,6 +132,7 @@ const clearError = () => {
       @edit="openEdit"
       @delete="openDelete"
       count-label="Dòng sản phẩm"
+      object-fit="cover"
       :fields="[
         {
           name: 'logo',

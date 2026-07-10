@@ -80,7 +80,7 @@ const closeDialog = () => {
           <label for="">Thuộc biến thể</label>
 
           <select id="" v-model="formData.variant">
-            <option value="" disabled>Chọn biến thể</option>
+            <option value="" disabled>-- Chọn biến thể --</option>
 
             <option v-for="item in variants" :key="item._id" :value="item._id">
               {{ item.colorName }}
@@ -127,6 +127,7 @@ const closeDialog = () => {
 </template>
 
 <style scoped>
+@import '../../../assets/css/dialog.css';
 input,
 select {
   height: 42px;

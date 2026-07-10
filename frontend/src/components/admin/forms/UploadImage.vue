@@ -73,6 +73,11 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
+
+  objectFit: {
+    type: String,
+    default: 'cover',
+  },
 })
 
 const image = ref('')
@@ -138,7 +143,13 @@ const upload = (e) => {
       }"
       @click="clickUpload"
     >
-      <img v-if="image" class="preview-image" :src="image" alt="Ảnh đã tải lên" />
+      <img
+        v-if="image"
+        class="preview-image"
+        :src="image"
+        alt="Ảnh đã tải lên"
+        :style="{ objectFit: objectFit }"
+      />
 
       <img
         v-else-if="showBGImage"
@@ -199,7 +210,7 @@ const upload = (e) => {
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  /* object-fit: cover; */
   transition: transform 0.4s ease;
   pointer-events: none;
 }
@@ -362,7 +373,6 @@ dialog::-webkit-scrollbar {
   .upload-box {
     width: 220px !important;
     height: 220px !important;
-    margin: auto;
   }
 
   .content-upload .pload-heading {

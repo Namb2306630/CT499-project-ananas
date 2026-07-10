@@ -15,9 +15,9 @@ defineProps({
     default: '',
   },
 
-  productLineNames: {
-    type: String,
-    default: '',
+  lists: {
+    type: Array,
+    default: () => [],
   },
 })
 
@@ -30,30 +30,29 @@ const formatDate = (date) => {
 
 <template>
   <div class="card stats">
-    <div>
-      <p class="p-0 m-0">
+    <div class="count">
+      <p class="p-0 m-0 label">
         {{ countLabel }}
       </p>
 
       <b>
         {{ count }}
       </b>
-
-      <template v-if="productLineNames">
-        <div class="product-lines">
-          <p class="label p-0 m-0">Dòng sản phẩm</p>
-
-          <div class="tags">
-            <span v-for="name in productLineNames.split(',')" :key="name" class="tag">
-              {{ name.trim() }}
-            </span>
-          </div>
-        </div>
-      </template>
     </div>
+    <template v-if="productLines?.length">
+      <div class="product-lines">
+        <p class="label p-0 m-0">Dòng sản phẩm</p>
 
-    <div>
-      <p class="p-0 m-0">Tạo lúc</p>
+        <div class="tags">
+          <span v-for="list in lists" :key="list._id" class="tag">
+            {{ list.name }}
+          </span>
+        </div>
+      </div>
+    </template>
+
+    <div class="time">
+      <p class="p-0 m-0 label">Tạo lúc</p>
 
       <b>
         {{ formatDate(createdAt) }}
@@ -75,21 +74,23 @@ const formatDate = (date) => {
   justify-content: space-between;
 }
 
-.product-lines {
-  margin-top: 16px;
+.product-lines,
+.count,
+.time {
+  margin-top: 10px;
 }
 
 .label {
   color: var(--text-gray-3);
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 500;
-  margin-bottom: 8px !important;
 }
 
 .tags {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+  margin-top: 5px;
 }
 
 .tag {

@@ -50,7 +50,9 @@ const resetForm = () => {
     }
   })
 
-  data.image = null
+  if (props.showImage) {
+    data.image = null
+  }
   formData.value = data
   uploadImage.value?.reset()
   emit('clearError')
@@ -131,7 +133,7 @@ const closeDialog = () => {
           <!-- select -->
           <div v-if="field.type === 'select'" class="select-box">
             <select v-model="formData[field.name]" :id="formData[field.name]">
-              <option value="" disabled>Chọn {{ field.label }}</option>
+              <option value="" disabled>{{ field.placeholder }}</option>
 
               <option v-for="item in field.options" :key="item._id" :value="item._id">
                 {{ item.name }}
@@ -208,6 +210,7 @@ const closeDialog = () => {
 </template>
 
 <style scoped>
+@import '../../../assets/css/dialog.css';
 dialog label {
   padding: 0;
   margin: 0;
@@ -269,9 +272,14 @@ select {
   font-size: 14px;
 }
 
-/* icon SELECT */
-.select-box i {
-  top: 50%;
+
+h3 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text-gray-4);
+  border-left: 4px solid var(--color-bule);
+  padding-left: 12px;
 }
 
 @media (max-width: 767px) {

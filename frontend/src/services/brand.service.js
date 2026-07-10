@@ -2,7 +2,7 @@ import api from '@/api/axios'
 
 export default {
   getAll() {
-    return api.get('/brands/admin')
+    return api.get('/admin/brands')
   },
   getAllForUser() {
     return api.get('/brands')
@@ -11,15 +11,15 @@ export default {
     return api.get(`/brands/${id}/lines`)
   },
   create(formData) {
-    return api.post('/brands/admin', formData)
+    return api.post('/admin/brands', formData)
   },
   update(id, formData) {
-    return api.put(`/brands/admin/${id}`, formData)
+    return api.put(`/admin/brands/${id}`, formData)
   },
   delete(id) {
-    return api.delete(`/brands/admin/${id}`)
+    return api.delete(`/admin/brands/${id}`)
   },
-  getById(id) {
-    return api.get(`/brands/admin/${id}`)
+  getBySlug(slug) {
+    return api.get(`/admin/brands/${slug}`)
   },
 }

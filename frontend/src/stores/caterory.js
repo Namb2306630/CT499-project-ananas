@@ -140,12 +140,12 @@ export const useCategoryStore = defineStore('category', {
       }
     },
 
-    async getCategoryById(id) {
+    async getCategoryBySlug(slug) {
       try {
         this.loading = true
         this.clearError()
 
-        const res = await CategoryService.getById(id)
+        const res = await CategoryService.getBySlug(slug)
 
         this.category = res.data.result
         return this.category
