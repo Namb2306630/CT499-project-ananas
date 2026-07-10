@@ -35,6 +35,7 @@ const ErrorCode = {
 
   // INVALID_FREE_SHIPPING_THRESHOLD: () =>
   //   new AppError(1014, "Ngưỡng miễn phí vận chuyển không hợp lệ"),
+  
   BRAND_EXIST_PRODUCT: () =>
     new AppError(1014, "Thương hiệu đã tồn tại sản phẩm, không thể xóa"),
   CATEGORY_ALREADY_EXISTS: () => new AppError(1015, "Tên danh mục đã tồn tại"),
@@ -138,6 +139,11 @@ const ErrorCode = {
       1050,
       "Không thể xóa danh mục này vì đang có danh mục con thuộc về nó",
     ),
+
+  PRODUCT_LINE_HAS_PRODUCTS: () => ({
+    code: 1043,
+    message: "Không thể xóa dòng sản phẩm vì vẫn còn sản phẩm thuộc dòng này.",
+  }),
   BAD_REQUEST: (message = "Lỗi") => new AppError(9998, message),
 };
 
