@@ -24,6 +24,6 @@ exports.updateProductLineSchema = Joi.object({
   }),
 
   description: Joi.string().allow(""),
-
+  slug: Joi.string().optional(),
   isActive: Joi.boolean(),
 }).min(0);
