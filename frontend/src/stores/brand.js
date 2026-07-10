@@ -41,10 +41,7 @@ export const useBrandStore = defineStore('brand', {
 
         this.brands.push(res.data.result)
 
-        return {
-          success: true,
-          message: res.data.message,
-        }
+        return res.data
       } catch (error) {
         const data = error.response?.data
         this.error = {
@@ -77,10 +74,7 @@ export const useBrandStore = defineStore('brand', {
         if (index !== -1) {
           this.brands[index] = res.data.result
         }
-        return {
-          success: true,
-          message: res.data.message,
-        }
+        return res.data
       } catch (error) {
         const data = error.response?.data
         this.error = {
@@ -156,7 +150,7 @@ export const useBrandStore = defineStore('brand', {
         const res = await BrandService.delete(id)
         this.brands = this.brands.filter((item) => item._id != id)
 
-        return res.data.message
+        return res.data
       } catch (error) {
         const data = error.response?.data
         this.error = {

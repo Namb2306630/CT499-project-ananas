@@ -31,10 +31,7 @@ export const useProductLineStore = defineStore('product-line', {
 
         this.productLines.push(res.data.result)
 
-        return {
-          success: true,
-          message: res.data.message,
-        }
+        return res.data
       } catch (error) {
         const data = error.response?.data
         this.error = {
@@ -63,10 +60,7 @@ export const useProductLineStore = defineStore('product-line', {
           this.productLines[index] = res.data.result
         }
 
-        return {
-          success: true,
-          message: res.data.message,
-        }
+        return res.data
       } catch (error) {
         const data = error.response?.data
         this.error = {
@@ -84,7 +78,7 @@ export const useProductLineStore = defineStore('product-line', {
 
         this.productLines = this.productLines.filter((item) => item._id != id)
 
-        return res.data.message
+        return res.data
       } catch (error) {
         const data = error.response?.data
         this.error = {

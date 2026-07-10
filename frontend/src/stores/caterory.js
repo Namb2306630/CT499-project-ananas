@@ -13,6 +13,10 @@ export const useCategoryStore = defineStore('category', {
     },
   }),
 
+  persist: {
+    paths: ['categories', 'category'], // những biến nào trong state được lưu lại thay vì lưu toàn bộ
+  },
+
   actions: {
     clearError() {
       this.error = {
@@ -60,10 +64,7 @@ export const useCategoryStore = defineStore('category', {
 
         this.categories.push(res.data.result)
 
-        return {
-          success: true,
-          message: res.data.message,
-        }
+        return res.data
       } catch (error) {
         const data = error.response?.data
 
@@ -71,10 +72,6 @@ export const useCategoryStore = defineStore('category', {
           code: data?.code || 500,
           general: data?.message || 'Thêm danh mục thất bại!',
           errors: data?.errors || {},
-        }
-
-        return {
-          success: false,
         }
       }
     },
@@ -104,10 +101,7 @@ export const useCategoryStore = defineStore('category', {
         if (index !== -1) {
           this.categories[index] = res.data.result
         }
-        return {
-          success: true,
-          message: res.data.message,
-        }
+        return res.data
       } catch (error) {
         const data = error.response?.data
 
@@ -115,10 +109,6 @@ export const useCategoryStore = defineStore('category', {
           code: data?.code || 500,
           general: data?.message || 'Cập nhật thất bại!',
           errors: data?.errors || {},
-        }
-
-        return {
-          success: false,
         }
       }
     },
@@ -128,7 +118,8 @@ export const useCategoryStore = defineStore('category', {
         this.clearError()
         const res = await CategoryService.delete(id)
         this.categories = this.categories.filter((item) => item._id !== id)
-        return res.data.message
+
+        return res.data
       } catch (error) {
         const data = error.response?.data
         this.error = {
