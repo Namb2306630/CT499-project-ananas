@@ -96,15 +96,21 @@ const columns = computed(() => {
           <div class="cell">Thao tác</div>
         </div>
 
-        <ListItem
-          v-for="item in items"
-          :key="item._id"
-          :item="item"
-          :fields="fields"
-          :count-label="countLabel"
-          @edit="emit('edit', $event)"
-          @delete="emit('delete', $event)"
-        />
+        <template v-if="items.length">
+          <ListItem
+            v-for="item in items"
+            :key="item._id"
+            :item="item"
+            :fields="fields"
+            @edit="emit('edit', $event)"
+            @delete="emit('delete', $event)"
+          />
+        </template>
+        <div v-else class="empty">
+          <i class="fa-regular fa-folder-open"></i>
+          <h3>Chưa có dữ liệu</h3>
+          <p>Hiện tại chưa có dữ liệu nào để hiển thị.</p>
+        </div>
       </template>
 
       <AddCard v-if="showAddCard" :content="content" @click="emit('add')" />
