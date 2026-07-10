@@ -5,6 +5,7 @@ const props = defineProps({
   item: Object,
   fields: Array,
   countLabel: String,
+  objectFit: String
 })
 
 const emit = defineEmits(['edit', 'delete'])
@@ -26,6 +27,7 @@ const handleDelete = () => {
           v-if="field.type === 'image' && item[field.name]"
           :src="`${BASE_URL}/${item[field.name]}`"
           alt="Ảnh danh mục"
+          :style="{ objectFit: objectFit }"
         />
 
         <div v-else-if="field.type === 'image'" class="no-image">
@@ -122,7 +124,7 @@ const handleDelete = () => {
   width: 100%;
   height: 200px;
   /* object-fit: cover; cắt ảnh cho vừa */
-  object-fit: cover; /* contain thu nhỏ/to vừa khung */
+  /* object-fit: cover; contain thu nhỏ/to vừa khung */
   display: block;
   transition: transform 0.4s ease;
 }
