@@ -24,6 +24,7 @@ const { categories } = storeToRefs(categoryStore)
 const errors = ref({})
 
 const category = ref({
+  _id: '',
   name: '',
   slug: '',
   image: '',
@@ -65,8 +66,7 @@ const handleUpload = (image) => {
 }
 
 const saveCategory = async () => {
-  const id = route.params.id
-  const result = await categoryStore.updateCategory(id, category.value)
+  const result = await categoryStore.updateCategory(category.value._id, category.value)
   if (result?.success) {
     errors.value = {}
     toastStore.showToast(result.message, 'success')

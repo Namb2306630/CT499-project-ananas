@@ -46,6 +46,7 @@ const confirmDelete = async () => {
 }
 
 const productLine = ref({
+  _id: '',
   name: '',
   slug: '',
   description: '',
@@ -82,8 +83,7 @@ onMounted(async () => {
   loading.value = false
 })
 const saveProductLine = async () => {
-  const id = route.params.id
-  const res = await productLineStore.update(id, productLine.value)
+  const res = await productLineStore.update(productLine.value._id, productLine.value)
 
   if (res?.success) {
     errors.value = {}

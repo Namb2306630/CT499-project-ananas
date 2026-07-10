@@ -23,6 +23,7 @@ const route = useRoute() // lấy params
 const router = useRouter() // điều hướng
 
 const brand = ref({
+  _id: '',
   name: '',
   slug: '',
   logo: '',
@@ -62,8 +63,7 @@ const handleUpload = (image) => {
 }
 
 const saveBrand = async () => {
-  const id = route.params.id
-  const res = await brandStore.updateBrand(id, brand.value)
+  const res = await brandStore.updateBrand(brand.value._id, brand.value)
 
   if (res?.success) {
     errors.value = {}
