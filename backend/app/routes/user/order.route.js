@@ -1,10 +1,13 @@
 const express = require("express");
-const validate = require("../middlewares/validate.middleware");
-const { createOrder, updateOrder } = require("../validations/order.validation");
+const validate = require("../../middlewares/validate.middleware");
+const {
+  createOrder,
+  updateOrder,
+} = require("../../validations/order.validation");
 const router = express.Router();
 
-const orderController = require("../controllers/order.controller");
-const authMiddleware = require("../middlewares/auth.middleware");
+const orderController = require("../../controllers/order.controller");
+const authMiddleware = require("../../middlewares/auth.middleware");
 
 router.post("/", authMiddleware, validate(createOrder), orderController.create);
 
@@ -18,6 +21,5 @@ router.patch(
   validate(updateOrder),
   orderController.update,
 );
-
 
 module.exports = router;

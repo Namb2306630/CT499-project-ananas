@@ -1,14 +1,14 @@
 const express = require("express");
-const controller = require("../controllers/wishlist.controller");
+const controller = require("../../controllers/wishlist.controller");
 const {
   createWishlist,
   updateWishlist,
   moveToCart,
-} = require("../validations/wishlist.validation");
-const authMiddleware = require("../middlewares/auth.middleware");
-const roleMiddleware = require("../middlewares/role.middleware");
-const role = require("../utils/role.util");
-const validate = require("../middlewares/validate.middleware");
+} = require("../../validations/wishlist.validation");
+const authMiddleware = require("../../middlewares/auth.middleware");
+const roleMiddleware = require("../../middlewares/role.middleware");
+const role = require("../../utils/role.util");
+const validate = require("../../middlewares/validate.middleware");
 
 const router = express.Router();
 

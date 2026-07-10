@@ -1,13 +1,13 @@
 const express = require("express");
-const productController = require("../controllers/product.controller");
+const productController = require("../../controllers/product.controller");
 const {
   createProductSchema,
   updateProductSchema,
-} = require("../validations/product.validation");
-const authMiddleware = require("../middlewares/auth.middleware");
-const roleMiddleware = require("../middlewares/role.middleware");
-const role = require("../utils/role.util");
-const validate = require("../middlewares/validate.middleware");
+} = require("../../validations/product.validation");
+const authMiddleware = require("../../middlewares/auth.middleware");
+const roleMiddleware = require("../../middlewares/role.middleware");
+const role = require("../../utils/role.util");
+const validate = require("../../middlewares/validate.middleware");
 
 const router = express.Router();
 
