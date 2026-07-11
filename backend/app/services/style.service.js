@@ -85,7 +85,7 @@ class StyleService {
     const style = await this.getByIdOrThrow(id);
 
     const hasProduct = await Product.exists({
-      productLine: id,
+      styles: id,
       status: { $ne: "inactive" },
     });
 
@@ -201,10 +201,39 @@ class StyleService {
     ]);
   }
 
-  async getById(id) {
-    const style = await this.getByIdOrThrow(id);
-
-    return style;
+  async getBySlug(slug) {
+    // const style = await this.getByIdOrThrow(id);
+    // return style;
+    return Style.aggregate([
+      {
+        $match: {
+          slug: slug,
+          isDeleted: false,
+        },
+      },
+      {
+        $lookup: {
+          from: "products",
+          localField: "_id",
+          foreignField: "styles",
+          pipeline: [
+            {
+              $match: {
+                isDeleted: false,
+              },
+            },
+          ],
+          as: "product",
+        },
+      },
+      {
+        $addFields: {
+          productCount: {
+            $size: "$product",
+          },
+        },
+      },
+    ]);
   }
 
   async getProducts(idStyle) {

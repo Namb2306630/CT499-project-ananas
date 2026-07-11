@@ -24,6 +24,6 @@ router.delete("/:id", styleController.remove);
 
 router.get("/", styleController.getAllForAdmin);
 
-router.get("/:id", styleController.getById);
+router.get("/:slug", styleController.getBySlug);
 
 module.exports = router;

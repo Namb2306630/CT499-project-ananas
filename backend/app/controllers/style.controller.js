@@ -83,9 +83,9 @@ exports.getAllForUser = async (req, res, next) => {
   });
 };
 
-exports.getById = async (req, res, next) => {
-  const id = req.params.id;
-  const data = await styleService.getById(id);
+exports.getBySlug = async (req, res, next) => {
+  const slug = req.params.slug;
+  const data = await styleService.getBySlug(slug);
 
   return ApiResponse.success({
     res,

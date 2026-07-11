@@ -31,17 +31,17 @@ class ProductLineService {
     const slug = slugName(name);
 
     const exist = await ProductLine.findOne({ slug });
-    const description =
-      payload.description && payload.description.trim() !== ""
-        ? payload.description
-        : "Không có";
+    // const description =
+    //   payload.description && payload.description.trim() !== ""
+    //     ? payload.description
+    //     : "Không có";
 
     if (!exist) {
       // CREATE NEW
       const doc = await ProductLine.create({
         ...payload,
         slug,
-        description,
+        // description,
       });
 
       return { data: doc, action: "created" };
@@ -226,7 +226,6 @@ class ProductLineService {
   }
 
   async getBySlug(slug) {
-  
     return ProductLine.aggregate([
       {
         $match: {
