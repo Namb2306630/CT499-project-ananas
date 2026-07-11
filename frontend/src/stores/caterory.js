@@ -62,7 +62,7 @@ export const useCategoryStore = defineStore('category', {
 
         const res = await CategoryService.create(formData)
 
-        this.categories.push(res.data.result)
+        this.categories.unshift(res.data.result)
 
         return res.data
       } catch (error) {

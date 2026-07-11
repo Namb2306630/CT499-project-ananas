@@ -39,7 +39,7 @@ export const useBrandStore = defineStore('brand', {
 
         const res = await BrandService.create(formData)
 
-        this.brands.push(res.data.result)
+        this.brands.unshifts(res.data.result)
 
         return res.data
       } catch (error) {
