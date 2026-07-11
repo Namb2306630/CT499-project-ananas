@@ -4,6 +4,7 @@ import LoadingState from '../common/LoadingState.vue'
 import AddCard from '../common/AddCard.vue'
 import CardItem from '../common/CardItem.vue'
 import ListItem from '../common/ListItem.vue'
+
 const props = defineProps({
   content: String,
 
@@ -62,6 +63,7 @@ const columns = computed(() => {
 <template>
   <div class="container-tool">
     <LoadingState v-if="loading || error?.code === 500" :loading="loading" :error="error" />
+
     <!-- card data -->
     <div
       :class="[
@@ -83,37 +85,46 @@ const columns = computed(() => {
       </template>
 
       <template v-if="!showCardItem">
-        <div class="list-item header" :style="{ gridTemplateColumns: columns }">
-          <div
-            v-for="field in fields.filter((f) => f.type !== 'isActive')"
-            :key="field.name"
-            class="cell"
-          >
-            {{ field.label }}
+        <div class="list-scroll">
+          <div class="list-wrapper">
+            <div class="list-item header" :style="{ gridTemplateColumns: columns }">
+              <div
+                v-for="field in fields.filter((f) => f.type !== 'isActive')"
+                :key="field.name"
+                class="cell"
+              >
+                {{ field.label }}
+              </div>
+              <div class="cell">Trạng thái</div>
+              <div class="cell">Thao tác</div>
+            </div>
+
+            <template v-if="items.length">
+              <ListItem
+                v-for="item in items"
+                :key="item._id"
+                :item="item"
+                :fields="fields"
+                @edit="emit('edit', $event)"
+                @delete="emit('delete', $event)"
+              />
+            </template>
+
+            <div v-else class="empty">
+              <i class="fa-regular fa-folder-open"></i>
+              <h3>Chưa có dữ liệu</h3>
+              <p>Hiện tại chưa có dữ liệu nào để hiển thị.</p>
+            </div>
           </div>
-
-          <div class="cell">Trạng thái</div>
-          <div class="cell">Thao tác</div>
-        </div>
-
-        <template v-if="items.length">
-          <ListItem
-            v-for="item in items"
-            :key="item._id"
-            :item="item"
-            :fields="fields"
-            @edit="emit('edit', $event)"
-            @delete="emit('delete', $event)"
-          />
-        </template>
-        <div v-else class="empty">
-          <i class="fa-regular fa-folder-open"></i>
-          <h3>Chưa có dữ liệu</h3>
-          <p>Hiện tại chưa có dữ liệu nào để hiển thị.</p>
         </div>
       </template>
 
       <AddCard v-if="showAddCard" :content="content" @click="emit('add')" />
+    </div>
+    <div v-if="!loading && items.length === 0 && showCardItem" class="empty">
+      <i class="fa-regular fa-folder-open"></i>
+      <h3>Chưa có dữ liệu</h3>
+      <p>Hiện tại chưa có dữ liệu nào để hiển thị.</p>
     </div>
   </div>
 </template>
@@ -147,20 +158,28 @@ const columns = computed(() => {
   gap: 10px;
   width: 100%;
 }
-
-@media (max-width: 1024px) {
+@media (max-width: 992px) {
   .card-grid,
   .card-grid.no-sidebar {
-    grid-template-columns: repeat(2, 1fr); /* Hiển thị 2 card 1 hàng */
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 
 @media (max-width: 767px) {
   .card-grid,
   .card-grid.no-sidebar {
-    grid-template-columns: repeat(1, 1fr);
+    grid-template-columns: repeat(2, 1fr);
   }
 }
+
+/* Điện thoại nhỏ */
+@media (max-width: 480px) {
+  .card-grid,
+  .card-grid.no-sidebar {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (min-width: 1440px) {
   .card-grid,
   .card-grid.no-sidebar {
@@ -173,5 +192,23 @@ const columns = computed(() => {
   .card-grid.no-sidebar {
     grid-template-columns: repeat(8, 1fr);
   }
+}
+.list-scroll {
+  width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.list-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.list-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  padding: 6px; /* để box-shadow không sát mép */
 }
 </style>
