@@ -130,7 +130,7 @@ const save = async (data) => {
       :fields="[
         {
           name: 'name',
-          label: 'Tên',
+          label: 'Tên dòng SP',
           type: 'title',
           width: '1.5fr',
         },
