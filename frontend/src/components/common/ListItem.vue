@@ -33,11 +33,11 @@ const handleDelete = () => emit('delete', props.item)
         </template>
 
         <template v-else-if="field.type === 'text'">
-          {{ item[field.name] }}
+          {{ item[field.name] || 'Không có' }}
         </template>
 
         <template v-else-if="field.type === 'ref'">
-          {{ item[field.name]?.name || 'Không có' }}
+          {{ item[field.name]?.name }}
         </template>
 
         <template v-else-if="field.type === 'count'">
