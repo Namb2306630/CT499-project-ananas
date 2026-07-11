@@ -7,7 +7,7 @@ import DetailStatus from '@/components/admin/detail/DetailStatus.vue'
 import { useProductLineStore } from '@/stores/product-line'
 import { useBrandStore } from '@/stores/brand'
 import { useToastStore } from '@/stores/toast'
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted, watch, computed } from 'vue'
 import { useDelete } from '@/composables/useDelete'
 import { createSlug } from '@/utils/slug'
 import { useRoute, useRouter } from 'vue-router'
@@ -19,17 +19,19 @@ const toastStore = useToastStore()
 const productLineStore = useProductLineStore()
 const brandStore = useBrandStore()
 const { brands, loading: loadingBrand, errors: errorsBrand } = storeToRefs(brandStore)
-const errors = ref({})
+const { error } = storeToRefs(productLineStore)
 const route = useRoute()
 const router = useRouter()
 const loading = ref(true)
+const errors = computed(() => error.value.errors)
+
 const confirmDelete = async () => {
   if (!deleteItem.value) return
 
   const res = await productLineStore.delete(deleteItem.value._id)
 
   if (res) {
-    toastStore.showToast('Xóa dòng sản phẩm thành công', 'success')
+    toastStore.showToast(res.message, 'success')
     closeDelete()
     setTimeout(() => {
       router.back()
@@ -86,8 +88,8 @@ const saveProductLine = async () => {
   const res = await productLineStore.update(productLine.value._id, productLine.value)
 
   if (res?.code === 200) {
-    errors.value = {}
-    toastStore.showToast('Cập nhật dòng sản phẩm thành công', 'success')
+    productLineStore.clearError()
+    toastStore.showToast(res.message, 'success')
     setTimeout(() => {
       router.back()
     }, 500)
@@ -114,30 +116,31 @@ const saveProductLine = async () => {
       <DetailLayout title="Thông tin cơ bản của dòng sản phẩm">
         <div class="top-info">
           <div class="form">
+            <!-- name -->
             <label for="" class="p-0 m-0">Tên dòng sản phẩm</label>
             <input type="text" name="" id="" v-model="productLine.name" />
             <p v-if="errors.name" class="p-0 m-0 error">{{ errors.name }}</p>
 
+            <!-- slug -->
             <label for="" class="p-0 m-0">Đường dẫn thân thiện (Slug)</label>
             <input type="text" name="" id="" v-model="productLine.slug" readonly />
             <p v-if="errors.slug" class="p-0 m-0 error">{{ errors.slug }}</p>
 
+            <!-- brand -->
             <label for="" class="p-0 m-0">Thuộc thương hiệu</label>
-
             <div class="select-box">
               <select id="" v-model="productLine.brand">
                 <option v-for="brand in brands" :key="brand._id" :value="brand._id">
                   {{ brand.name }}
                 </option>
               </select>
-
               <i class="fa-solid fa-chevron-down"></i>
             </div>
-
             <p v-if="errors.brand" class="error">
               {{ errors.brand }}
             </p>
 
+            <!-- mô tả -->
             <label for="" class="p-0 m-0">Mô tả thêm</label>
             <textarea
               id=""
