@@ -29,7 +29,7 @@ export const useStyleStore = defineStore('style', {
 
         const res = await StyleService.create(data)
 
-        this.styles.push(res.data.result)
+        this.styles.unshift(res.data.result)
 
         return res.data
       } catch (error) {
@@ -58,7 +58,7 @@ export const useStyleStore = defineStore('style', {
         const index = this.styles.findIndex((item) => item._id === id)
 
         if (index !== -1) {
-          this.styles[index] = res.data.reslut
+          this.styles[index] = res.data.result
         }
 
         return res.data
@@ -91,10 +91,10 @@ export const useStyleStore = defineStore('style', {
 
     async fetchForAdmin() {
       try {
+        localStorage.clear()
         this.clearError()
         this.loading = true
         const res = await StyleService.fetchForAdmin()
-
         this.styles = res.data.result
       } catch (error) {
         const res = error.response?.data
@@ -121,6 +121,27 @@ export const useStyleStore = defineStore('style', {
           code: res?.code || 500,
           general: res?.message || 'Lỗi lấy danh sách kiểu dáng sản phẩm',
           errors: res?.errors || {},
+        }
+      } finally {
+        this.loading = false
+      }
+    },
+
+    async getBySlug(slug) {
+      try {
+        this.loading = true
+        this.clearError()
+        const res = await StyleService.getBySlug(slug)
+
+        this.style = res.data.result
+
+        return this.style
+      } catch (error) {
+        const data = error.response?.data
+        this.error = {
+          code: data?.code || 500,
+          general: data?.message || 'Lỗi lấy kiểu dáng sản phẩm!',
+          errors: data?.errors || {},
         }
       } finally {
         this.loading = false
