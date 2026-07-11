@@ -20,11 +20,12 @@ import UserPage from '@/views/admin/user/UserPage.vue'
 import BrandPage from '@/views/admin/brand/BrandPage.vue'
 import ProductVariantPage from '@/views/admin/product/ProductVariantPage.vue'
 
-//nhap
+//Detail
 import ProductVariantItemPage from '@/views/admin/product/ProductVariantItemPage.vue'
 import CategoryDetail from '@/views/admin/category/CategoryDetail.vue'
 import BrandDetail from '@/views/admin/brand/BrandDetail.vue'
 import ProductLineDetail from '@/views/admin/product/ProductLineDetail.vue'
+import StyleDetail from '@/views/admin/style/StyleDetail.vue'
 //notfound
 import NotFoudPage from '@/views/NotFoundPage.vue'
 
@@ -149,6 +150,12 @@ const router = createRouter({
       path: '/admin/product-lines/:slug',
       name: ROUTE_NAMES.PRODUCT_LINE_DETAIL,
       component: () => ProductLineDetail,
+    },
+
+    {
+      path: '/admin/styles/:slug',
+      name: ROUTE_NAMES.STYLE_DETAIL,
+      component: () => StyleDetail,
     },
   ],
 })
