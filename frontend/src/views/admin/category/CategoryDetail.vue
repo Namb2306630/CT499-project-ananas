@@ -20,8 +20,8 @@ const { showConfirm, deleteItem, openDelete, closeDelete } = useDelete()
 const toastStore = useToastStore()
 const route = useRoute()
 const categoryStore = useCategoryStore()
-const { categories } = storeToRefs(categoryStore)
-const errors = ref({})
+const { categories, error } = storeToRefs(categoryStore)
+const errors = computed(() => error.value.errors)
 
 const category = ref({
   _id: '',

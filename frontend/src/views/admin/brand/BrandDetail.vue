@@ -4,12 +4,13 @@ import { useToastStore } from '@/stores/toast'
 import { useRoute, useRouter } from 'vue-router'
 import { createSlug } from '@/utils/slug'
 import { useDelete } from '@/composables/useDelete'
+import { storeToRefs } from 'pinia'
 import DetailLayout from '@/components/admin/detail/DetailLayout.vue'
 import DetailActions from '@/components/admin/detail/DetailActions.vue'
 import DetailStatus from '@/components/admin/detail/DetailStatus.vue'
 import DetailStats from '@/components/admin/detail/DetailStats.vue'
 // import { storeToRefs } from 'pinia'
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted, watch, computed } from 'vue'
 import HeaderDetail from '@/components/admin/detail/HeaderDetail.vue'
 import UploadImage from '@/components/admin/forms/UploadImage.vue'
 import ConfirmDialog from '@/components/common/ConfirmDialog.vue'
@@ -17,7 +18,9 @@ const { showConfirm, deleteItem, openDelete, closeDelete } = useDelete()
 
 const toastStore = useToastStore()
 const brandStore = useBrandStore()
-const errors = ref({})
+const { error } = storeToRefs(brandStore)
+
+const errors = computed(() => error.value.errors)
 
 const route = useRoute() // lấy params
 const router = useRouter() // điều hướng
