@@ -113,7 +113,7 @@ const addStyle = async (data) => {
       :fields="[
         {
           name: 'name',
-          label: 'Tên',
+          label: 'Kiểu dáng',
           type: 'title',
           width: '1.5fr',
         },
