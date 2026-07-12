@@ -61,17 +61,17 @@ app.use("/api/users", userRouter);
 app.use("/api/admin/system-config", systemConfigRouter);
 app.use("/api/admin/categories", categoryRouter);
 app.use("/api/admin/product-lines", productLineRouter);
-app.use("/api/admin/product-lines", productLineRouter);
 app.use("/api/admin/styles", styleRouter);
 app.use("/api/admin/collections", collectionRouter);
 app.use("/api/admin/products", productRouter);
 app.use("/api/admin/product-variant-items", ProVariItemRouter);
 app.use("/api/admin/brands", brandRouter);
+app.use("/api/admin/product-variants", productVariantRouter);
 //user
 app.use("/api/brands", brandUserRouter);
 app.use("/api/categories", categoryUserRouter);
 app.use("/api/product-lines", productLineUserRouter);
-app.use("/api/product-lines", productLineUserRouter);
+app.use("/api/product-variant-items", ProVariItemUserRouter);
 app.use("/api/styles", styleUserRouter);
 app.use("/api/collections", collectionUserRouter);
 app.use("/api/products", productUserRouter);
@@ -79,7 +79,7 @@ app.use("/api/wishlists", wishlistUserRouter);
 app.use("/api/carts", cartUserRouter);
 app.use("/api/orders", orderUserRouter);
 app.use("/api/order-items", orderItemUserRouter);
-app.use("/api/product-lines", productVariantUserRouter);
+app.use("/api/product-variants", productVariantUserRouter);
 
 app.use((req, res, next) => {
   return next(new AppError(404, "Resource not found"));
