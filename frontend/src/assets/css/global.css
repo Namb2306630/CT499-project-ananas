@@ -77,6 +77,22 @@ dialog::backdrop {
   z-index: 998;
 }
 
+/* nút edit/delete các CardItem, ListItem */
+.delete i,
+.edit i {
+  transition: 0.3s ease;
+}
+
+.delete:hover i {
+  transform: rotate(20deg);
+}
+
+.edit:hover i {
+  transform: rotate(-20deg);
+}
+
+/* ================ */
+
 @keyframes backdropShow {
   from {
     opacity: 0;
