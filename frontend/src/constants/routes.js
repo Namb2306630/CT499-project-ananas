@@ -13,4 +13,7 @@ export const ROUTE_NAMES = {
 
   STYLE: 'style',
   STYLE_DETAIL: 'style.detail',
+
+  COLLECTION: 'collection',
+  COLLECTION_DETAIL: 'collection.detail',
 }
