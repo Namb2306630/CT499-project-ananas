@@ -116,6 +116,8 @@ export const useProductLineStore = defineStore('product-line', {
         this.clearError()
         const res = await ProductLineService.getAllForUser()
         this.productLines = res.data.result
+
+        return res.data
       } catch (error) {
         const data = error.response?.data
         this.error = {
