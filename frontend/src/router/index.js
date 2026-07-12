@@ -31,6 +31,7 @@ import NotFoudPage from '@/views/NotFoundPage.vue'
 
 //
 import { useAuthStore } from '@/stores/auth'
+import CollectionDetail from '@/views/admin/collection/CollectionDetail.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -156,6 +157,12 @@ const router = createRouter({
       path: '/admin/styles/:slug',
       name: ROUTE_NAMES.STYLE_DETAIL,
       component: () => StyleDetail,
+    },
+
+    {
+      path: '/admin/collestions/:slug',
+      name: ROUTE_NAMES.COLLECTION_DETAIL,
+      component: () => CollectionDetail,
     },
   ],
 })
