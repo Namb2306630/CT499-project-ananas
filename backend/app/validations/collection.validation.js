@@ -20,7 +20,7 @@ exports.updateCollectionSchema = Joi.object({
   description: Joi.string().allow(""),
 
   sellingPrice: Joi.number().min(0),
-
+  slug: Joi.string().optional(),
   isDeleted: Joi.boolean(),
   isActive: Joi.boolean(),
 }).min(1);

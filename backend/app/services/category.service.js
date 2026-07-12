@@ -176,13 +176,72 @@ class CategoryService {
   }
 
   async getAllForAdmin() {
-    return await Category.find({
-      isDeleted: false,
-    })
-      .populate("parent")
-      .sort({
-        createdAt: -1,
-      });
+    return await Category.aggregate([
+      {
+        $match: {
+          isDeleted: false,
+        },
+      },
+      {
+        $lookup: {
+          from: "categories",
+          localField: "parent",
+          foreignField: "_id",
+          as: "parent",
+        },
+      },
+      {
+        $unwind: {
+          path: "$parent",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $lookup: {
+          from: "products",
+          let: {
+            categoryId: "$_id",
+          },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    {
+                      $in: ["$$categoryId", "$categories"],
+                    },
+                    {
+                      $ne: ["$status", "discontinued"],
+                    },
+                  ],
+                },
+              },
+            },
+            {
+              $count: "count",
+            },
+          ],
+          as: "productCount",
+        },
+      },
+      {
+        $addFields: {
+          productCount: {
+            $ifNull: [
+              {
+                $arrayElemAt: ["$productCount.count", 0],
+              },
+              0,
+            ],
+          },
+        },
+      },
+      {
+        $sort: {
+          createdAt: -1,
+        },
+      },
+    ]);
   }
 
   async getAllForUser() {
@@ -199,7 +258,57 @@ class CategoryService {
   }
 
   async getBySlug(slug) {
-    const category = await Category.findOne({ slug: slug });
+    // const category = await Category.findOne({ slug: slug });
+    // if (!category) throw ErrorCode.CATEGORY_NOT_EXISTS();
+
+    // return category;
+    const [category] = await Category.aggregate([
+      {
+        $match: {
+          isDeleted: false,
+        },
+      },
+      {
+        $lookup: {
+          from: "products",
+          let: {
+            categoryId: "$_id",
+          },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    {
+                      $in: ["$$categoryId", "$categories"],
+                    },
+                    {
+                      $ne: ["$status", "discontinued"],
+                    },
+                  ],
+                },
+              },
+            },
+            {
+              $count: "count",
+            },
+          ],
+          as: "productCount",
+        },
+      },
+      {
+        $addFields: {
+          productCount: {
+            $ifNull: [
+              {
+                $arrayElemAt: ["$productCount.count", 0],
+              },
+              0,
+            ],
+          },
+        },
+      },
+    ]);
     if (!category) throw ErrorCode.CATEGORY_NOT_EXISTS();
 
     return category;

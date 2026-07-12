@@ -199,7 +199,7 @@ class BrandService {
 
     // return brand;
 
-    return Brand.aggregate([
+    const [brand] = await Brand.aggregate([
       {
         $match: {
           slug: slug,
@@ -229,6 +229,10 @@ class BrandService {
         },
       },
     ]);
+
+    if (!brand) throw ErrorCode.BRAND_NOT_EXISTS();
+
+    return brand;
   }
 
   async getByBrand(id) {

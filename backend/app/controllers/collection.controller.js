@@ -8,12 +8,12 @@ exports.create = async (req, res, next) => {
     let message = "";
 
     if (result.action === "created") {
-      message = "Thêm dòng sản phẩm thành công";
+      message = "Thêm bộ sưu tập sản phẩm thành công";
     }
 
     if (result.action === "restored") {
       message =
-        "Dòng sản phẩm đã tồn tại trước đó, hệ thống đã khôi phục và cập nhật lại";
+        "Bộ sưu tập sản phẩm đã tồn tại trước đó, hệ thống đã khôi phục và cập nhật lại";
     }
 
     return ApiResponse.success({
@@ -33,6 +33,7 @@ exports.update = async (req, res, next) => {
     return ApiResponse.success({
       res,
       data,
+      message: "Cập nhật dữ liệu cho bộ sưu tập thành công!",
     });
   } catch (err) {
     next(err);
@@ -46,6 +47,7 @@ exports.remove = async (req, res, next) => {
     return ApiResponse.success({
       res,
       data: true,
+      message: "Xóa bộ sưu tập sản phẩm thành công!",
     });
   } catch (err) {
     next(err);
@@ -59,7 +61,7 @@ exports.getAllForAdmin = async (req, res, next) => {
       return ApiResponse.success({
         res,
         data: [],
-        message: "Không có dòng sản phẩm nào!",
+        message: "Không có bộ sưu tập sản phẩm nào!",
       });
     }
     return ApiResponse.success({
@@ -78,7 +80,7 @@ exports.getAllForUser = async (req, res, next) => {
       return ApiResponse.success({
         res,
         data: [],
-        message: "Không có dòng sản phẩm nào!",
+        message: "Không có bộ sưu tập sản phẩm nào!",
       });
     }
     return ApiResponse.success({
@@ -90,10 +92,10 @@ exports.getAllForUser = async (req, res, next) => {
   }
 };
 
-exports.getById = async (req, res, next) => {
+exports.getBySlug = async (req, res, next) => {
   try {
-    const id = req.params.id;
-    const data = await service.getById(id);
+    const slug = req.params.slug;
+    const data = await service.getBySlug(slug);
     return ApiResponse.success({
       res,
       data,

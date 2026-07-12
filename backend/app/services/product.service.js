@@ -116,18 +116,18 @@ class ProductService {
       });
 
       // tăng productCount
-      await Category.updateMany(
-        {
-          _id: {
-            $in: categories,
-          },
-        },
-        {
-          $inc: {
-            productCount: 1,
-          },
-        },
-      );
+      // await Category.updateMany(
+      //   {
+      //     _id: {
+      //       $in: categories,
+      //     },
+      //   },
+      //   {
+      //     $inc: {
+      //       productCount: 1,
+      //     },
+      //   },
+      // );
 
       return { data: product, action: "created" };
     }
@@ -142,18 +142,18 @@ class ProductService {
 
       await exist.save();
 
-      await Category.updateMany(
-        {
-          _id: {
-            $in: exist.categories,
-          },
-        },
-        {
-          $inc: {
-            productCount: 1,
-          },
-        },
-      );
+      // await Category.updateMany(
+      //   {
+      //     _id: {
+      //       $in: exist.categories,
+      //     },
+      //   },
+      //   {
+      //     $inc: {
+      //       productCount: 1,
+      //     },
+      //   },
+      // );
 
       return {
         data: exist,
@@ -168,7 +168,7 @@ class ProductService {
     const product = await this.getByIdOrThrow(id);
 
     // lưu category cũ trước khi update
-    const oldCategories = product.categories.map((id) => id.toString());
+    // const oldCategories = product.categories.map((id) => id.toString());
 
     const { name, costPrice, discountPercent } = payload;
 
@@ -205,9 +205,9 @@ class ProductService {
     ]);
 
     // cập nhật productCount nếu đổi category
-    if (Array.isArray(payload.categories)) {
-      await this.updateCategoryCount(oldCategories, payload.categories);
-    }
+    // if (Array.isArray(payload.categories)) {
+    //   await this.updateCategoryCount(oldCategories, payload.categories);
+    // }
 
     const system = await systemConfigService.get();
     if (!system) throw ErrorCode.SYSTEM_NOT_EXISTS();
@@ -248,18 +248,18 @@ class ProductService {
 
     await product.save();
 
-    await Category.updateMany(
-      {
-        _id: {
-          $in: product.categories,
-        },
-      },
-      {
-        $inc: {
-          productCount: -1,
-        },
-      },
-    );
+    // await Category.updateMany(
+    //   {
+    //     _id: {
+    //       $in: product.categories,
+    //     },
+    //   },
+    //   {
+    //     $inc: {
+    //       productCount: -1,
+    //     },
+    //   },
+    // );
   }
 
   async getAllForAdmin() {
@@ -316,47 +316,47 @@ class ProductService {
     return product.variants;
   }
 
-  async updateCategoryCount(oldCategories = [], newCategories = []) {
-    // category bị bỏ đi
-    const removed = oldCategories.filter(
-      (id) => !newCategories.includes(id.toString()),
-    );
+  // async updateCategoryCount(oldCategories = [], newCategories = []) {
+  //   // category bị bỏ đi
+  //   const removed = oldCategories.filter(
+  //     (id) => !newCategories.includes(id.toString()),
+  //   );
 
-    // category thêm mới
-    const added = newCategories.filter(
-      (id) => !oldCategories.map((x) => x.toString()).includes(id.toString()),
-    );
+  //   // category thêm mới
+  //   const added = newCategories.filter(
+  //     (id) => !oldCategories.map((x) => x.toString()).includes(id.toString()),
+  //   );
 
-    if (removed.length > 0) {
-      await Category.updateMany(
-        {
-          _id: {
-            $in: removed,
-          },
-        },
-        {
-          $inc: {
-            productCount: -1,
-          },
-        },
-      );
-    }
+  //   if (removed.length > 0) {
+  //     await Category.updateMany(
+  //       {
+  //         _id: {
+  //           $in: removed,
+  //         },
+  //       },
+  //       {
+  //         $inc: {
+  //           productCount: -1,
+  //         },
+  //       },
+  //     );
+  //   }
 
-    if (added.length > 0) {
-      await Category.updateMany(
-        {
-          _id: {
-            $in: added,
-          },
-        },
-        {
-          $inc: {
-            productCount: 1,
-          },
-        },
-      );
-    }
-  }
+  //   if (added.length > 0) {
+  //     await Category.updateMany(
+  //       {
+  //         _id: {
+  //           $in: added,
+  //         },
+  //       },
+  //       {
+  //         $inc: {
+  //           productCount: 1,
+  //         },
+  //       },
+  //     );
+  //   }
+  // }
 }
 
 module.exports = new ProductService();

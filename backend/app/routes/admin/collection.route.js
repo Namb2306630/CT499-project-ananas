@@ -29,5 +29,5 @@ router.delete("/:id", controller.remove);
 
 router.get("/", controller.getAllForAdmin);
 
-router.get("/:id", controller.getById);
+router.get("/:slug", controller.getBySlug);
 module.exports = router;

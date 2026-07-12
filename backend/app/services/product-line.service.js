@@ -226,7 +226,7 @@ class ProductLineService {
   }
 
   async getBySlug(slug) {
-    return ProductLine.aggregate([
+    const [productLine] = await ProductLine.aggregate([
       {
         $match: {
           slug: slug,
@@ -286,6 +286,10 @@ class ProductLineService {
         },
       },
     ]);
+    if (!productLine) {
+      throw ErrorCode.PRODUCT_LINE_NOT_EXISTS();
+    }
+    return productLine;
   }
 
   async getProducts(idLine) {

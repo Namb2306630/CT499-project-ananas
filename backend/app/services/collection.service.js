@@ -15,7 +15,7 @@ class CollectionService {
   async getByIdThrow(id) {
     const collection = await Collection.findOne({ _id: id, isDeleted: false });
 
-    if (!collection) throw ErrorCode.CATEGORY_NOT_EXISTS();
+    if (!collection) throw ErrorCode.COLLECTION_NOT_EXISTS();
     return collection;
   }
 
@@ -78,19 +78,77 @@ class CollectionService {
   async remove(id) {
     const collection = await this.getByIdThrow(id);
 
+    const hasProduct = await Product.exists({
+      productCollection: id,
+      status: { $ne: "inactive" },
+    });
+
+    if (hasProduct) {
+      throw ErrorCode.COLLECTION_HAS_PRODUCTS();
+    }
+
     collection.isActive = false;
     collection.isDeleted = true;
 
     await collection.save();
   }
   async getAllForAdmin() {
-    const collections = await Collection.find({
-      isDeleted: false,
-    }).sort({
-      name: -1,
-    });
+    // const collections = await Collection.find({
+    //   isDeleted: false,
+    // }).sort({
+    //   name: -1,
+    // });
 
-    return collections;
+    // return collections;
+    return await Collection.aggregate([
+      {
+        $match: {
+          isDeleted: false,
+        },
+      },
+      {
+        $lookup: {
+          from: "products",
+          let: {
+            collectionId: "$_id",
+          },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $eq: ["$productCollection", "$$collectionId"],
+                },
+                status: {
+                  $ne: "discontinued",
+                },
+              },
+            },
+            {
+              $count: "count",
+            },
+          ],
+          as: "productCount",
+        },
+      },
+      {
+        //thêm field mới vào doccument
+        $addFields: {
+          productCount: {
+            $ifNull: [
+              {
+                $arrayElemAt: ["$productCount.count", 0],
+              },
+              0,
+            ],
+          },
+        },
+      },
+      {
+        $sort: {
+          name: -1,
+        },
+      },
+    ]);
   }
   async getAllForUser() {
     const collections = await Collection.find({
@@ -102,8 +160,57 @@ class CollectionService {
 
     return collections;
   }
-  async getById(id) {
-    const collection = this.getByIdThrow(id);
+  async getBySlug(slug) {
+    // const collection = this.getByIdThrow(id);
+
+    // return collection;
+    const [collection] = await Collection.aggregate([
+      {
+        $match: {
+          slug: slug,
+          isDeleted: false,
+        },
+      },
+      {
+        $lookup: {
+          from: "products",
+          let: {
+            collectionId: "$_id",
+          },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $eq: ["$productCollection", "$$collectionId"],
+                },
+                status: {
+                  $ne: "discontinued",
+                },
+              },
+            },
+            {
+              $count: "count",
+            },
+          ],
+          as: "productCount",
+        },
+      },
+      {
+        $addFields: {
+          productCount: {
+            $ifNull: [
+              {
+                $arrayElemAt: ["$productCount.count", 0],
+              },
+              0,
+            ],
+          },
+        },
+      },
+    ]);
+    if (!collection) {
+      throw ErrorCode.COLLECTION_NOT_EXISTS();
+    }
 
     return collection;
   }
@@ -113,7 +220,7 @@ class CollectionService {
     // console.log(all);
 
     const products = await Product.find({
-      collection: collectionId,
+      productCollection: collectionId,
       status: { $ne: "inactive" },
     }).populate("variants");
 
