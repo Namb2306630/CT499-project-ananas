@@ -76,11 +76,11 @@ onMounted(async () => {
   const data = await productLineStore.getBySlug(slug)
 
   //thêm dữ liệu và productLine
-  if (data && data.length > 0) {
+  if (data) {
     //copy data[0] qua productLine.value
-    Object.assign(productLine.value, data[0])
+    Object.assign(productLine.value, data)
 
-    productLine.value.brand = data[0].brand._id
+    productLine.value.brand = data.brand._id
   }
   loading.value = false
 })
@@ -96,7 +96,7 @@ const saveProductLine = async () => {
   } else {
     const message =
       Object.values(productLineStore.error.errors)[0] ||
-      productLineStore.error.errors ||
+      productLineStore.error.general ||
       'Cập nhật dòng sản phẩm thất bại!'
 
     toastStore.showToast(message, 'error')
@@ -105,9 +105,8 @@ const saveProductLine = async () => {
 </script>
 
 <template>
-  <div class="container-detail">
+  <div v-if="!loading" class="container-detail">
     <HeaderDetail
-      v-if="!loading"
       title-delete="Xóa dòng sản phẩm"
       title-go-back="Chi tiết dòng sản phẩm"
       @delete="openDelete(productLine)"

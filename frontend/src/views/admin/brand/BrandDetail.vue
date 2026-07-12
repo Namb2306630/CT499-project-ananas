@@ -19,7 +19,7 @@ const { showConfirm, deleteItem, openDelete, closeDelete } = useDelete()
 const toastStore = useToastStore()
 const brandStore = useBrandStore()
 const { error } = storeToRefs(brandStore)
-
+const loading = ref(true)
 const errors = computed(() => error.value.errors)
 
 const route = useRoute() // lấy params
@@ -56,9 +56,10 @@ onMounted(async () => {
 
   const data = await brandStore.getBySlug(slug)
 
-  if (data && data.length > 0) {
-    Object.assign(brand.value, data[0])
+  if (data) {
+    Object.assign(brand.value, data)
   }
+  loading.value = false
 })
 
 const handleUpload = (image) => {
@@ -106,7 +107,7 @@ const confirmDelete = async () => {
 </script>
 
 <template>
-  <div class="container-detail">
+  <div v-if="!loading" class="container-detail">
     <HeaderDetail
       title-delete="Xóa thương hiệu sản phẩm"
       title-go-back="Chi tiết thương hiệu"

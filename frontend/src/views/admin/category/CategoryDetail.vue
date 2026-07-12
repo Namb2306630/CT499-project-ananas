@@ -22,7 +22,7 @@ const route = useRoute()
 const categoryStore = useCategoryStore()
 const { categories, error } = storeToRefs(categoryStore)
 const errors = computed(() => error.value.errors)
-
+const loading = ref(true)
 const category = ref({
   _id: '',
   name: '',
@@ -50,8 +50,8 @@ onMounted(async () => {
   }
   const data = await categoryStore.getCategoryBySlug(slug)
 
-  if (data && data.length > 0) {
-    Object.assign(category.value, data[0])
+  if (data) {
+    Object.assign(category.value, data)
   }
 
   if (data) {
@@ -60,6 +60,7 @@ onMounted(async () => {
       parent: data.parent?._id || data.parent || '',
     }
   }
+  loading.value = false
 })
 const handleUpload = (image) => {
   category.value.image = image
@@ -108,7 +109,7 @@ const confirmDelete = async () => {
 </script>
 
 <template>
-  <div class="container-detail">
+  <div v-if="!loading" class="container-detail">
     <HeaderDetail
       title-go-back="Chi tiết danh mục"
       title-delete="Xóa danh mục"
@@ -147,13 +148,17 @@ const confirmDelete = async () => {
             <div class="parent">
               <label for="" class="mr-3"> Danh mục cha </label>
 
-              <select id="" v-model="category.parent">
-                <option value="">Không có</option>
+              <div class="select-box">
+                <select id="" v-model="category.parent">
+                  <option value="">Không có</option>
 
-                <option v-for="cate in parentCategories" :key="cate._id" :value="cate._id">
-                  {{ cate.name }}
-                </option>
-              </select>
+                  <option v-for="cate in parentCategories" :key="cate._id" :value="cate._id">
+                    {{ cate.name }}
+                  </option>
+                </select>
+                <i class="fa-solid fa-chevron-down"></i>
+              </div>
+
               <p v-if="errors.parent" class="error p-0 m-0">
                 {{ errors.parent }}
               </p>
