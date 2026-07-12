@@ -49,8 +49,8 @@ onMounted(async () => {
 
   const data = await styleStore.getBySlug(slug)
 
-  if (data && data.length > 0) {
-    Object.assign(style.value, data[0])
+  if (data) {
+    Object.assign(style.value, data)
   }
   loading.value = false
 })

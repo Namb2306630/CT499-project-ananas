@@ -204,7 +204,7 @@ class StyleService {
   async getBySlug(slug) {
     // const style = await this.getByIdOrThrow(id);
     // return style;
-    return Style.aggregate([
+    const [style] = await Style.aggregate([
       {
         $match: {
           slug: slug,
@@ -234,6 +234,8 @@ class StyleService {
         },
       },
     ]);
+
+    return style;
   }
 
   async getProducts(idStyle) {

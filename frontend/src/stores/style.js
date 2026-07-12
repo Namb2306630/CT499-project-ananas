@@ -91,7 +91,7 @@ export const useStyleStore = defineStore('style', {
 
     async fetchForAdmin() {
       try {
-        localStorage.clear()
+        // localStorage.clear()
         this.clearError()
         this.loading = true
         const res = await StyleService.fetchForAdmin()
