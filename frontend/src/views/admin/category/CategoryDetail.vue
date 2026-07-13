@@ -44,11 +44,12 @@ watch(
 )
 onMounted(async () => {
   const slug = route.params.slug
+  console.log('route slug:', route.params.slug)
   await categoryStore.fetchCategories()
   if (categoryStore.category?.slug === slug) {
     Object.assign(category.value, categoryStore.category)
   }
-  const data = await categoryStore.getCategoryBySlug(slug)
+  const data = await categoryStore.getCategoryBySlug(route.params.slug)
 
   if (data) {
     Object.assign(category.value, data)
