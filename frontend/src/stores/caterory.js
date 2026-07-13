@@ -59,11 +59,8 @@ export const useCategoryStore = defineStore('category', {
         if (form.image) {
           formData.append('image', form.image)
         }
-
         const res = await CategoryService.create(formData)
-
         this.categories.unshift(res.data.result)
-
         return res.data
       } catch (error) {
         const data = error.response?.data
