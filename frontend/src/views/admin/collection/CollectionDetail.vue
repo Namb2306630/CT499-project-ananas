@@ -46,10 +46,9 @@ onMounted(async () => {
   if (collectionStore.collection?.slug == slug) {
     Object.assign(collection.value, collectionStore.collection)
   }
-
   const data = await collectionStore.getBySlug(slug)
 
-  if (data?.code === 200) {
+  if (data) {
     Object.assign(collection.value, data)
   }
   loading.value = false
