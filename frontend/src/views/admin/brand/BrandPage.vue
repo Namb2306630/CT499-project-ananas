@@ -19,9 +19,6 @@ const { brands, loading, error } = storeToRefs(brandStore)
 const showForm = ref(false)
 const title = ref('Thêm thương hiệu mới mới')
 
-const loadData = async () => {
-  await brandStore.fetchAdminBrands()
-}
 onMounted(async () => {
   // Hiển thị cache ngay
   if (brandStore.brands.length > 0) {
@@ -29,7 +26,7 @@ onMounted(async () => {
   }
 
   // Luôn gọi API ở nền để cập nhật
-  await loadData()
+  await brandStore.fetchAdminBrands()
 })
 
 defineProps({
@@ -75,8 +72,6 @@ const saveBrand = async (data) => {
     showForm.value = false
 
     toastStore.showToast(result.message, 'success')
-
-    await loadData()
   } else {
     const message =
       Object.values(brandStore.error.errors)[0] ||
@@ -123,12 +118,12 @@ const clearError = () => {
       button-text="Thêm thương hiệu"
       @click="openAddForm"
     />
+    <!--  :loading="loading" -->
     <AdminToolbar
       content="Thêm thương hiệu"
       @add="openAddForm"
       :items="brands"
       :error="error"
-      :loading="loading"
       :show-sidebar="showSidebar"
       @edit="openEdit"
       @delete="openDelete"
