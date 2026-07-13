@@ -120,7 +120,7 @@ const save = async (data) => {
       :items="productLines"
       :show-sidebar="showSidebar"
       :error="error"
-      :loading="loading"
+     
       @add="openAddForm"
       @edit="openEdit"
       @delete="openDelete"
