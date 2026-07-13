@@ -8,10 +8,11 @@ const uploadProductVariantImage = uploadImage("product-variant").fields([
   { name: "images", maxCount: 20 },
 ]);
 const uploadCollectionImage = uploadImage("collection").single("banner");
-
+const uploadNotFoundImage = uploadImage("system").single("image");
 module.exports = {
   uploadBrandLogo,
   uploadCategoryImage,
   uploadProductVariantImage,
   uploadCollectionImage,
+  uploadNotFoundImage,
 };
