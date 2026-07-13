@@ -11,7 +11,7 @@ import AdminLayout from '@/layouts/AdminLayout.vue'
 import DashBoardPage from '@/views/admin/DashBoardPage.vue'
 import CategoryPage from '@/views/admin/category/CategoryPage.vue'
 import CollectionPage from '@/views/admin/collection/CollectionPage.vue'
-import SettingPage from '@/views/admin/setting/SettingPage.vue'
+import SystemConfigPage from '@/views/admin/system/SystemConfigPage.vue'
 import StylePage from '@/views/admin/style/StylePage.vue'
 import OrderPage from '@/views/order/OrderPage.vue'
 import ProductLinePage from '@/views/admin/product/ProductLinePage.vue'
@@ -19,6 +19,7 @@ import ProductPage from '@/views/admin/product/ProductPage.vue'
 import UserPage from '@/views/admin/user/UserPage.vue'
 import BrandPage from '@/views/admin/brand/BrandPage.vue'
 import ProductVariantPage from '@/views/admin/product/ProductVariantPage.vue'
+import SystemNotFoundPage from '@/views/admin/system/NotFoundPage.vue'
 
 //Detail
 import ProductVariantItemPage from '@/views/admin/product/ProductVariantItemPage.vue'
@@ -27,7 +28,7 @@ import BrandDetail from '@/views/admin/brand/BrandDetail.vue'
 import ProductLineDetail from '@/views/admin/product/ProductLineDetail.vue'
 import StyleDetail from '@/views/admin/style/StyleDetail.vue'
 //notfound
-import NotFoudPage from '@/views/NotFoundPage.vue'
+import NotFoundPage from '@/views/NotFoundPage.vue'
 
 //
 import { useAuthStore } from '@/stores/auth'
@@ -52,7 +53,7 @@ const router = createRouter({
         // Not Found
         {
           path: ':pathMatch(.*)*',
-          component: () => NotFoudPage,
+          component: () => NotFoundPage,
         },
       ],
     },
@@ -67,71 +68,94 @@ const router = createRouter({
       children: [
         {
           path: '',
-          component: () => DashBoardPage,
+          redirect: { name: ROUTE_NAMES.DASHBOARD },
         },
         {
           path: 'dashboard',
+          name: ROUTE_NAMES.DASHBOARD,
           component: () => DashBoardPage,
         },
         {
+          path: 'profile',
+          name: ROUTE_NAMES.PROFILE,
+          component: () => DashBoardPage,
+        },
+
+        {
           path: 'categories',
+          name: ROUTE_NAMES.CATEGORIES,
           component: () => CategoryPage,
         },
 
         {
           path: 'users',
+          name: ROUTE_NAMES.USERS,
           component: () => UserPage,
         },
 
         {
           path: 'brands',
+          name: ROUTE_NAMES.BRANDS,
           component: () => BrandPage,
         },
 
         {
           path: 'products',
+          name: ROUTE_NAMES.PRODUCTS,
           component: () => ProductPage,
         },
 
         {
           path: 'styles',
+          name: ROUTE_NAMES.STYLES,
           component: () => StylePage,
         },
 
         {
-          path: 'settings',
-          component: () => SettingPage,
+          path: 'system-config',
+          name: ROUTE_NAMES.SYSTEM_CONFIG,
+          component: () => SystemConfigPage,
         },
 
         {
           path: 'collections',
+          name: ROUTE_NAMES.COLLECTIONS,
           component: () => CollectionPage,
         },
 
         {
           path: 'product-lines',
+          name: ROUTE_NAMES.PRODUCT_LINES,
           component: () => ProductLinePage,
         },
 
         {
           path: 'orders',
+          name: ROUTE_NAMES.ORDERS,
           component: () => OrderPage,
         },
 
         {
           path: 'product-variants',
+          name: ROUTE_NAMES.PRODUCT_VARIANTS,
           component: () => ProductVariantPage,
         },
 
         {
           path: 'product-variant-items',
+          name: ROUTE_NAMES.PRODUCT_VARIANT_ITEMS,
           component: () => ProductVariantItemPage,
         },
 
         // Not Found
         {
+          path: '404',
+          name: ROUTE_NAMES.NOT_FOUND,
+          component: SystemNotFoundPage,
+        },
+        {
           path: ':pathMatch(.*)*',
-          component: () => NotFoudPage,
+          component: () => NotFoundPage,
         },
       ],
     },
