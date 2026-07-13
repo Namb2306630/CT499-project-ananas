@@ -1,9 +1,24 @@
 <script setup>
 import { useRouter, useRoute } from 'vue-router'
-import NotFound from '@/assets/images/page_not_found.png'
+import { onMounted, ref } from 'vue'
+import { useSystemConfigStore } from '@/stores/system-config'
 
+const systemConfigStore = useSystemConfigStore()
+const BASE_URL = import.meta.env.VITE_BACKEND
 const router = useRouter()
 const route = useRoute() //xem đang ở trang nào
+const form = ref({
+  notFoundImage: '',
+})
+
+onMounted(async () => {
+  await systemConfigStore.get()
+
+  Object.assign(form.value, systemConfigStore.systemConfig)
+
+  console.log(form.value)
+  console.log(`${BASE_URL}/${form.value.notFoundImage}`)
+})
 
 const goHome = () => {
   if (route.path.startsWith('/admin')) {
@@ -16,7 +31,7 @@ const goHome = () => {
 
 <template>
   <div class="not-found">
-    <img :src="NotFound" alt="Ảnh Not Found" />
+    <img :src="`${BASE_URL}/${form.notFoundImage}`" alt="Ảnh Not Found" />
 
     <button class="btn" @click="goHome">QUAY LẠI TRANG CHỦ</button>
   </div>
