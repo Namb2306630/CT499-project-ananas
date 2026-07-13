@@ -5,7 +5,14 @@ export default {
     return api.post('/admin/styles', data)
   },
   update(id, data) {
-    return api.put(`/admin/styles/${id}`, data)
+    const payload = {
+      name: data.name,
+      slug: data.slug,
+      description: data.description,
+      isActive: data.isActive,
+    }
+
+    return api.put(`/admin/styles/${id}`, payload)
   },
   remove(id) {
     return api.delete(`/admin/styles/${id}`)

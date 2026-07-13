@@ -48,18 +48,7 @@ export const useCategoryStore = defineStore('category', {
       try {
         this.clearError()
 
-        const formData = new FormData()
-
-        formData.append('name', form.name)
-
-        if (form.parent) {
-          formData.append('parent', form.parent)
-        }
-
-        if (form.image) {
-          formData.append('image', form.image)
-        }
-        const res = await CategoryService.create(formData)
+        const res = await CategoryService.create(form)
         this.categories.unshift(res.data.result)
         return res.data
       } catch (error) {
@@ -77,21 +66,7 @@ export const useCategoryStore = defineStore('category', {
       try {
         this.clearError()
 
-        const formData = new FormData()
-
-        formData.append('name', form.name)
-        formData.append('slug', form.slug)
-        formData.append('isActive', form.isActive)
-
-        if (form.parent) {
-          formData.append('parent', form.parent)
-        }
-
-        if (form.image) {
-          formData.append('image', form.image)
-        }
-
-        const res = await CategoryService.update(id, formData)
+        const res = await CategoryService.update(id, form)
 
         const index = this.categories.findIndex((item) => item._id === id)
 

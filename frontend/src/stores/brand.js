@@ -29,18 +29,8 @@ export const useBrandStore = defineStore('brand', {
     async createBrand(form) {
       try {
         this.clearError()
-        //một đối tượng trong JavaScript dùng để đóng gói dữ liệu theo định dạng multipart/form-data, thường dùng khi gửi form có file (ảnh, video, PDF...) lên server.
-        const formData = new FormData()
-        formData.append('name', form.name)
-
-        formData.append('logo', form.image)
-
-        formData.append('description', form.description)
-
-        const res = await BrandService.create(formData)
-
+        const res = await BrandService.create(form)
         this.brands.unshift(res.data.result)
-
         return res.data
       } catch (error) {
         const data = error.response?.data
@@ -56,19 +46,7 @@ export const useBrandStore = defineStore('brand', {
       try {
         this.clearError()
 
-        const formData = new FormData()
-
-        formData.append('name', form.name)
-        formData.append('slug', form.slug)
-        formData.append('isActive', form.isActive)
-        formData.append('description', form.description)
-
-        if (form.logo) {
-          formData.append('logo', form.logo)
-        }
-
-        const res = await BrandService.update(id, formData)
-
+        const res = await BrandService.update(id, form)
         const index = this.brands.findIndex((item) => item._id === id)
 
         if (index !== -1) {

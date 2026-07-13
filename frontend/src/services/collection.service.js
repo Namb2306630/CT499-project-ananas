@@ -6,7 +6,13 @@ export default {
   },
 
   async update(id, data) {
-    return api.put(`/admin/collections/${id}`, data)
+    const payload = {
+      name: data.name,
+      slug: data.slug,
+      description: data.description,
+      isActive: data.isActive,
+    }
+    return api.put(`/admin/collections/${id}`, payload)
   },
 
   async delete(id) {

@@ -5,7 +5,18 @@ export default {
     return api.get('/admin/system-config')
   },
   update(data) {
-    return api.put('/admin/system-config', data)
+    const payload = {
+      taxCode: data.taxCode,
+      email: data.email,
+      hotline: data.hotline,
+      vatRate: data.vatRate,
+      operatingCostPercent: data.operatingCostPercent,
+      profitPercent: data.profitPercent,
+      freeShippingThreshold: data.freeShippingThreshold,
+      currency: data.currency,
+      taxDisplayStrategy: data.taxDisplayStrategy,
+    }
+    return api.put('/admin/system-config', payload)
   },
 
   updateImage(file) {

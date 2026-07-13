@@ -44,15 +44,7 @@ export const useProductLineStore = defineStore('product-line', {
     async update(id, data) {
       try {
         this.clearError()
-        const payload = {
-          name: data.name,
-          slug: data.slug,
-          description: data.description,
-          brand: data.brand,
-          isActive: data.isActive,
-        }
-
-        const res = await ProductLineService.update(id, payload)
+        const res = await ProductLineService.update(id, data)
 
         const index = this.productLines.findIndex((item) => item._id == id)
 

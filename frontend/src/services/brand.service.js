@@ -10,10 +10,26 @@ export default {
   getLines(id) {
     return api.get(`/brands/${id}/lines`)
   },
-  create(formData) {
+  create(form) {
+    //một đối tượng trong JavaScript dùng để đóng gói dữ liệu theo định dạng multipart/form-data, thường dùng khi gửi form có file (ảnh, video, PDF...) lên server.
+    const formData = new FormData()
+
+    formData.append('name', form.name)
+    formData.append('logo', form.image)
+    formData.append('description', form.description)
+
     return api.post('/admin/brands', formData)
   },
-  update(id, formData) {
+  update(id, form) {
+    const formData = new FormData()
+
+    formData.append('name', form.name)
+    formData.append('slug', form.slug)
+    formData.append('isActive', form.isActive)
+    formData.append('description', form.description)
+    if (form.logo) {
+      formData.append('logo', form.logo)
+    }
     return api.put(`/admin/brands/${id}`, formData)
   },
   delete(id) {

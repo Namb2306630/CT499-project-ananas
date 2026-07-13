@@ -43,13 +43,8 @@ export const useCollectionStore = defineStore('collecions', {
     async update(id, data) {
       try {
         this.clearError()
-        const payload = {
-          name: data.name,
-          slug: data.slug,
-          description: data.description,
-          isActive: data.isActive,
-        }
-        const res = await collectionService.update(id, payload)
+
+        const res = await collectionService.update(id, data)
 
         const index = this.collections.findIndex((item) => item._id === id)
 
@@ -130,7 +125,7 @@ export const useCollectionStore = defineStore('collecions', {
 
         this.collection = res.data.result
 
-        return res.data
+        return this.collection
       } catch (error) {
         const data = error.response?.data
         this.error = {

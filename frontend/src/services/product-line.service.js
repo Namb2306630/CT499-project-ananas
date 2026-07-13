@@ -10,8 +10,15 @@ export default {
   create(formData) {
     return api.post('/admin/product-lines', formData)
   },
-  update(id, formData) {
-    return api.put(`/admin/product-lines/${id}`, formData)
+  update(id, data) {
+    const payload = {
+      name: data.name,
+      slug: data.slug,
+      description: data.description,
+      brand: data.brand,
+      isActive: data.isActive,
+    }
+    return api.put(`/admin/product-lines/${id}`, payload)
   },
   delete(id) {
     return api.delete(`/admin/product-lines/${id}`)
