@@ -121,11 +121,11 @@ const columns = computed(() => {
 
       <AddCard v-if="showAddCard" :content="content" @click="emit('add')" />
     </div>
-    <div v-if="!loading && items.length === 0 && showCardItem" class="empty">
+    <!-- <div v-if="!loading && items.length === 0 && showCardItem" class="empty">
       <i class="fa-regular fa-folder-open"></i>
       <h3>Chưa có dữ liệu</h3>
       <p>Hiện tại chưa có dữ liệu nào để hiển thị.</p>
-    </div>
+    </div> -->
   </div>
 </template>
 
