@@ -109,21 +109,21 @@ const saveStyle = async () => {
         <div class="top-info">
           <div class="form">
             <!-- name -->
-            <label for="">Tên kiểu dáng sản phẩm</label>
-            <input type="text" name="" id="" v-model="style.name" />
+            <label for="name">Tên kiểu dáng sản phẩm</label>
+            <input type="text" name="" id="name" v-model="style.name" />
             <p v-if="errors.name" class="error">{{ errors.name }}</p>
 
             <!-- slug -->
-            <label for="">Đường dẫn thân thiện (Slug)</label>
-            <input type="text" name="" id="" readonly v-model="style.slug" />
+            <label for="slug">Đường dẫn thân thiện (Slug)</label>
+            <input type="text" name="" id="slug" readonly v-model="style.slug" />
             <p v-if="errors.slug" class="error">{{ errors.slug }}</p>
 
             <!-- mô tả -->
-            <label for="">Mô tả kiểu dáng sản phẩm</label>
+            <label for="description">Mô tả kiểu dáng sản phẩm</label>
             <textarea
               type="text"
               name=""
-              id=""
+              id="description"
               rows="5"
               class="description"
               placeholder="Thêm mô tả tả kiểu dáng sản phẩm..."
