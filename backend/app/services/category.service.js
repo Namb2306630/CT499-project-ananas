@@ -265,6 +265,7 @@ class CategoryService {
     const [category] = await Category.aggregate([
       {
         $match: {
+          slug,
           isDeleted: false,
         },
       },
