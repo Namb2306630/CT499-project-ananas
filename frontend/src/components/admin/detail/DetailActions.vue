@@ -16,11 +16,11 @@ const emit = defineEmits(['save', 'cancel'])
 
 <template>
   <div class="actions">
-    <button class="cancel" @click="emit('cancel')">
+    <button type="button" class="cancel" @click="emit('cancel')">
       {{ cancelText }}
     </button>
 
-    <button class="save" @click="emit('save')">
+    <button type="button" class="save" @click="emit('save')">
       {{ saveText }}
     </button>
   </div>
