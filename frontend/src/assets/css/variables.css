@@ -50,6 +50,7 @@
   --color-7: #ccc;
   --color-8: #111827;
   --color-9: #124ae5;
+  --color-10: #f0f3fc;
 
   --color-bg-dark: #333;
   --color-bg-orange: #ff6633;
@@ -85,6 +86,7 @@
   --shadow-white: 0 4px 15px rgba(255, 255, 255, 0.3);
   --shadow-gray: 0 2px 3px rgba(0, 0, 0, 0.2);
   --shadow-black-2: 0 10px 25px rgba(0, 0, 0, 0.15);
+  --shadow-black-3: 0 5px 15px rgba(122, 121, 121, 0.15);
 }
 /*
 solid    liền 
