@@ -114,21 +114,6 @@ class ProductService {
         sellingPrice,
         status: "active",
       });
-
-      // tăng productCount
-      // await Category.updateMany(
-      //   {
-      //     _id: {
-      //       $in: categories,
-      //     },
-      //   },
-      //   {
-      //     $inc: {
-      //       productCount: 1,
-      //     },
-      //   },
-      // );
-
       return { data: product, action: "created" };
     }
 
@@ -141,19 +126,6 @@ class ProductService {
       exist.status = "active";
 
       await exist.save();
-
-      // await Category.updateMany(
-      //   {
-      //     _id: {
-      //       $in: exist.categories,
-      //     },
-      //   },
-      //   {
-      //     $inc: {
-      //       productCount: 1,
-      //     },
-      //   },
-      // );
 
       return {
         data: exist,
@@ -247,19 +219,6 @@ class ProductService {
     product.status = "discontinued";
 
     await product.save();
-
-    // await Category.updateMany(
-    //   {
-    //     _id: {
-    //       $in: product.categories,
-    //     },
-    //   },
-    //   {
-    //     $inc: {
-    //       productCount: -1,
-    //     },
-    //   },
-    // );
   }
 
   async getAllForAdmin() {
@@ -316,47 +275,6 @@ class ProductService {
     return product.variants;
   }
 
-  // async updateCategoryCount(oldCategories = [], newCategories = []) {
-  //   // category bị bỏ đi
-  //   const removed = oldCategories.filter(
-  //     (id) => !newCategories.includes(id.toString()),
-  //   );
-
-  //   // category thêm mới
-  //   const added = newCategories.filter(
-  //     (id) => !oldCategories.map((x) => x.toString()).includes(id.toString()),
-  //   );
-
-  //   if (removed.length > 0) {
-  //     await Category.updateMany(
-  //       {
-  //         _id: {
-  //           $in: removed,
-  //         },
-  //       },
-  //       {
-  //         $inc: {
-  //           productCount: -1,
-  //         },
-  //       },
-  //     );
-  //   }
-
-  //   if (added.length > 0) {
-  //     await Category.updateMany(
-  //       {
-  //         _id: {
-  //           $in: added,
-  //         },
-  //       },
-  //       {
-  //         $inc: {
-  //           productCount: 1,
-  //         },
-  //       },
-  //     );
-  //   }
-  // }
 }
 
 module.exports = new ProductService();
