@@ -161,15 +161,15 @@ dialog::backdrop {
   color: var(--text-gray-4);
 }
 
-/* FORM INPUT,... */
+/* FORM INPUT,... radio */
 
-input:hover:not(.checkbox-input),
+input:not(.checkbox-input):not(.radio):hover,
 textarea:hover {
   border-color: var(--color-bule);
   box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
 }
 
-input:focus:not(.checkbox-input),
+input:not(.checkbox-input):not(.radio):focus,
 textarea:focus {
   border-color: var(--color-bule);
   box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
