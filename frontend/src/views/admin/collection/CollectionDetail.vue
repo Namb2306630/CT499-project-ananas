@@ -108,19 +108,19 @@ const saveCollection = async () => {
         <div class="top-info">
           <div class="form">
             <!-- name -->
-            <label for="">Tên bộ sưu tập</label>
-            <input type="text" name="" id="" v-model="collection.name" />
+            <label for="name">Tên bộ sưu tập</label>
+            <input type="text" name="" id="name" v-model="collection.name" />
             <p v-if="errors.name" class="error">{{ errors.name }}</p>
 
             <!-- slug -->
-            <label for="">Đường dẫn thân thiện (Slug)</label>
-            <input type="text" name="" id="" readonly v-model="collection.slug" />
+            <label for="slug">Đường dẫn thân thiện (Slug)</label>
+            <input type="text" name="" id="slug" readonly v-model="collection.slug" />
             <p v-if="errors.slug" class="error">{{ errors.slug }}</p>
 
             <!-- mô tả -->
-            <label for="">Mô tả thêm</label>
+            <label for="description">Mô tả thêm</label>
             <textarea
-              id=""
+              id="description"
               v-model="collection.description"
               rows="5"
               class="description"
