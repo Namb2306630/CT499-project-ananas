@@ -44,19 +44,8 @@ export const useSystemConfigStore = defineStore('system-config', {
     async update(data) {
       try {
         this.clearError()
-        const payload = {
-          taxCode: data.taxCode,
-          email: data.email,
-          hotline: data.hotline,
-          vatRate: data.vatRate,
-          operatingCostPercent: data.operatingCostPercent,
-          profitPercent: data.profitPercent,
-          freeShippingThreshold: data.freeShippingThreshold,
-          currency: data.currency,
-          taxDisplayStrategy: data.taxDisplayStrategy,
-        }
 
-        const res = await SystemConfigService.update(payload)
+        const res = await SystemConfigService.update(data)
 
         this.systemConfig = res.data.result
         return res.data

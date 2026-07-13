@@ -46,14 +46,8 @@ export const useStyleStore = defineStore('style', {
     async update(id, data) {
       try {
         this.clearError()
-        const payload = {
-          name: data.name,
-          slug: data.slug,
-          description: data.description,
-          isActive: data.isActive,
-        }
 
-        const res = await StyleService.update(id, payload)
+        const res = await StyleService.update(id, data)
 
         const index = this.styles.findIndex((item) => item._id === id)
 
