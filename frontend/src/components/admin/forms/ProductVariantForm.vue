@@ -106,40 +106,46 @@ const uploadImages = (e) => {
 
       <div class="dialog-body">
         <div class="form-group">
-          <label for=""> Nhập mã sản phẩm * </label>
-          <input id="" name="" v-model="formData.code" type="text" placeholder="Nhập mã sản phẩm" />
+          <label for="code"> Nhập mã sản phẩm * </label>
+          <input
+            id="code"
+            name=""
+            v-model="formData.code"
+            type="text"
+            placeholder="Nhập mã sản phẩm"
+          />
         </div>
         <div class="form-group select-box">
-          <label for="">Thuộc sản phẩm *</label>
-          <select v-model="formData.productId">
+          <label for="productId">Thuộc sản phẩm *</label>
+          <selec id="productId" v-model="formData.productId">
             <option disabled value="">-- Thuộc biến thể --</option>
 
             <option v-for="item in products" :key="item._id" :value="item._id">
               {{ item.name }}
             </option>
-          </select>
+          </selec>
           <i class="fa-solid fa-chevron-down"></i>
         </div>
 
         <div class="form-group">
-          <label for="">Sản phẩm có màu *</label>
+          <label for="color">Sản phẩm có màu *</label>
           <input
             v-model="formData.color"
             type="text"
             name=""
-            id=""
+            id="color"
             placeholder="Màu của sản phẩm"
           />
         </div>
 
         <div class="form-group">
-          <label for="">Code color *</label>
+          <label for="colorCode">Code color *</label>
 
           <div class="color-picker">
             <input id="" type="color" v-model="colorCode" />
 
             <input
-              id=""
+              id="colorCode"
               class="hex-input"
               type="text"
               v-model="colorCode"

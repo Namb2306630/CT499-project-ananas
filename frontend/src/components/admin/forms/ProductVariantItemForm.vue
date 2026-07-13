@@ -77,9 +77,9 @@ const closeDialog = () => {
       <div class="dialog-body">
         <!-- Variant -->
         <div class="form-group">
-          <label for="">Thuộc biến thể</label>
+          <label for="variant">Thuộc biến thể</label>
 
-          <select id="" v-model="formData.variant">
+          <select id="variant" v-model="formData.variant">
             <option value="" disabled>-- Chọn biến thể --</option>
 
             <option v-for="item in variants" :key="item._id" :value="item._id">
@@ -95,15 +95,15 @@ const closeDialog = () => {
 
         <div class="size-card" v-for="(item, index) in formData.sizes" :key="index">
           <div class="form-group">
-            <label for="">Size</label>
+            <label for="size">Size</label>
 
-            <input id="" v-model="item.size" placeholder="VD: 40" />
+            <input id="size" v-model="item.size" placeholder="VD: 40" />
           </div>
 
           <div class="form-group">
-            <label for="">Số lượng</label>
+            <label for="stock">Số lượng</label>
 
-            <input id="" type="number" min="0" v-model="item.stock" />
+            <input id="stock" type="number" min="0" v-model="item.stock" />
           </div>
 
           <button type="button" class="remove-btn" @click="removeSize(index)">
