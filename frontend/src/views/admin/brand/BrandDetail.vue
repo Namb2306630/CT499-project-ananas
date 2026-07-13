@@ -128,18 +128,18 @@ const confirmDelete = async () => {
             />
           </div>
           <div class="form">
-            <label for="" class="p-0 m-0">Tên thương hiệu</label>
-            <input name="" id="" v-model="brand.name" />
+            <label for="name" class="p-0 m-0">Tên thương hiệu</label>
+            <input name="" id="name" v-model="brand.name" />
             <p v-if="errors.name" class="p-0 m-0 error">{{ errors.name }}</p>
 
-            <label for="" class="p-0 m-0">Đường dẫn thân thiện (Slug)</label>
-            <input name="" id="" v-model="brand.slug" readonly />
+            <label for="slug" class="p-0 m-0">Đường dẫn thân thiện (Slug)</label>
+            <input name="" id="slug" v-model="brand.slug" readonly />
             <p v-if="errors.slug" class="p-0 m-0 error">{{ errors.slug }}</p>
 
-            <label for="" class="p-0 m-0">Mô tả thêm</label>
+            <label for="description" class="p-0 m-0">Mô tả thêm</label>
 
             <textarea
-              id=""
+              id="description"
               v-model="brand.description"
               rows="5"
               class="description"
