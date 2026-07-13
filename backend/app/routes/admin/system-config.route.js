@@ -8,11 +8,16 @@ const validate = require("../../middlewares/validate.middleware");
 const roleMiddleware = require("../../middlewares/role.middleware");
 const Role = require("../../utils/role.util");
 const router = express.Router();
-
-router.use(authMiddleware);
-router.use(roleMiddleware(Role.SUPER_ADMIN));
+const { uploadNotFoundImage } = require("../../middlewares/upload.middleware");
+// router.use(authMiddleware);
+// router.use(roleMiddleware(Role.SUPER_ADMIN));
 
 router.put("/", validate(updateSystemSchema), systemConfigController.update);
 router.get("/", systemConfigController.get);
+router.put(
+  "/not-found-image",
+  uploadNotFoundImage,
+  systemConfigController.updateNotFoundImage,
+);
 
 module.exports = router;
