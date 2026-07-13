@@ -1,10 +1,9 @@
 const calculateBasePrice = ({
   costPrice,
-  vatPercent,
   operatingCostPercent,
   profitPercent,
 }) => {
-  const totalPercent = vatPercent + operatingCostPercent + profitPercent;
+  const totalPercent = operatingCostPercent + profitPercent;
 
   return Math.round(costPrice * (1 + totalPercent / 100));
 };
