@@ -104,7 +104,7 @@ const addStyle = async (data) => {
       content="Thêm kiểu dáng sản phẩm"
       :items="styles"
       @add="openAddForm"
-      :loading="loading"
+     
       :error="error"
       @delete="openDelete"
       @edit="openEdit"
