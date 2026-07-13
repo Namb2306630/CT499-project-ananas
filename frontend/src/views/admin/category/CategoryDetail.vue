@@ -131,25 +131,25 @@ const confirmDelete = async () => {
           </div>
 
           <div class="form">
-            <label class="p-0 m-0" for=""> Tên danh mục </label>
+            <label class="p-0 m-0" for="name"> Tên danh mục </label>
 
-            <input id="" v-model="category.name" />
+            <input id="name" v-model="category.name" />
             <p v-if="errors.name" class="error p-0 m-0">
               {{ errors.name }}
             </p>
 
-            <label class="p-0 m-0" for=""> Đường dẫn thân thiện (Slug) </label>
+            <label class="p-0 m-0" for="slug"> Đường dẫn thân thiện (Slug) </label>
 
-            <input id="" v-model="category.slug" readonly />
+            <input id="slug" v-model="category.slug" readonly />
             <p v-if="errors.slug" class="error p-0 m-0">
               {{ errors.slug }}
             </p>
 
             <div class="parent">
-              <label for="" class="mr-3"> Danh mục cha </label>
+              <label for="cate" class="mr-3"> Danh mục cha </label>
 
               <div class="select-box">
-                <select id="" v-model="category.parent">
+                <select id="cate" v-model="category.parent">
                   <option value="">Không có</option>
 
                   <option v-for="cate in parentCategories" :key="cate._id" :value="cate._id">
