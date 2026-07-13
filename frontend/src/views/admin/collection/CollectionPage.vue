@@ -100,7 +100,7 @@ const addCollection = async (data) => {
       content="Thêm bộ sưu tập"
       :items="collections"
       :error="error"
-      :loading="loading"
+     
       @add="openAddForm"
       @edit="openEdit"
       @delete="openDelete"

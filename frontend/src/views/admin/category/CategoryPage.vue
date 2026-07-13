@@ -128,7 +128,7 @@ const clearError = () => {
     <AdminToolbar
       content="Thêm danh mục"
       :items="categories"
-      :loading="loading"
+     
       :error="error"
       :showAddCard="true"
       :showSidebar="showSidebar"
