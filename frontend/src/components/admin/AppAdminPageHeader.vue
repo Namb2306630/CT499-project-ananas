@@ -73,7 +73,7 @@ const openForm = () => {
   <div>
     <div class="header">
       <div class="title">
-        <h3 class="p-0 m-0">{{ title }}</h3>
+        <h3>{{ title }}</h3>
         <p class="p-0 m-0 mt-2">{{ description }}</p>
       </div>
 
@@ -132,6 +132,9 @@ const openForm = () => {
   font-weight: var(--font-width-lg);
   color: var(--text-black);
   text-transform: capitalize;
+  border-left: 4px solid var(--color-bule);
+  padding-left: 12px;
+  margin: 0;
 }
 
 .title p {
