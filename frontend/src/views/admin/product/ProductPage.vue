@@ -14,20 +14,20 @@ const fields = [
   {
     name: 'name',
     type: 'text',
-    label: 'Tên sản phẩm *',
+    label: 'Tên sản phẩm',
     placeholder: 'Nhập tên sản phẩm',
   },
   {
     name: 'productLine',
     type: 'select',
-    label: 'Dòng sản phẩm *',
+    label: 'Dòng sản phẩm',
     placeholder: 'Chọn dòng sản phẩm',
     options: productLines,
   },
   {
     name: 'productCollection',
     type: 'select',
-    label: 'Bộ sưu tập *',
+    label: 'Bộ sưu tập',
     placeholder: 'Chọn bộ sưu tập',
     options: productCollections,
   },
@@ -35,20 +35,20 @@ const fields = [
   {
     name: 'categories',
     type: 'select',
-    label: 'Danh mục *',
+    label: 'Danh mục',
     placeholder: 'Chọn danh mục',
     options: categories,
   },
   {
     name: 'costPrice',
     type: 'text',
-    label: 'Giá nhập *',
+    label: 'Giá nhập',
     placeholder: 'Giá nhập sản phẩm',
   },
   {
     name: 'gender',
     type: 'checkbox',
-    label: 'Sản phẩm dành cho *',
+    label: 'Sản phẩm dành cho',
     placeholder: 'Chọn loại sản phẩm',
     options: ['Nam', 'Nữ', 'Phi giới tính'],
   },
@@ -61,7 +61,7 @@ const fields = [
   {
     name: 'styles',
     type: 'select',
-    label: 'Kiểu dáng *',
+    label: 'Kiểu dáng',
     placeholder: 'Chọn kiểu dáng sản phẩm',
   },
 
@@ -75,7 +75,7 @@ const fields = [
   {
     name: 'description',
     type: 'textarea',
-    label: 'Mô tả sản phẩm *',
+    label: 'Mô tả sản phẩm',
     placeholder: 'Mô tả sản phẩm',
   },
 ]
