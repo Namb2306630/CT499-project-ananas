@@ -2,18 +2,40 @@ export const ROUTE_NAMES = {
   // Admin
   DASHBOARD: 'dashboard',
 
-  CATEGORY: 'category',
+  PROFILE: 'profile',
+
+  CATEGORIES: 'categories',
   CATEGORY_DETAIL: 'category.detail',
 
-  BRAND: 'brand',
+  BRANDS: 'brands',
   BRAND_DETAIL: 'brand.detail',
 
-  PRODUCT_LINE: 'product-line',
+  PRODUCT_LINES: 'product-lines',
   PRODUCT_LINE_DETAIL: 'product-line.detail',
 
-  STYLE: 'style',
+  PRODUCTS: 'products',
+  PRODUCT_DETAIL: 'product.detail',
+
+  PRODUCT_VARIANTS: 'product-variants',
+  PRODUCT_VARIANT_DETAIL: 'product-variant.detail',
+
+  PRODUCT_VARIANT_ITEMS: 'product-variant-items',
+  PRODUCT_VARIANT_ITEM_DETAIL: 'product-variant-item.detail',
+
+  ORDERS: 'orders',
+  ORDER_DETAIL: 'order.detail',
+
+  NOT_FOUND: '404',
+
+  STYLES: 'styles',
   STYLE_DETAIL: 'style.detail',
 
-  COLLECTION: 'collection',
+  COLLECTIONS: 'collections',
   COLLECTION_DETAIL: 'collection.detail',
+
+  SYSTEM_CONFIG: 'system-config',
+
+  USERS: 'users',
+
+  // user
 }
