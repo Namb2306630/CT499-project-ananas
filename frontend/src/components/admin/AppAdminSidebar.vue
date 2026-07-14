@@ -27,9 +27,21 @@ const handleLinkClick = (e) => {
 }
 
 const showSystemConfigMenu = ref(false)
+const showProductMenu = ref(false)
+const showUserMenu = ref(false)
+const showOrderMenu = ref(false)
 
 const toggleSystemConfigMenu = () => {
   showSystemConfigMenu.value = !showSystemConfigMenu.value
+}
+const toggleProductMenu = () => {
+  showProductMenu.value = !showProductMenu.value
+}
+const toggleUserMenu = () => {
+  showUserMenu.value = !showUserMenu.value
+}
+const toggleOrderMenu = () => {
+  showOrderMenu.value = !showOrderMenu.value
 }
 </script>
 
@@ -60,101 +72,67 @@ const toggleSystemConfigMenu = () => {
         </RouterLink>
       </div>
 
-      <div>
-        <RouterLink
-          :to="{ name: ROUTE_NAMES.ORDERS }"
-          :class="{ active: route.name === ROUTE_NAMES.ORDERS }"
-        >
-          <span class="material-symbols-outlined"> orders </span>
-          <p>Đơn Hàng</p></RouterLink
-        >
+      <!-- QUẢN LÝ SẢN PHẨM -->
+      <div class="menu-item">
+        <div class="menu-parent" @click="toggleProductMenu">
+          <div class="menu-title">
+            <span class="material-symbols-outlined"> inventory_2 </span>
+            <p>Quản Lý Sản Phẩm</p>
+          </div>
+
+          <i class="fa-solid fa-chevron-down" :class="{ rotate: showProductMenu }"></i>
+        </div>
+
+        <!--  :class="{ active: route.name === ROUTE_NAMES.PRODUCT_LINES }" -->
+        <Transition name="slide">
+          <div v-if="showProductMenu" class="submenu">
+            <RouterLink :to="{ name: ROUTE_NAMES.CATEGORIES }"> Danh Mục </RouterLink>
+            <RouterLink :to="{ name: ROUTE_NAMES.BRANDS }"> Thương Hiệu </RouterLink>
+            <RouterLink :to="{ name: ROUTE_NAMES.PRODUCT_LINES }"> Dòng Sản Phẩm</RouterLink>
+            <RouterLink :to="{ name: ROUTE_NAMES.PRODUCT_TYPES }"> Loại Sản Phẩm</RouterLink>
+            <RouterLink :to="{ name: ROUTE_NAMES.STYLES }"> Kiểu Dáng</RouterLink>
+            <RouterLink :to="{ name: ROUTE_NAMES.COLLECTIONS }"> Bộ Sưu Tập</RouterLink>
+            <RouterLink :to="{ name: ROUTE_NAMES.PRODUCTS }"> Sản Phẩm</RouterLink>
+            <RouterLink :to="{ name: ROUTE_NAMES.PRODUCT_VARIANTS }"> Biến Thể Sản Phẩm</RouterLink>
+            <RouterLink :to="{ name: ROUTE_NAMES.PRODUCT_VARIANT_ITEMS }"> SKU</RouterLink>
+          </div>
+        </Transition>
       </div>
 
-      <div>
-        <RouterLink :to="{ name: ROUTE_NAMES.CATEGORIES }">
-          <span class="material-symbols-outlined"> category </span>
-          <p>Danh Mục</p>
-        </RouterLink>
+      <!-- Quản lý bán hàng -->
+      <div class="menu-item">
+        <div class="menu-parent" @click="toggleOrderMenu">
+          <div class="menu-title">
+            <span class="material-symbols-outlined"> receipt_long </span>
+            <p>Quản Lý Bán Hàng</p>
+          </div>
+
+          <i class="fa-solid fa-chevron-down" :class="{ rotate: showOrderMenu }"></i>
+        </div>
+
+        <Transition name="slide">
+          <div v-if="showOrderMenu" class="submenu">
+            <RouterLink :to="{ name: ROUTE_NAMES.ORDERS }"> Đơn Hàng</RouterLink>
+          </div>
+        </Transition>
       </div>
 
-      <div>
-        <RouterLink
-          :to="{ name: ROUTE_NAMES.USERS }"
-          :class="{ active: route.name === ROUTE_NAMES.USERS }"
-        >
-          <span class="material-symbols-outlined"> group </span>
-          <p>Nhân viên</p>
-        </RouterLink>
-      </div>
+      <!-- Quản lý người dùng -->
+      <div class="menu-item">
+        <div class="menu-parent" @click="toggleUserMenu">
+          <div class="menu-title">
+            <span class="material-symbols-outlined"> group </span>
+            <p>Quản Lý Người Dùng</p>
+          </div>
 
-      <div>
-        <RouterLink
-          :to="{ name: ROUTE_NAMES.BRANDS }"
-          :class="{ active: route.name === ROUTE_NAMES.BRANDS }"
-        >
-          <i class="fa-regular fa-font-awesome" style="font-size: 20px"></i>
-          <p>Thương Hiệu</p>
-        </RouterLink>
-      </div>
+          <i class="fa-solid fa-chevron-down" :class="{ rotate: showUserMenu }"></i>
+        </div>
 
-      <div>
-        <RouterLink
-          :to="{ name: ROUTE_NAMES.PRODUCT_LINES }"
-          :class="{ active: route.name === ROUTE_NAMES.PRODUCT_LINES }"
-        >
-          <span class="material-symbols-outlined"> inventory_2 </span>
-          <p>Dòng Sản Phẩm</p></RouterLink
-        >
-      </div>
-
-      <div>
-        <RouterLink
-          :to="{ name: ROUTE_NAMES.STYLES }"
-          :class="{ active: route.name === ROUTE_NAMES.STYLES }"
-        >
-          <span class="material-symbols-outlined" style="font-size: 25px"> style </span>
-          <p>Kiểu Dáng</p></RouterLink
-        >
-      </div>
-
-      <div>
-        <RouterLink
-          :to="{ name: ROUTE_NAMES.COLLECTIONS }"
-          :class="{ active: route.name === ROUTE_NAMES.COLLECTIONS }"
-        >
-          <span class="material-symbols-outlined"> collections_bookmark </span>
-          <p>Bộ Sưu Tập</p></RouterLink
-        >
-      </div>
-
-      <div>
-        <RouterLink
-          :to="{ name: ROUTE_NAMES.PRODUCTS }"
-          :class="{ active: route.name === ROUTE_NAMES.PRODUCTS }"
-        >
-          <span class="material-symbols-outlined"> inventory </span>
-          <p>Sản Phẩm</p></RouterLink
-        >
-      </div>
-
-      <div>
-        <RouterLink
-          :to="{ name: ROUTE_NAMES.PRODUCT_VARIANTS }"
-          :class="{ active: route.name === ROUTE_NAMES.PRODUCT_VARIANTS }"
-        >
-          <span class="material-symbols-outlined"> format_color_fill </span>
-          <p>Biến Thể Sản Phẩm</p></RouterLink
-        >
-      </div>
-
-      <div>
-        <RouterLink
-          :to="{ name: ROUTE_NAMES.PRODUCT_VARIANT_ITEMS }"
-          :class="{ active: route.name === ROUTE_NAMES.PRODUCT_VARIANT_ITEMS }"
-        >
-          <span class="material-symbols-outlined"> package_2 </span>
-          <p>SKU</p></RouterLink
-        >
+        <Transition name="slide">
+          <div v-if="showUserMenu" class="submenu">
+            <RouterLink :to="{ name: ROUTE_NAMES.USERS }"> Nhân viên </RouterLink>
+          </div>
+        </Transition>
       </div>
 
       <div class="menu-item">
@@ -186,12 +164,20 @@ const toggleSystemConfigMenu = () => {
 <style scoped>
 .sidebar {
   background-color: var(--bg-sidebar-admin-color);
+
   width: 100%;
-  min-height: 100%;
-  height: 100%;
+  flex: 1;
+
   padding: 15px 10px;
+
   display: flex;
   flex-direction: column;
+  overflow-y: auto;
+  scrollbar-width: none; /* Firefox */
+}
+
+.sidebar::-webkit-scrollbar {
+  display: none; /* Chrome */
 }
 
 .title {
@@ -449,20 +435,16 @@ const toggleSystemConfigMenu = () => {
 .slide-leave-from {
   opacity: 1;
   transform: translateY(0);
-  max-height: 200px;
+  max-height: auto;
 }
 @media (max-width: 767px) {
   .sidebar-overlay {
     position: fixed;
     inset: 0;
-
     background: rgba(0, 0, 0, 0.35);
-
     z-index: 999;
-
     opacity: 0;
     visibility: hidden;
-
     transition: opacity 0.3s ease;
   }
 
