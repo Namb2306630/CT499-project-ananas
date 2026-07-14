@@ -20,6 +20,7 @@ import UserPage from '@/views/admin/user/UserPage.vue'
 import BrandPage from '@/views/admin/brand/BrandPage.vue'
 import ProductVariantPage from '@/views/admin/product/ProductVariantPage.vue'
 import SystemNotFoundPage from '@/views/admin/system/NotFoundPage.vue'
+import ProductTypePage from '@/views/admin/product-type/ProductTypePage.vue'
 
 //Detail
 import ProductVariantItemPage from '@/views/admin/product/ProductVariantItemPage.vue'
@@ -27,6 +28,7 @@ import CategoryDetail from '@/views/admin/category/CategoryDetail.vue'
 import BrandDetail from '@/views/admin/brand/BrandDetail.vue'
 import ProductLineDetail from '@/views/admin/product/ProductLineDetail.vue'
 import StyleDetail from '@/views/admin/style/StyleDetail.vue'
+import ProductTypeDetail from '@/views/admin/product-type/ProductTypeDetail.vue'
 //notfound
 import NotFoundPage from '@/views/NotFoundPage.vue'
 
@@ -110,6 +112,11 @@ const router = createRouter({
           name: ROUTE_NAMES.STYLES,
           component: () => StylePage,
         },
+        {
+          path: 'product-types',
+          name: ROUTE_NAMES.PRODUCT_TYPES,
+          component: () => ProductTypePage,
+        },
 
         {
           path: 'system-config',
@@ -187,6 +194,11 @@ const router = createRouter({
       path: '/admin/collestions/:slug',
       name: ROUTE_NAMES.COLLECTION_DETAIL,
       component: () => CollectionDetail,
+    },
+    {
+      path: '/admin/product-types/:slug',
+      name: ROUTE_NAMES.PRODUCT_TYPE_DEAIL,
+      component: () => ProductTypeDetail,
     },
   ],
 })
