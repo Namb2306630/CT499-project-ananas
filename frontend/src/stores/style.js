@@ -5,7 +5,7 @@ export const useStyleStore = defineStore('style', {
   state: () => ({
     loading: false,
     styles: [],
-    style: null,
+    style: {},
     error: {
       code: null,
       errors: {},
@@ -89,7 +89,7 @@ export const useStyleStore = defineStore('style', {
         this.clearError()
         this.loading = true
         const res = await StyleService.fetchForAdmin()
-        this.styles = res.data.result
+        this.styles = Array.isArray(res.data.result) ? res.data.result : []
       } catch (error) {
         const res = error.response?.data
         this.error = {
@@ -108,7 +108,7 @@ export const useStyleStore = defineStore('style', {
         this.loading = true
         const res = await StyleService.fetchForUser()
 
-        this.styles = res.data.result
+        this.styles = Array.isArray(res.data.result) ? res.data.result : []
       } catch (error) {
         const res = error.response?.data
         this.error = {
@@ -127,7 +127,7 @@ export const useStyleStore = defineStore('style', {
         this.clearError()
         const res = await StyleService.getBySlug(slug)
 
-        this.style = res.data.result
+        this.style = res.data.result ?? {}
 
         return this.style
       } catch (error) {
