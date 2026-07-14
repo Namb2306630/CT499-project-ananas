@@ -4,7 +4,7 @@ import ProductLineService from '@/services/product-line.service'
 export const useProductLineStore = defineStore('product-line', {
   state: () => ({
     loading: false,
-    productLine: null,
+    productLine: {},
     productLines: [],
     error: {
       code: null,
@@ -87,7 +87,7 @@ export const useProductLineStore = defineStore('product-line', {
         this.clearError()
         const res = await ProductLineService.getBySlug(slug)
 
-        this.productLine = res.data.result
+        this.productLine = res.data.result ?? {}
 
         return this.productLine
       } catch (error) {
@@ -107,7 +107,7 @@ export const useProductLineStore = defineStore('product-line', {
         this.loading = true
         this.clearError()
         const res = await ProductLineService.getAllForUser()
-        this.productLines = res.data.result
+        this.productLines = Array.isArray(res.data.result) ? res.data.result : []
 
         return res.data
       } catch (error) {
@@ -127,7 +127,7 @@ export const useProductLineStore = defineStore('product-line', {
         this.loading = true
         this.clearError()
         const res = await ProductLineService.getAll()
-        this.productLines = res.data.result
+        this.productLines = Array.isArray(res.data.result) ? res.data.result : []
       } catch (error) {
         const data = error.response?.data
         this.error = {
