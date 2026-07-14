@@ -25,6 +25,14 @@ class ProductVariantService {
     if (files.images.length > 10) throw ErrorCode.MAX_IMAGES();
   }
 
+  buildDisplayName(variant) {
+    return `${variant.product.productLine.name} ${variant.product.name} - ${variant.product.style.name}`;
+  }
+
+  buildDetailName(variant) {
+    return `${this.buildDisplayName(variant)} - ${variant.colorName}`;
+  }
+
   async create(payload, files) {
     const { product, colorCode, _id } = payload;
 
@@ -139,16 +147,55 @@ class ProductVariantService {
     await proVari.save();
   }
   async getAll() {
-    return await ProductVariant.find({
+    const variants = await ProductVariant.find({
       status: { $ne: "inactive" },
-    }).sort({
-      createdAt: -1,
+    })
+      .populate({
+        path: "product",
+        populate: [
+          {
+            path: "productLine",
+            select: "name",
+          },
+          {
+            path: "style",
+            select: "name",
+          },
+        ],
+      })
+      .sort({
+        createdAt: -1,
+      });
+    return variants.map((item) => {
+      const obj = item.toObject();
+
+      obj.displayName = this.buildDisplayName(obj);
+
+      return obj;
     });
   }
   async getById(id) {
-    const proVari = await this.getByIdOrThrow(id);
+    const proVari = await ProductVariant.findById(id).populate({
+      path: "product",
+      populate: [
+        {
+          path: "productLine",
+          select: "name",
+        },
+        {
+          path: "style",
+          select: "name",
+        },
+      ],
+    });
 
-    return proVari;
+    if (!proVari) throw ErrorCode.PRODUCT_VARI_NOT_EXISTS();
+    const data = proVari.toObject();
+
+    data.displayName = this.buildDisplayName(data);
+    data.detailName = this.buildDetailName(data);
+
+    return data;
   }
 
   async updateOutOfStock(id) {

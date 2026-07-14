@@ -4,7 +4,6 @@ const ApiResponse = require("../constants/api-response");
 exports.get = async (req, res, next) => {
   try {
     const data = await systemConfigService.get();
-    console.log(data.notFoundImage);
     return ApiResponse.success({
       res,
       data,

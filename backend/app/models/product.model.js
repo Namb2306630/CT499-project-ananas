@@ -21,6 +21,11 @@ const productSchema = new mongoose.Schema(
       default: "",
       trim: true,
     },
+    productType: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "ProductType",
+      required: true,
+    },
 
     productLine: {
       type: mongoose.Schema.Types.ObjectId,

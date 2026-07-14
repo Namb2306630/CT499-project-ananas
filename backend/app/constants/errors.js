@@ -150,6 +150,20 @@ const ErrorCode = {
     message:
       "Không thể xóa bộ sưu tập sản phẩm vì vẫn còn sản phẩm thuộc bộ sưu tập này.",
   }),
+
+  PRODUCT_TYPE_NOT_EXISTS: () => ({
+    code: 1045,
+    message: "Loại sản phẩm không tồn tại!",
+  }),
+
+  PRODUCT_TYPE_ALREADY_EXISTS: () => ({
+    code: 1046,
+    message: "Loại sản phẩm đã tồn tại!",
+  }),
+  PRODUCT_TYPE_IN_USE: () => ({
+    code: 1047,
+    message: "Không thể xóa loại sản phẩm vì đã có sản phẩm sử dụng.",
+  }),
   BAD_REQUEST: (message = "Lỗi") => new AppError(9998, message),
 };
 

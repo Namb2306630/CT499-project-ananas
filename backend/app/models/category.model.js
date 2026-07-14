@@ -30,7 +30,11 @@ const categorySchema = new mongoose.Schema(
     //   type: Number,
     //   default: 0,
     // },
-
+    // productType: {
+    //   type: mongoose.Schema.Types.ObjectId,
+    //   ref: "ProductType",
+    //   required: true,
+    // },
     parent: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Category",
