@@ -1,7 +1,7 @@
 <script setup>
 import { ref, watch } from 'vue'
 import UploadImage from '@/components/admin/forms/UploadImage.vue'
-
+import MultiSelect from '@/components/admin/forms/MultiSelect.vue'
 const dialog = ref(null)
 const formData = ref({})
 const showPassword = ref({})
@@ -43,7 +43,7 @@ const resetForm = () => {
   const data = {}
 
   props.fields.forEach((field) => {
-    if (field.type === 'checkbox') {
+    if (field.type === 'checkbox' || field.type === 'multiselect') {
       data[field.name] = []
     } else {
       data[field.name] = ''
@@ -80,7 +80,8 @@ watch(
     // Chỉ khởi tạo các key nếu formData hiện tại chưa có, tránh overwrite sạch sẽ data cũ
     fields.forEach((field) => {
       if (formData.value[field.name] === undefined) {
-        formData.value[field.name] = field.type === 'checkbox' ? [] : ''
+        formData.value[field.name] =
+          field.type === 'checkbox' || field.type === 'multiselect' ? [] : ''
       }
     })
   },
@@ -143,6 +144,20 @@ const closeDialog = () => {
             <i class="fa-solid fa-chevron-down"></i>
           </div>
 
+          <!-- multiselect -->
+          <MultiSelect
+            v-if="field.type === 'multiselect'"
+            v-model="formData[field.name]"
+            :options="field.options"
+            :placeholder="field.placeholder"
+          />
+
+          <!-- chyển thành
+           MultiSelect
+                :modelValue="categories"
+               @update:modelValue="categories = $event"
+          -->
+
           <!-- input -->
           <input
             :id="formData[field.name]"
@@ -166,6 +181,20 @@ const closeDialog = () => {
               :class="showPassword[field.name] ? 'fa-eye' : 'fa-eye-slash'"
               @click="hidePassword(field.name)"
             ></i>
+          </div>
+
+          <div v-if="field.type === 'radio'" class="radio-box">
+            <label v-for="item in field.options" :key="item">
+              <input
+                type="radio"
+                class="radio"
+                :name="field.name"
+                :value="item"
+                v-model="formData[field.name]"
+              />
+
+              {{ item }}
+            </label>
           </div>
 
           <!-- checkbox -->
@@ -233,7 +262,8 @@ dialog label {
 }
 
 /* checkbox */
-.checkbox-box {
+.checkbox-box,
+.radio-box {
   display: flex;
   gap: 15px;
   flex-wrap: wrap;
@@ -256,7 +286,8 @@ select {
     box-shadow 0.2s ease;
 }
 
-.checkbox-box label {
+.checkbox-box label,
+.radio-box label {
   display: flex;
   gap: 8px;
   align-items: center;
@@ -271,7 +302,6 @@ select {
   outline: none;
   font-size: 14px;
 }
-
 
 h3 {
   margin: 0;
