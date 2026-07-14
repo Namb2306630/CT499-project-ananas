@@ -209,6 +209,6 @@ const columns = computed(() => {
   flex-direction: column;
   gap: 10px;
 
-  padding: 6px; /* để box-shadow không sát mép */
+  padding: 6px 0; /* để box-shadow không sát mép */
 }
 </style>
