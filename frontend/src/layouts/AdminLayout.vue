@@ -51,6 +51,7 @@ main {
 .sidebar-wrapper {
   width: 300px;
   min-width: 300px;
+  display: flex;
   transition:
     transform 1s ease,
     margin 1s ease;
@@ -81,7 +82,9 @@ main {
     flex-direction: column;
   }
   .layout-body {
-    display: block;
+    display: flex;
+    flex: 1;
+    min-height: 0;
   }
 
   .sidebar-wrapper {
