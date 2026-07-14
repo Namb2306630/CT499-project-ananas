@@ -4,7 +4,7 @@ import CategoryService from '@/services/category.service'
 export const useCategoryStore = defineStore('category', {
   state: () => ({
     categories: [],
-    category: null,
+    category: {},
     loading: false,
     error: {
       code: null,
@@ -31,7 +31,7 @@ export const useCategoryStore = defineStore('category', {
         this.loading = true
         this.clearError()
         const res = await CategoryService.getAll()
-        this.categories = res.data.result
+        this.categories = Array.isArray(res.data.result) ? res.data.result : []
       } catch (error) {
         const data = error.response?.data
         this.error = {
@@ -110,7 +110,7 @@ export const useCategoryStore = defineStore('category', {
 
         const res = await CategoryService.getBySlug(slug)
 
-        this.category = res.data.result
+        this.category = res.data.result ?? {}
         return this.category
       } catch (error) {
         const data = error.response?.data
