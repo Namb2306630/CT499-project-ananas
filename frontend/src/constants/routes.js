@@ -35,6 +35,9 @@ export const ROUTE_NAMES = {
 
   SYSTEM_CONFIG: 'system-config',
 
+  PRODUCT_TYPES: 'product-types',
+  PRODUCT_TYPE_DEAIL: 'product-types.detaiil',
+
   USERS: 'users',
 
   // user
