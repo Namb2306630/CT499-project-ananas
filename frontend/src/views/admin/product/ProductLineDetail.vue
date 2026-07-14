@@ -146,7 +146,7 @@ const saveProductLine = async () => {
               v-model="productLine.description"
               rows="5"
               class="description"
-              placeholder="Thêm mô tả cho thương hiệu..."
+              placeholder="Thêm mô tả cho dòng sản phẩm..."
             ></textarea>
             <p v-if="errors.description" class="p-0 m-0 error">
               {{ errors.description }}
