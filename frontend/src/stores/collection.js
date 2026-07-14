@@ -4,7 +4,7 @@ import { defineStore } from 'pinia'
 export const useCollectionStore = defineStore('collecions', {
   state: () => ({
     collections: [],
-    collection: null,
+    collection: {},
     loading: false,
     error: {
       code: null,
@@ -86,7 +86,7 @@ export const useCollectionStore = defineStore('collecions', {
         this.clearError()
         this.loading = true
         const res = await collectionService.fetchForAdmin()
-        this.collections = res.data.result
+        this.collections = Array.isArray(res.data.result) ? res.data.result : []
         return res.data
       } catch (error) {
         const data = error.response?.data
@@ -104,7 +104,7 @@ export const useCollectionStore = defineStore('collecions', {
         this.clearError()
         this.loading = true
         const res = await collectionService.fetchForUser()
-        this.collections = res.data.result
+        this.collections = Array.isArray(res.data.result) ? res.data.result : []
         return res.data
       } catch (error) {
         const data = error.response?.data
@@ -123,7 +123,7 @@ export const useCollectionStore = defineStore('collecions', {
 
         const res = await collectionService.getBySlug(slug)
 
-        this.collection = res.data.result
+        this.collection = res.data.result ?? {}
 
         return this.collection
       } catch (error) {
