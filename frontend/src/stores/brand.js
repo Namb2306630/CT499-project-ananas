@@ -4,7 +4,7 @@ import BrandService from '@/services/brand.service'
 export const useBrandStore = defineStore('brand', {
   state: () => ({
     brands: [],
-    brand: null,
+    brand: {},
     productLines: [],
     loading: false,
     error: {
@@ -69,7 +69,7 @@ export const useBrandStore = defineStore('brand', {
 
         const res = await BrandService.getAll()
 
-        this.brands = res.data.result
+        this.brands = Array.isArray(res.data.result) ? res.data.result : []
       } catch (error) {
         const data = error.response?.data
 
@@ -88,7 +88,7 @@ export const useBrandStore = defineStore('brand', {
         this.loading = true
         this.clearError()
         const res = await BrandService.getAllForUser()
-        this.brands = res.data.result
+        this.brands = Array.isArray(res.data.result) ? res.data.result : []
       } catch (error) {
         const data = error.response?.data
         this.error = {
@@ -107,7 +107,7 @@ export const useBrandStore = defineStore('brand', {
         this.clearError()
         const res = await BrandService.getBySlug(slug)
 
-        this.brand = res.data.result
+        this.brand = res.data.result ?? {}
 
         return this.brand
       } catch (error) {
