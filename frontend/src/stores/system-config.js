@@ -3,7 +3,7 @@ import { defineStore } from 'pinia'
 
 export const useSystemConfigStore = defineStore('system-config', {
   state: () => ({
-    systemConfig: null,
+    systemConfig: {},
     loading: false,
     error: {
       code: null,
@@ -28,7 +28,7 @@ export const useSystemConfigStore = defineStore('system-config', {
         this.loading = true
         const res = await SystemConfigService.get()
 
-        this.systemConfig = res.data.result
+        this.systemConfig = res.data.result ?? {}
       } catch (error) {
         const data = error.response?.data
         this.error = {
