@@ -16,6 +16,7 @@ const productRouter = require("./app/routes/admin/product.route");
 const collectionRouter = require("./app/routes/admin/collection.route");
 const ProVariItemRouter = require("./app/routes/admin/product-variant-item.route");
 const productVariantRouter = require("./app/routes/admin/product-variant.route");
+const productTypeRouter = require("./app/routes/admin/product-type.route");
 //user
 const productLineUserRouter = require("./app/routes/user/product-line.route");
 const categoryUserRouter = require("./app/routes/user/category.route");
@@ -29,6 +30,7 @@ const cartUserRouter = require("./app/routes/user/cart.route");
 const orderUserRouter = require("./app/routes/user/order.route");
 const orderItemUserRouter = require("./app/routes/user/order-item.route");
 const productVariantUserRouter = require("./app/routes/user/product-variant.route");
+const productTypeUserRouter = require("./app/routes/user/product-type.route");
 
 const AppError = require("./app/constants/app-error");
 const multer = require("multer");
@@ -67,6 +69,7 @@ app.use("/api/admin/products", productRouter);
 app.use("/api/admin/product-variant-items", ProVariItemRouter);
 app.use("/api/admin/brands", brandRouter);
 app.use("/api/admin/product-variants", productVariantRouter);
+app.use("/api/admin/product-types", productTypeRouter);
 //user
 app.use("/api/brands", brandUserRouter);
 app.use("/api/categories", categoryUserRouter);
@@ -80,6 +83,7 @@ app.use("/api/carts", cartUserRouter);
 app.use("/api/orders", orderUserRouter);
 app.use("/api/order-items", orderItemUserRouter);
 app.use("/api/product-variants", productVariantUserRouter);
+app.use("/api/product-types", productTypeUserRouter);
 
 app.use((req, res, next) => {
   return next(new AppError(404, "Resource not found"));
