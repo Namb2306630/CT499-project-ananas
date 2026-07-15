@@ -59,7 +59,9 @@ exports.remove = async (req, res, next) => {
 
 exports.getAllForAdmin = async (req, res, next) => {
   try {
-    const data = await productService.getAllForAdmin();
+    const page = req.query.page || 1;
+
+    const data = await productService.getAllForAdmin(page);
 
     if (data.length === 0) {
       return ApiResponse.success({

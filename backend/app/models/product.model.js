@@ -80,14 +80,9 @@ const productSchema = new mongoose.Schema(
     },
     // giảm giá phần trăm, dùng để hiển thị trên trang list
 
-    styles: {
-      type: [
-        {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Style",
-        },
-      ],
-      default: [],
+    style: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Style",
     },
 
     isBestSeller: {
@@ -105,11 +100,11 @@ const productSchema = new mongoose.Schema(
       default: false,
     },
 
-    // defaultColor: {
-    //   type: mongoose.Schema.Types.ObjectId,
-    //   ref: "ProductVariant",
-    //   default: null,
-    // },
+    defaultVariant: {
+      type: String,
+      ref: "ProductVariant",
+      default: null,
+    },
     // Màu mặc định hiển thị ngoài trang list
 
     status: {
@@ -147,12 +142,12 @@ const productSchema = new mongoose.Schema(
     id: false,
   },
 );
-//Mongoose tạo field ảo để  populate được
-productSchema.virtual("variants", {
-  //Tạo field ảo tên variants
-  ref: "ProductVariant",
-  localField: "_id", //lấy _id của Product
-  foreignField: "product", //tìm trong ProductVariant field product
-});
+// //Mongoose tạo field ảo để  populate được
+// productSchema.virtual("variants", {
+//   //Tạo field ảo tên variants
+//   ref: "ProductVariant",
+//   localField: "_id", //lấy _id của Product
+//   foreignField: "product", //tìm trong ProductVariant field product
+// });
 
 module.exports = mongoose.model("Product", productSchema);

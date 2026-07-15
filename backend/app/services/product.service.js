@@ -9,7 +9,7 @@ const slugify = require("slugify");
 const updateFields = require("../utils/updateFields.util");
 const systemConfigService = require("./system-config.service");
 const ProductVari = require("../models/product-variant.model");
-
+const ProductType = require("../models/product-type.model");
 const {
   calculateBasePrice,
   calculateSellingPrice,
@@ -33,14 +33,43 @@ class ProductService {
     return product;
   }
 
+  //tạo tên cho product = line + collection + style
+  async generateProductName(payload) {
+    const productLine = await ProductLine.findById(payload.productLine);
+
+    const collection = payload.productCollection
+      ? await Collection.findById(payload.productCollection)
+      : null;
+
+    const style = payload.style ? await Style.findById(payload.style) : null;
+
+    const prefix = [productLine?.name, collection?.name]
+      .filter(Boolean)
+      .join(" ");
+
+    return style?.name ? `${prefix} - ${style.name}` : prefix;
+  }
+
   async validateRelations(payload) {
     const {
       categories = [],
+      productType,
       productLine,
-      styles = [],
       productCollection,
+      style,
     } = payload;
 
+    // Product Type
+    const existProductType = await ProductType.findOne({
+      _id: productType,
+      isDeleted: false,
+    });
+
+    if (!existProductType) {
+      throw ErrorCode.PRODUCT_TYPE_NOT_EXISTS();
+    }
+
+    // Product Line
     const existProductLine = await ProductLine.findOne({
       _id: productLine,
       isDeleted: false,
@@ -50,6 +79,7 @@ class ProductService {
       throw ErrorCode.PRODUCT_LINE_NOT_EXISTS();
     }
 
+    // Categories
     const existCategories = await Category.find({
       _id: { $in: categories },
       isDeleted: false,
@@ -59,22 +89,26 @@ class ProductService {
       throw ErrorCode.CATEGORY_NOT_EXISTS();
     }
 
-    const existCollection = await Collection.findOne({
-      _id: productCollection,
-      isDeleted: false,
-    });
-
-    if (!existCollection) {
-      throw ErrorCode.COLLECTION_NOT_EXISTS();
-    }
-
-    if (styles.length > 0) {
-      const existStyles = await Style.find({
-        _id: { $in: styles },
+    // Collection (không bắt buộc)
+    if (productCollection) {
+      const existCollection = await Collection.findOne({
+        _id: productCollection,
         isDeleted: false,
       });
 
-      if (existStyles.length !== styles.length) {
+      if (!existCollection) {
+        throw ErrorCode.COLLECTION_NOT_EXISTS();
+      }
+    }
+
+    // Style (không bắt buộc)
+    if (style) {
+      const existStyle = await Style.findOne({
+        _id: style,
+        isDeleted: false,
+      });
+
+      if (!existStyle) {
         throw ErrorCode.STYLE_NOT_EXISTS();
       }
     }
@@ -83,8 +117,14 @@ class ProductService {
   }
 
   async create(payload) {
-    const { name, categories = [], productLine, styles = [] } = payload;
+    const { categories = [], productLine } = payload;
 
+    const validated = await this.validateRelations(payload);
+
+    // Sinh tên sản phẩm
+    const name = await this.generateProductName(validated);
+
+    // Sinh slug
     const slug = slugName(name);
 
     const exist = await Product.findOne({ slug });
@@ -109,6 +149,7 @@ class ProductService {
 
       const product = await Product.create({
         ...validated,
+        name,
         slug,
         basePrice,
         sellingPrice,
@@ -139,17 +180,59 @@ class ProductService {
   async update(id, payload) {
     const product = await this.getByIdOrThrow(id);
 
-    // lưu category cũ trước khi update
-    // const oldCategories = product.categories.map((id) => id.toString());
+    const { costPrice, discountPercent } = payload;
 
-    const { name, costPrice, discountPercent } = payload;
+    // Validate các quan hệ nếu có thay đổi
+    if (
+      payload.categories !== undefined ||
+      payload.productLine !== undefined ||
+      payload.productCollection !== undefined ||
+      payload.style !== undefined ||
+      payload.productType !== undefined
+    ) {
+      await this.validateRelations({
+        categories: payload.categories ?? product.categories,
+        productLine: payload.productLine ?? product.productLine,
+        productCollection:
+          payload.productCollection ?? product.productCollection,
+        style: payload.style ?? product.style,
+        productType: payload.productType ?? product.productType,
+      });
+    }
 
-    if (name) {
+    // Cập nhật các field
+    updateFields(product, payload, [
+      "description",
+      "categories",
+      "productLine",
+      "productCollection",
+      "productType",
+      "style",
+      "gender",
+      "isBestSeller",
+      "isNewArrival",
+      "isSale",
+      "defaultVariant",
+      "status",
+    ]);
+
+    // Nếu thay đổi thông tin tạo tên thì sinh lại name + slug
+    if (
+      payload.productLine !== undefined ||
+      payload.productCollection !== undefined ||
+      payload.style !== undefined
+    ) {
+      const name = await this.generateProductName({
+        productLine: product.productLine,
+        productCollection: product.productCollection,
+        style: product.style,
+      });
+
       const slug = slugName(name);
 
       const exist = await Product.findOne({
         slug,
-        _id: { $ne: id },
+        _id: { $ne: product._id },
       });
 
       if (exist) {
@@ -160,29 +243,10 @@ class ProductService {
       product.slug = slug;
     }
 
-    if (payload.categories || payload.productLine || payload.styles) {
-      await this.validateRelations(payload);
-    }
-
-    updateFields(product, payload, [
-      "description",
-      "categories",
-      "productLine",
-      "gender",
-      "isBestSeller",
-      "isNewArrival",
-      "isSale",
-      "defaultColor",
-      "status",
-    ]);
-
-    // cập nhật productCount nếu đổi category
-    // if (Array.isArray(payload.categories)) {
-    //   await this.updateCategoryCount(oldCategories, payload.categories);
-    // }
-
     const system = await systemConfigService.get();
-    if (!system) throw ErrorCode.SYSTEM_NOT_EXISTS();
+    if (!system) {
+      throw ErrorCode.SYSTEM_NOT_EXISTS();
+    }
 
     let newBasePrice = product.basePrice;
 
@@ -197,9 +261,11 @@ class ProductService {
       product.basePrice = newBasePrice;
     }
 
-    const finalDiscount = discountPercent ?? product.discountPercent ?? 0;
+    const finalDiscount = discountPercent ?? product.discountPercent;
 
     if (costPrice !== undefined || discountPercent !== undefined) {
+      product.discountPercent = finalDiscount;
+
       product.sellingPrice = calculateSellingPrice(newBasePrice, finalDiscount);
     }
 
@@ -221,11 +287,36 @@ class ProductService {
     await product.save();
   }
 
-  async getAllForAdmin() {
-    return Product.find()
-      .populate("productLine")
-      .populate("categories")
-      .sort({ createdAt: -1 });
+  async getAllForAdmin(page = 1) {
+    page = Number(page);
+    const limit = 10;
+    //tính số sản phẩm cần bỏ qua
+    const skip = (page - 1) * limit;
+
+    //chạy 2 query cùng lúc
+    const [products, total] = await Promise.all([
+      Product.find()
+        .populate("productLine")
+        .populate("categories")
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit),
+
+      //Có bao nhiêu sản phẩm
+      Product.countDocuments(),
+    ]);
+
+    return {
+      products,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+        hasPrev: page > 1,
+        hasNext: page < Math.ceil(total / limit),
+      },
+    };
   }
 
   async getAllForUser() {
@@ -274,7 +365,6 @@ class ProductService {
     }).populate("variants");
     return product.variants;
   }
-
 }
 
 module.exports = new ProductService();

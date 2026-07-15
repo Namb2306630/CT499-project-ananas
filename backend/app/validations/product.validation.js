@@ -2,41 +2,40 @@ const Joi = require("joi");
 const REGEX = require("../utils/regex.util");
 
 exports.createProductSchema = Joi.object({
-
-  name: Joi.string().required().messages({
-    "string.empty": "Tên sản phẩm không được để trống",
-    "any.required": "Tên sản phẩm là bắt buộc",
-  }),
-
   description: Joi.string().allow("").optional(),
 
   categories: Joi.array()
-    .items(Joi.string().regex(REGEX._ID))
+    .items(Joi.string().pattern(REGEX._ID))
     .min(1)
     .required()
     .messages({
       "any.required": "Chọn danh mục cho sản phẩm là bắt buộc",
       "array.base": "Danh mục phải là mảng",
+      "array.min": "Phải chọn ít nhất một danh mục",
+      "string.pattern.base": "Mã danh mục không hợp lệ",
     }),
 
-  styles: Joi.array().items(Joi.string().regex(REGEX._ID)).required().messages({
-    "any.required": "Kiểu dáng sản phẩm là bắt buộc",
-    "string.pattern.base": "Mã style không hợp lệ",
+  productType: Joi.string().pattern(REGEX._ID).required().messages({
+    "any.required": "Loại sản phẩm là bắt buộc",
+    "string.pattern.base": "Mã loại sản phẩm không hợp lệ",
   }),
 
-  collection: Joi.string().regex(REGEX._ID).required().messages({
-    "any.required": "Bộ sưu tập là bắt buộc",
-    "string.pattern.base": "Mã collection không hợp lệ",
-  }),
-
-  productLine: Joi.string().regex(REGEX._ID).required().messages({
+  productLine: Joi.string().pattern(REGEX._ID).required().messages({
     "any.required": "Dòng sản phẩm là bắt buộc",
-    "string.pattern.base": "Mã product line không hợp lệ",
+    "string.pattern.base": "Mã dòng sản phẩm không hợp lệ",
   }),
 
-  // defaultColor: Joi.string().regex(REGEX._ID).allow(null).optional().messages({
-  //   "string.pattern.base": "Mã màu không hợp lệ",
-  // }),
+  productCollection: Joi.string()
+    .pattern(REGEX._ID)
+    .allow(null, "")
+    .optional()
+    .messages({
+      "string.pattern.base": "Mã bộ sưu tập không hợp lệ",
+    }),
+
+  style: Joi.string().pattern(REGEX._ID).allow(null, "").optional().messages({
+    "string.pattern.base": "Mã kiểu dáng không hợp lệ",
+  }),
 
   costPrice: Joi.number().min(0).required().messages({
     "number.base": "Giá nhập phải là số",
@@ -46,7 +45,9 @@ exports.createProductSchema = Joi.object({
   discountPercent: Joi.number().min(0).max(100).default(0),
 
   isBestSeller: Joi.boolean().default(false),
+
   isNewArrival: Joi.boolean().default(false),
+
   isSale: Joi.boolean().default(false),
 
   gender: Joi.string().valid("male", "female", "unisex").default("unisex"),
@@ -56,6 +57,7 @@ exports.updateProductSchema = Joi.object({
   name: Joi.string().messages({
     "string.empty": "Tên sản phẩm không được để trống",
   }),
+  slug: Joi.string().optional(),
 
   description: Joi.string().allow(""),
 
@@ -63,7 +65,7 @@ exports.updateProductSchema = Joi.object({
     "array.base": "Danh mục phải là mảng",
   }),
 
-  styles: Joi.array().items(Joi.string().regex(REGEX._ID)).messages({
+  styles: Joi.string().regex(REGEX._ID).messages({
     "string.pattern.base": "Mã styles không hợp lệ",
   }),
 
@@ -71,9 +73,7 @@ exports.updateProductSchema = Joi.object({
     "string.pattern.base": "Mã product line không hợp lệ",
   }),
 
-  // defaultColor: Joi.string().regex(REGEX._ID).allow(null).messages({
-  //   "string.pattern.base": "Mã màu không hợp lệ",
-  // }),
+  defaultVariant: Joi.string().allow(""),
 
   costPrice: Joi.number().min(0).messages({
     "number.base": "Giá nhập phải là số",
