@@ -108,6 +108,16 @@ const confirmDelete = async () => {
 const clearError = () => {
   categoryStore.clearError()
 }
+
+const cancelDialogForm = () => {
+  showForm.value = false
+  toastStore.showToast('Đã hủy thay đổi', 'warning')
+}
+
+const cancelDelete = () => {
+  closeDelete()
+  toastStore.showToast('Đã hủy thay đổi', 'warning')
+}
 </script>
 
 <template>
@@ -128,7 +138,6 @@ const clearError = () => {
     <AdminToolbar
       content="Thêm danh mục"
       :items="categories"
-     
       :error="error"
       :showAddCard="true"
       :showSidebar="showSidebar"
@@ -171,7 +180,7 @@ const clearError = () => {
     :fields="fields"
     :data="editData"
     @submit="saveCategory"
-    @close="showForm = false"
+    @close="cancelDialogForm"
     title-img="Ảnh danh mục (nếu có)"
     content-img="Thêm ảnh danh mục"
     :errors="error.errors"
@@ -184,7 +193,7 @@ const clearError = () => {
     message="Bạn có chắc muốn xóa danh mục này?"
     note="Không thể hoàn tác dữ liệu sau khi xóa"
     @confirm="confirmDelete"
-    @cancel="showConfirm = false"
+    @cancel="cancelDelete"
     :name="deleteItem?.name"
   />
 </template>

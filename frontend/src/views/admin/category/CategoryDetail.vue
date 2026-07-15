@@ -107,6 +107,19 @@ const confirmDelete = async () => {
     closeDelete()
   }
 }
+
+const cancelEdit = () => {
+  toastStore.showToast('Đã hủy thay đổi', 'warning')
+
+  setTimeout(() => {
+    router.back()
+  }, 300)
+}
+
+const cancelDelete = () => {
+  closeDelete()
+  toastStore.showToast('Đã hủy thay đổi', 'warning')
+}
 </script>
 
 <template>
@@ -186,7 +199,7 @@ const confirmDelete = async () => {
         cancel-text="Hủy bỏ"
         save-text="Lưu thay đổi"
         @save="saveCategory"
-        @cancel="router.back()"
+        @cancel="cancelEdit"
       />
     </div>
   </div>
@@ -197,7 +210,7 @@ const confirmDelete = async () => {
     message="Bạn có chắc muốn xóa danh mục này?"
     note="Không thể hoàn tác dữ liệu sau khi xóa"
     @confirm="confirmDelete"
-    @cancel="showConfirm.value = false"
+    @cancel="cancelDelete"
     :name="deleteItem?.name"
   />
 </template>

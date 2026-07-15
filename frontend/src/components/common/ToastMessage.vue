@@ -44,6 +44,9 @@ const closeToast = () => {
 .app-toast.error {
   background: #ef4444;
 }
+.app-toast.warning {
+  background: #f59e0b;
+}
 
 .close-toast {
   cursor: pointer;

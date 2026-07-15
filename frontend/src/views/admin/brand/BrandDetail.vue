@@ -104,6 +104,19 @@ const confirmDelete = async () => {
     closeDelete()
   }
 }
+
+const cancelEdit = () => {
+  toastStore.showToast('Đã hủy thay đổi', 'warning')
+
+  setTimeout(() => {
+    router.back()
+  }, 300)
+}
+
+const cancelDelete = () => {
+  closeDelete()
+  toastStore.showToast('Đã hủy xóa thương hiệu sản phẩm', 'warning')
+}
 </script>
 
 <template>
@@ -172,7 +185,7 @@ const confirmDelete = async () => {
         cancel-text="Hủy bỏ"
         save-text="Lưu thay đổi"
         @save="saveBrand"
-        @cancel="router.back()"
+        @cancel="cancelEdit"
       />
     </div>
   </div>
@@ -181,7 +194,7 @@ const confirmDelete = async () => {
     title="Xóa thương hiệu sản phẩm"
     message="Bạn có chắc muốn xóa thương hiệu sản phẩm này?"
     @confirm="confirmDelete"
-    @cancel="showConfirm = false"
+    @cancel="cancelDelete"
     :name="deleteItem?.name"
   />
 </template>

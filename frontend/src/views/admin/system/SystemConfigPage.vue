@@ -26,11 +26,13 @@ const form = ref({
   taxDisplayStrategy: 'included',
 })
 
-
 onMounted(async () => {
   await systemConfigStore.get()
 
   if (systemConfigStore.systemConfig) {
+    //toRaw() lấy ra object gốc vì systemConfigStore.systemConfig kiểu ref là kiểu phản ứng Proxy(Object)
+    //JSON.stringify Chuyển object thành chuỗi JSON.
+    //JSON.parse JSON.stringify
     const data = JSON.parse(JSON.stringify(toRaw(systemConfigStore.systemConfig)))
 
     Object.assign(form.value, data)
@@ -40,9 +42,8 @@ onMounted(async () => {
 
 const saveSystemConfig = async () => {
   const res = await systemConfigStore.update(form.value)
-
   if (res?.code === 200) {
-    originalForm.value = structuredClone(form.value)
+    originalForm.value = JSON.parse(JSON.stringify(toRaw(form.value)))
 
     toastStore.showToast(res.message, 'success')
   } else {
@@ -58,6 +59,7 @@ const saveSystemConfig = async () => {
 const cancel = () => {
   Object.assign(form.value, originalForm.value)
   systemConfigStore.clearError()
+  toastStore.showToast('Đã hủy thay đổi', 'error')
 }
 </script>
 

@@ -93,6 +93,19 @@ const saveCollection = async () => {
     toastStore.showToast(message, 'error')
   }
 }
+
+const cancelEdit = () => {
+  toastStore.showToast('Đã hủy thay đổi', 'warning')
+
+  setTimeout(() => {
+    router.back()
+  }, 300)
+}
+
+const cancelDelete = () => {
+  closeDelete()
+  toastStore.showToast('Đã hủy thay đổi', 'warning')
+}
 </script>
 
 <template>
@@ -145,7 +158,7 @@ const saveCollection = async () => {
       <DetailActions
         cancel-text="Hủy bỏ"
         save-text="Lưu thay đổi"
-        @cancel="router.back()"
+        @cancel="cancelEdit"
         @save="saveCollection"
       />
     </div>
@@ -155,7 +168,7 @@ const saveCollection = async () => {
     message="Bạn có chắc muốn xóa bộ sưu tập sản phẩm này?"
     :show="showConfirm"
     @confirm="confirmDelete"
-    @cancel="showConfirm = false"
+    @cancel="cancelDelete"
     :name="deleteItem?.name"
   />
 </template>

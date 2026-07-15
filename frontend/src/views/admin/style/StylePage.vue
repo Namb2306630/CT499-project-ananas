@@ -88,6 +88,16 @@ const addStyle = async (data) => {
     toastStore.showToast(message, 'error')
   }
 }
+
+const cancelDialogForm = () => {
+  showForm.value = false
+  toastStore.showToast('Đã hủy thay đổi', 'warning')
+}
+
+const cancelDelete = () => {
+  closeDelete()
+  toastStore.showToast('Đã hủy thay đổi', 'warning')
+}
 </script>
 
 <template>
@@ -104,7 +114,6 @@ const addStyle = async (data) => {
       content="Thêm kiểu dáng sản phẩm"
       :items="styles"
       @add="openAddForm"
-     
       :error="error"
       @delete="openDelete"
       @edit="openEdit"
@@ -148,7 +157,7 @@ const addStyle = async (data) => {
     title="Thêm kiểu dáng cho sản phẩm"
     :fields="fields"
     @submit="addStyle"
-    @close="showForm = false"
+    @close="cancelDialogForm"
     :errors="error.errors"
     @clear-error="clearError"
     :general-error="error.general"
@@ -160,6 +169,6 @@ const addStyle = async (data) => {
     message="Bạn có chắc chắn muốn xóa kiểu dáng sản phẩm này?"
     :name="deleteItem?.name"
     @confirm="confirmDelete"
-    @cancel="showConfirm = false"
+    @cancel="cancelDelete"
   />
 </template>

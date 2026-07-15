@@ -103,6 +103,16 @@ const save = async (data) => {
     toastStore.showToast(message, 'error')
   }
 }
+
+const cancelDialogForm = () => {
+  showForm.value = false
+  toastStore.showToast('Đã hủy thay đổi', 'warning')
+}
+
+const cancelDelete = () => {
+  closeDelete()
+  toastStore.showToast('Đã hủy thay đổi', 'warning')
+}
 </script>
 
 <template>
@@ -120,7 +130,6 @@ const save = async (data) => {
       :items="productLines"
       :show-sidebar="showSidebar"
       :error="error"
-     
       @add="openAddForm"
       @edit="openEdit"
       @delete="openDelete"
@@ -171,7 +180,7 @@ const save = async (data) => {
     title="Thêm dòng sản phẩm"
     :fields="fields"
     @submit="save"
-    @close="showForm = false"
+    @close="cancelDialogForm"
     :errors="error.errors"
     :general-error="error.general"
     @clear-error="clearError"
@@ -183,6 +192,6 @@ const save = async (data) => {
     message="Bạn có chắc chắn muốn xóa dòng sản phẩm này?"
     :name="deleteItem?.name"
     @confirm="confirmDelete"
-    @cancel="showConfirm = false"
+    @cancel="cancelDelete"
   />
 </template>

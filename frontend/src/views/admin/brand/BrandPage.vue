@@ -101,6 +101,16 @@ const confirmDelete = async () => {
 const clearError = () => {
   brandStore.clearError()
 }
+
+const cancelDialogForm = () => {
+  showForm.value = false
+  toastStore.showToast('Đã hủy thay đổi', 'warning')
+}
+
+const cancelDelete = () => {
+  closeDelete()
+  toastStore.showToast('Đã hủy thay đổi', 'warning')
+}
 </script>
 
 <template>
@@ -160,7 +170,7 @@ const clearError = () => {
     content-img="Thêm logo thương hiệu"
     title="Thêm thương hiệu"
     :fields="fields"
-    @close="showForm = false"
+    @close="cancelDialogForm"
     @submit="saveBrand"
     :errors="error.errors"
     :general-error="error.general"
@@ -174,6 +184,6 @@ const clearError = () => {
     message="Bạn có chắc chắn muốn xóa thương hiệu sản phẩm này?"
     :name="deleteItem?.name"
     @confirm="confirmDelete"
-    @cancel="showConfirm = false"
+    @cancel="cancelDelete"
   />
 </template>

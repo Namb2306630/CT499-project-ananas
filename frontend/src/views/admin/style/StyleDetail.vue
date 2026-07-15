@@ -95,6 +95,19 @@ const saveStyle = async () => {
     toastStore.showToast(message, 'error')
   }
 }
+
+const cancelEdit = () => {
+  toastStore.showToast('Đã hủy thay đổi', 'warning')
+
+  setTimeout(() => {
+    router.back()
+  }, 300)
+}
+
+const cancelDelete = () => {
+  closeDelete()
+  toastStore.showToast('Đã hủy thay đổi', 'warning')
+}
 </script>
 <template>
   <div class="container-detail">
@@ -144,12 +157,12 @@ const saveStyle = async () => {
           v-model="style.isActive"
         />
       </div>
-      <DetailActions @save="saveStyle" @cancel="router.back()" />
+      <DetailActions @save="saveStyle" @cancel="cancelEdit" />
     </div>
   </div>
   <ConfirmDialog
     :show="showConfirm"
-    @cancel="showConfirm = false"
+    @cancel="cancelDelete"
     @confirm="confirmDelete"
     title="Xóa kiểu dáng sản phẩm"
     message="Bạn có chắc muốn xóa kiểu dáng sản phẩm này?"

@@ -8,33 +8,33 @@ import { useCategoryStore } from '@/stores/caterory'
 import { useProductLineStore } from '@/stores/product-line'
 import { useProductStore } from '@/stores/product'
 import { useCollectionStore } from '@/stores/collection'
+import { useProductType } from '@/stores/product-type'
 import { useStyleStore } from '@/stores/style'
 import { storeToRefs } from 'pinia'
 import { useDelete } from '@/composables/useDelete'
 import ConfirmDialog from '@/components/common/ConfirmDialog.vue'
-
+import AppPagination from '@/components/common/AppPagination.vue'
 const toastStore = useToastStore()
 const categoryStore = useCategoryStore()
 const productLineStore = useProductLineStore()
+const productTypeStore = useProductType()
 const collectionStore = useCollectionStore()
 const productStore = useProductStore()
 const styleStore = useStyleStore()
 
-const { error: errorCategory, loading: loadingCategory, categories } = storeToRefs(categoryStore)
-const { error: errorProduct, loading: loadingProduct, products } = storeToRefs(productStore)
-const {
-  error: errorCollection,
-  loading: loadingCollection,
-  collections,
-} = storeToRefs(collectionStore)
-const {
-  error: errorProductLine,
-  loading: loadingProductLine,
-  productLines,
-} = storeToRefs(productLineStore)
+const { categories } = storeToRefs(categoryStore)
+const { products, pagination, loading, error } = storeToRefs(productStore)
+const { collections } = storeToRefs(collectionStore)
+const { productLines } = storeToRefs(productLineStore)
+const { productTypes } = storeToRefs(productTypeStore)
+const { styles } = storeToRefs(styleStore)
 
-const { error: errorStyle, loading: loadingStyle, styles } = storeToRefs(styleStore)
-
+const changePage = async (page) => {
+  if (page < 1 || page > pagination.value.totalPages || page === pagination.value.page) {
+    return
+  }
+  await productStore.fetchForAdmin(page)
+}
 const { showConfirm, deleteItem, openDelete, closeDelete } = useDelete()
 
 const showForm = ref(false)
@@ -42,17 +42,11 @@ const showForm = ref(false)
 onMounted(async () => {
   await Promise.all([
     categoryStore.fetchCategories(),
-    productLineStore.fetchProductLines(),
+    productLineStore.fetchForAdmin(),
     collectionStore.fetchForAdmin(),
     styleStore.fetchForAdmin(),
     productStore.fetchForAdmin(),
   ])
-
-  console.log('categories:', categories.value)
-  console.log('productLines:', productLines.value)
-  console.log('collections:', collections.value)
-  console.log('styles:', styles.value)
-  console.log('products:', products.value)
 })
 
 const openAddForm = () => {
@@ -84,6 +78,7 @@ const addProduct = async (data) => {
   const result = await productStore.create(data)
 
   if (result?.code === 200) {
+    showForm.value = false
     toastStore.showToast(result.message, 'success')
   } else {
     const message =
@@ -96,13 +91,22 @@ const addProduct = async (data) => {
 }
 
 const fields = computed(() => [
-  {
-    name: 'name',
-    type: 'text',
-    label: 'Tên sản phẩm',
-    placeholder: 'Nhập tên sản phẩm',
-  },
+  // 1. Thông tin cơ bản
+  // {
+  //   name: 'name',
+  //   type: 'text',
+  //   label: 'Tên sản phẩm',
+  //   placeholder: 'Nhập tên sản phẩm',
+  // },
 
+  // 2. Phân loại
+  {
+    name: 'productType',
+    type: 'select',
+    label: 'Loại sản phẩm',
+    placeholder: 'Chọn loại sản phẩm',
+    options: productTypes.value,
+  },
   {
     name: 'productLine',
     type: 'select',
@@ -110,15 +114,13 @@ const fields = computed(() => [
     placeholder: 'Chọn dòng sản phẩm',
     options: productLines.value,
   },
-
   {
-    name: 'collection',
+    name: 'productCollection',
     type: 'select',
     label: 'Bộ sưu tập',
     placeholder: 'Chọn bộ sưu tập',
     options: collections.value,
   },
-
   {
     name: 'categories',
     type: 'multiselect',
@@ -126,44 +128,50 @@ const fields = computed(() => [
     placeholder: 'Chọn danh mục',
     options: categories.value,
   },
+  {
+    name: 'style',
+    type: 'select',
+    label: 'Kiểu dáng',
+    placeholder: 'Chọn kiểu dáng',
+    options: styles.value,
+  },
 
+  // 3. Thuộc tính
+  {
+    name: 'gender',
+    type: 'radio',
+    label: 'Giới tính',
+    options: [
+      { label: 'Nam', value: 'male' },
+      { label: 'Nữ', value: 'female' },
+      { label: 'Phi giới tính', value: 'unisex' },
+    ],
+  },
+
+  // 4. Giá
   {
     name: 'costPrice',
     type: 'text',
     label: 'Giá nhập',
-    placeholder: 'Giá nhập sản phẩm',
+    placeholder: 'Nhập giá nhập',
   },
-
-  {
-    name: 'gender',
-    type: 'radio',
-    label: 'Sản phẩm dành cho',
-    placeholder: 'Chọn loại sản phẩm',
-    options: ['Nam', 'Nữ', 'Phi giới tính'],
-  },
-
   {
     name: 'discountPercent',
     type: 'text',
-    label: 'Giảm giá',
-    placeholder: 'Nhập phần trăm giảm giá',
+    label: 'Giảm giá (%)',
+    placeholder: 'Nhập % giảm giá',
   },
 
+  // 5. Trạng thái nổi bật
   {
-    name: 'styles',
-    type: 'select',
-    label: 'Kiểu dáng',
-    placeholder: 'Chọn kiểu dáng sản phẩm',
-    options: styles.value,
+    type: 'checkbox-group',
+    label: 'Đánh dấu',
+    options: [
+      { name: 'isBestSeller', label: 'Bán chạy' },
+      { name: 'isNewArrival', label: 'Sản phẩm mới' },
+      { name: 'isSale', label: 'Sale' },
+    ],
   },
-
-  {
-    name: 'status',
-    type: 'checkbox',
-    label: 'Trạng thái sản phẩm',
-    options: ['Bán chạy', 'Sản phẩm mới', 'Sale'],
-  },
-
   {
     name: 'description',
     type: 'textarea',
@@ -171,6 +179,16 @@ const fields = computed(() => [
     placeholder: 'Mô tả sản phẩm',
   },
 ])
+
+const cancelDialogForm = () => {
+  showForm.value = false
+  toastStore.showToast('Đã hủy thay đổi', 'warning')
+}
+
+const cancelDelete = () => {
+  closeDelete()
+  toastStore.showToast('Đã hủy thay đổi', 'warning')
+}
 </script>
 
 <template>
@@ -187,6 +205,49 @@ const fields = computed(() => [
       @add="openAddForm"
       :items="products"
       @delete="openDelete"
+      @edit="openEdit"
+      :error="error"
+      :show-sidebar="showSidebar"
+      count-label="Dòng sản phẩm"
+      object-fit="cover"
+      :fields="[
+        {
+          name: 'imageProduct',
+          type: 'image',
+        },
+        {
+          name: 'name',
+          type: 'title',
+        },
+        {
+          name: 'productLine',
+          type: 'ref',
+        },
+        {
+          name: 'style',
+          type: 'ref',
+        },
+        {
+          name: 'price',
+          type: 'price',
+          costPrice: 'costPrice',
+          sellingPrice: 'sellingPrice',
+        },
+        {
+          name: 'gender',
+          type: 'gender',
+        },
+        {
+          name: 'rating',
+          type: 'rating',
+          average: 'ratingAverage',
+          count: 'ratingCount',
+        },
+        {
+          name: 'status',
+          type: 'status',
+        },
+      ]"
     />
   </div>
   <DialogForm
@@ -195,9 +256,13 @@ const fields = computed(() => [
     :show="showForm"
     @submit="addProduct"
     :errors="errorProduct"
-    @close="showForm = false"
+    @close="cancelDialogForm"
+    :general-error="error.general"
     @clear-error="clearError"
   />
+
+  <!-- nút chuyển trang -->
+  <AppPagination :pagination="pagination" @change-page="changePage" />
 
   <ConfirmDialog
     :show="showConfirm"
@@ -205,6 +270,26 @@ const fields = computed(() => [
     message="Bạn có chắc chắn muốn xóa sản phẩm này?"
     :name="deleteItem?.name"
     @confirm="confirmDelete"
-    @cancel="showConfirm = false"
+    @cancel="cancelDelete"
   />
 </template>
+
+<style scoped>
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.pagination button {
+  width: 36px;
+  height: 36px;
+}
+
+.pagination .active {
+  background: #000;
+  color: #fff;
+}
+</style>

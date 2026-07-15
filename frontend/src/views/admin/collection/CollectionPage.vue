@@ -85,6 +85,16 @@ const addCollection = async (data) => {
     toastStore.showToast(message, 'error')
   }
 }
+
+const cancelDialogForm = () => {
+  showForm.value = false
+  toastStore.showToast('Đã hủy thay đổi', 'warning')
+}
+
+const cancelDelete = () => {
+  closeDelete()
+  toastStore.showToast('Đã hủy thay đổi', 'warning')
+}
 </script>
 
 <template>
@@ -100,7 +110,6 @@ const addCollection = async (data) => {
       content="Thêm bộ sưu tập"
       :items="collections"
       :error="error"
-     
       @add="openAddForm"
       @edit="openEdit"
       @delete="openDelete"
@@ -144,7 +153,7 @@ const addCollection = async (data) => {
     title="Thêm bộ sưu tập sản phẩm"
     :fields="fields"
     @submit="addCollection"
-    @close="showForm = false"
+    @close="cancelDialogForm"
     :errors="error.errors"
     :general-error="error.general"
     @clear-error="collecionStore.clearError"
@@ -156,6 +165,6 @@ const addCollection = async (data) => {
     message="Bạn có chắc chắn muốn xóa bộ sưu tập sản phẩm này?"
     :name="deleteItem?.name"
     @confirm="confirmDelete"
-    @cancel="showConfirm = false"
+    @cancel="cancelDelete"
   />
 </template>
