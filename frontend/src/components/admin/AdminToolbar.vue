@@ -133,13 +133,22 @@ const columns = computed(() => {
 @import '../../assets/css/list-item.css';
 .card-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
-  transition: grid-template-columns 0.4s ease;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 12px;
 }
 
 .card-grid.no-sidebar {
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+
+.card-grid,
+.card-grid.no-sidebar {
+  display: grid;
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
+
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
 }
 
 .card-grid > * {
@@ -149,49 +158,14 @@ const columns = computed(() => {
     opacity 0.35s ease;
 }
 .container-tool {
-  margin-top: 10px;
+  width: 100%;
+  min-width: 0;
 }
-
 .list-container {
   display: flex;
   flex-direction: column;
   gap: 10px;
   width: 100%;
-}
-@media (max-width: 992px) {
-  .card-grid,
-  .card-grid.no-sidebar {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-@media (max-width: 767px) {
-  .card-grid,
-  .card-grid.no-sidebar {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-/* Điện thoại nhỏ */
-@media (max-width: 480px) {
-  .card-grid,
-  .card-grid.no-sidebar {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (min-width: 1440px) {
-  .card-grid,
-  .card-grid.no-sidebar {
-    grid-template-columns: repeat(6, 1fr);
-  }
-}
-
-@media (min-width: 1940px) {
-  .card-grid,
-  .card-grid.no-sidebar {
-    grid-template-columns: repeat(8, 1fr);
-  }
 }
 .list-scroll {
   width: 100%;
@@ -210,5 +184,31 @@ const columns = computed(() => {
   gap: 10px;
 
   padding: 6px 0; /* để box-shadow không sát mép */
+}
+
+@media (max-width: 992px) {
+  .main-wrapper {
+    padding: 16px;
+  }
+
+  .card-grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
+}
+
+@media (max-width: 767px) {
+  .main-wrapper {
+    padding: 12px;
+  }
+
+  .card-grid {
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .card-grid {
+    grid-template-columns: 1fr;
+  }
 }
 </style>
