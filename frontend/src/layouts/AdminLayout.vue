@@ -22,7 +22,9 @@ const handleClick = () => {
       </aside>
 
       <main class="main-wrapper" :class="{ full: !showSidebar }">
-        <RouterView :showSidebar="showSidebar" />
+        <div class="content-wrapper">
+          <RouterView :showSidebar="showSidebar" />
+        </div>
       </main>
     </div>
     <AppAdminFooter />
@@ -44,8 +46,8 @@ main {
   display: flex;
   width: 100%;
   flex: 1;
+  min-width: 0;
 }
-
 /* SIDEBAR */
 
 .sidebar-wrapper {
@@ -63,11 +65,19 @@ main {
 }
 
 /* MAIN */
-
 .main-wrapper {
   flex: 1;
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+
   min-width: 0;
-  transition: 1s ease;
+}
+
+.content-wrapper {
+  width: 100%;
+  max-width: var(--max-width);
+  min-width: 0; 
 }
 
 .main-wrapper.full {
