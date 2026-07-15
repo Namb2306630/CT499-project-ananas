@@ -51,6 +51,7 @@
   --color-8: #111827;
   --color-9: #124ae5;
   --color-10: #f0f3fc;
+  --color-11: #000;
 
   --color-bg-dark: #333;
   --color-bg-orange: #ff6633;
@@ -75,7 +76,7 @@
   --section-width: 1400px;
   --image-width: 1600px;
 
-  /* Spacing */
+  --max-width: 1200px; /* Spacing */
   --padding-x: 20px;
 
   /* shadown */
