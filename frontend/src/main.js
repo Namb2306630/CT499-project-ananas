@@ -9,8 +9,8 @@ import '@fortawesome/fontawesome-free/css/all.min.css'
 import 'material-symbols'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate' //Tự động lưu trữ và phục hồi dữ liệu của State (Pinia)
 const pinia = createPinia()
+// Plugin giúp Pinia tự động lưu và khôi phục state bằng localStorage
 pinia.use(piniaPluginPersistedstate)
-
 const app = createApp(App)
 
 app.use(pinia)
