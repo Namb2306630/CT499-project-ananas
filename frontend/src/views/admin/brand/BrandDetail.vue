@@ -14,12 +14,13 @@ import { ref, onMounted, watch, computed } from 'vue'
 import HeaderDetail from '@/components/admin/detail/HeaderDetail.vue'
 import UploadImage from '@/components/admin/forms/UploadImage.vue'
 import ConfirmDialog from '@/components/common/ConfirmDialog.vue'
+import { ROUTE_NAMES } from '@/constants/routes'
+
 const { showConfirm, deleteItem, openDelete, closeDelete } = useDelete()
 
 const toastStore = useToastStore()
 const brandStore = useBrandStore()
-const { error } = storeToRefs(brandStore)
-const loading = ref(true)
+const { error, loading } = storeToRefs(brandStore)
 const errors = computed(() => error.value.errors)
 
 const route = useRoute() // lấy params
@@ -59,7 +60,10 @@ onMounted(async () => {
   if (data) {
     Object.assign(brand.value, data)
   }
-  loading.value = false
+  if (!data) {
+    toastStore.showToast(error.value.general, 'error')
+    router.replace({ name: ROUTE_NAMES.BRANDS })
+  }
 })
 
 const handleUpload = (image) => {

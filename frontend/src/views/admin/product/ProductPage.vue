@@ -14,6 +14,9 @@ import { storeToRefs } from 'pinia'
 import { useDelete } from '@/composables/useDelete'
 import ConfirmDialog from '@/components/common/ConfirmDialog.vue'
 import AppPagination from '@/components/common/AppPagination.vue'
+import { ROUTE_NAMES } from '@/constants/routes'
+import router from '@/router'
+
 const toastStore = useToastStore()
 const categoryStore = useCategoryStore()
 const productLineStore = useProductLineStore()
@@ -29,6 +32,7 @@ const { productLines } = storeToRefs(productLineStore)
 const { productTypes } = storeToRefs(productTypeStore)
 const { styles } = storeToRefs(styleStore)
 
+//phân trang
 const changePage = async (page) => {
   if (page < 1 || page > pagination.value.totalPages || page === pagination.value.page) {
     return
@@ -88,6 +92,15 @@ const addProduct = async (data) => {
 
     toastStore.showToast(message, 'error')
   }
+}
+
+const opentEdit = (product) => {
+  router.push({
+    name: ROUTE_NAMES.PRODUCT_DETAIL,
+    params: {
+      slug: product.slug,
+    },
+  })
 }
 
 const fields = computed(() => [
@@ -151,13 +164,13 @@ const fields = computed(() => [
   // 4. Giá
   {
     name: 'costPrice',
-    type: 'text',
+    type: 'number',
     label: 'Giá nhập',
-    placeholder: 'Nhập giá nhập',
+    placeholder: 'Giá nhập sản phẩm',
   },
   {
     name: 'discountPercent',
-    type: 'text',
+    type: 'number',
     label: 'Giảm giá (%)',
     placeholder: 'Nhập % giảm giá',
   },
@@ -205,7 +218,7 @@ const cancelDelete = () => {
       @add="openAddForm"
       :items="products"
       @delete="openDelete"
-      @edit="openEdit"
+      @edit="opentEdit"
       :error="error"
       :show-sidebar="showSidebar"
       count-label="Dòng sản phẩm"
@@ -219,33 +232,35 @@ const cancelDelete = () => {
           name: 'name',
           type: 'title',
         },
-        {
-          name: 'productLine',
-          type: 'ref',
-        },
-        {
-          name: 'style',
-          type: 'ref',
-        },
+        // {
+        //   name: 'productType',
+        //   type: 'ref',
+        // },
+        // {
+        //   name: 'gender',
+        //   type: 'gender',
+        // },
+        { type: 'product-badges' },
+        { type: 'product-info' },
         {
           name: 'price',
           type: 'price',
           costPrice: 'costPrice',
           sellingPrice: 'sellingPrice',
         },
+
+        // {
+        //   name: 'rating',
+        //   type: 'rating',
+        //   average: 'ratingAverage',
+        //   count: 'ratingCount',
+        // },
+        // {
+        //   name: 'status',
+        //   type: 'product-status',
+        // },
         {
-          name: 'gender',
-          type: 'gender',
-        },
-        {
-          name: 'rating',
-          type: 'rating',
-          average: 'ratingAverage',
-          count: 'ratingCount',
-        },
-        {
-          name: 'status',
-          type: 'status',
+          type: 'product-meta',
         },
       ]"
     />
@@ -255,8 +270,8 @@ const cancelDelete = () => {
     :fields="fields"
     :show="showForm"
     @submit="addProduct"
-    :errors="errorProduct"
     @close="cancelDialogForm"
+    :errors="error.errors"
     :general-error="error.general"
     @clear-error="clearError"
   />

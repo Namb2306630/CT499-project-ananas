@@ -12,6 +12,7 @@ import { ref, onMounted, watch, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { createSlug } from '@/utils/slug'
 import { useDelete } from '@/composables/useDelete'
+import { ROUTE_NAMES } from '@/constants/routes'
 
 const { showConfirm, deleteItem, openDelete, closeDelete } = useDelete()
 
@@ -19,8 +20,7 @@ const toastStore = useToastStore()
 const styleStore = useStyleStore()
 const route = useRoute()
 const router = useRouter()
-const loading = ref(true)
-const { error } = storeToRefs(styleStore)
+const { error, loading } = storeToRefs(styleStore)
 
 const errors = computed(() => error.value.errors)
 
@@ -52,7 +52,10 @@ onMounted(async () => {
   if (data) {
     Object.assign(style.value, data)
   }
-  loading.value = false
+  if (!data) {
+    toastStore.showToast(error.value.general, 'error')
+    router.replace({ name: ROUTE_NAMES.STYLES })
+  }
 })
 
 const confirmDelete = async () => {

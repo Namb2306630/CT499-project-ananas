@@ -15,14 +15,15 @@ import DetailActions from '@/components/admin/detail/DetailActions.vue'
 import DetailStatus from '@/components/admin/detail/DetailStatus.vue'
 import DetailStats from '@/components/admin/detail/DetailStats.vue'
 
+import { ROUTE_NAMES } from '@/constants/routes'
+
 const { showConfirm, deleteItem, openDelete, closeDelete } = useDelete()
 
 const toastStore = useToastStore()
 const route = useRoute()
 const categoryStore = useCategoryStore()
-const { categories, error } = storeToRefs(categoryStore)
+const { categories, error, loading } = storeToRefs(categoryStore)
 const errors = computed(() => error.value.errors)
-const loading = ref(true)
 const category = ref({
   _id: '',
   name: '',
@@ -61,7 +62,10 @@ onMounted(async () => {
       parent: data.parent?._id || data.parent || '',
     }
   }
-  loading.value = false
+  if (!data) {
+    toastStore.showToast(error.value.general, 'error')
+    router.replace({ name: ROUTE_NAMES.CATEGORIES })
+  }
 })
 const handleUpload = (image) => {
   category.value.image = image

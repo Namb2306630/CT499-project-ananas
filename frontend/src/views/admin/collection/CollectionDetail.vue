@@ -12,14 +12,14 @@ import { ref, onMounted, watch, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useToastStore } from '@/stores/toast'
 import { storeToRefs } from 'pinia'
+import { ROUTE_NAMES } from '@/constants/routes'
 
 const { showConfirm, deleteItem, openDelete, closeDelete } = useDelete()
 const toastStore = useToastStore()
 const collectionStore = useCollectionStore()
 const route = useRoute()
 const router = useRouter()
-const { error } = storeToRefs(collectionStore)
-const loading = ref(true)
+const { error, loading } = storeToRefs(collectionStore)
 const errors = computed(() => error.value.errors)
 
 const collection = ref({
@@ -51,7 +51,10 @@ onMounted(async () => {
   if (data) {
     Object.assign(collection.value, data)
   }
-  loading.value = false
+  if (!data) {
+    toastStore.showToast(error.value.general, 'error')
+    router.replace({ name: ROUTE_NAMES.COLLECTIONS })
+  }
 })
 
 const confirmDelete = async () => {

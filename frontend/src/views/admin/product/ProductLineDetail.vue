@@ -13,16 +13,16 @@ import { createSlug } from '@/utils/slug'
 import { useRoute, useRouter } from 'vue-router'
 import DetailStats from '@/components/admin/detail/DetailStats.vue'
 import { storeToRefs } from 'pinia'
+import { ROUTE_NAMES } from '@/constants/routes'
 
 const { showConfirm, deleteItem, openDelete, closeDelete } = useDelete()
 const toastStore = useToastStore()
 const productLineStore = useProductLineStore()
 const brandStore = useBrandStore()
 const { brands, loading: loadingBrand, errors: errorsBrand } = storeToRefs(brandStore)
-const { error } = storeToRefs(productLineStore)
+const { error, loading } = storeToRefs(productLineStore)
 const route = useRoute()
 const router = useRouter()
-const loading = ref(true)
 const errors = computed(() => error.value.errors)
 
 const confirmDelete = async () => {
@@ -79,10 +79,12 @@ onMounted(async () => {
   if (data) {
     //copy data[0] qua productLine.value
     Object.assign(productLine.value, data)
-
     productLine.value.brand = data.brand._id
   }
-  loading.value = false
+  if (!data) {
+    toastStore.showToast(error.value.general, 'error')
+    router.replace({ name: ROUTE_NAMES.PRODUCT_LINES })
+  }
 })
 const saveProductLine = async () => {
   const res = await productLineStore.update(productLine.value._id, productLine.value)
