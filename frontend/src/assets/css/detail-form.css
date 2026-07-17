@@ -1,7 +1,12 @@
 /* ---------------------------------------- */
 /* DETAIL */
+
+label {
+  padding: 0;
+  margin: 20px 0 0 0;
+}
+
 .container-detail {
-  background: var(--color-5);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -39,7 +44,6 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 8px;
 }
 
 .description {
