@@ -1,6 +1,7 @@
 <script setup>
 import { storeToRefs } from 'pinia'
 import { useSystemConfigStore } from '@/stores/system-config'
+import { formatCurrency } from '@/utils/formatCurrency'
 const BASE_URL = import.meta.env.VITE_BACKEND
 
 const systemConfigStore = useSystemConfigStore()
@@ -20,15 +21,6 @@ const handleEdit = () => {
 
 const handleDelete = () => {
   emit('delete', props.item)
-}
-
-const formatCurrency = (value) => {
-  const currency = systemConfig.value.currency || 'VND'
-
-  return new Intl.NumberFormat(currency === 'USD' ? 'en-US' : 'vi-VN', {
-    style: 'currency',
-    currency,
-  }).format(value ?? 0)
 }
 
 // product
@@ -159,19 +151,20 @@ const calculateOriginalPrice = (sellingPrice, discountPercent) => {
               {{
                 formatCurrency(
                   calculateOriginalPrice(item[field.sellingPrice], item.discountPercent),
+                  systemConfig.currency,
                 )
               }}
             </span>
 
             <span class="current-price">
-              {{ formatCurrency(item[field.sellingPrice]) }}
+              {{ formatCurrency(item[field.sellingPrice], systemConfig.currency) }}
             </span>
           </div>
 
           <div class="price cost-price">
             <p>Giá vốn</p>
             <span>
-              {{ formatCurrency(item[field.costPrice]) }}
+              {{ formatCurrency(item[field.costPrice], systemConfig.currency) }}
             </span>
           </div>
         </div>
