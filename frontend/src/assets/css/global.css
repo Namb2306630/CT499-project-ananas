@@ -161,15 +161,16 @@ dialog::backdrop {
   color: var(--text-gray-4);
 }
 
+/* ======================================== */
 /* FORM INPUT,... radio */
 
-input:not(.checkbox-input):not(.radio):hover,
+input:not(.checkbox-input):not(.radio):not(.checkbox-product):not(.checkbox-input):hover,
 textarea:hover {
   border-color: var(--color-bule);
   box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
 }
 
-input:not(.checkbox-input):not(.radio):focus,
+input:not(.checkbox-input):not(.radio):not(.checkbox-product):not(.checkbox-input):focus,
 textarea:focus {
   border-color: var(--color-bule);
   box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
@@ -185,6 +186,8 @@ textarea {
     border-color 0.2s ease,
     box-shadow 0.2s ease;
 }
+
+/* ======================================== */
 /* ICON SELECT */
 .select-box {
   position: relative;
@@ -207,7 +210,6 @@ textarea {
   top: 50%;
 }
 
-/* icon SELECT */
 /* ==================================================== */
 
 /* footer */
