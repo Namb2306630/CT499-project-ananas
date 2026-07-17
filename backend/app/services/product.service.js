@@ -329,6 +329,22 @@ class ProductService {
         //   },
         // },
 
+        // Product variant
+        {
+          $lookup: {
+            from: "productvariants",
+            localField: "defaultVariant",
+            foreignField: "_id",
+            as: "defaultVariant",
+          },
+        },
+        {
+          $unwind: {
+            path: "$defaultVariant",
+            preserveNullAndEmptyArrays: true,
+          },
+        },
+
         // lấy productType
         {
           $lookup: {
@@ -457,10 +473,26 @@ class ProductService {
         },
       },
 
+      // Product variant
+      {
+        $lookup: {
+          from: "productvariants",
+          localField: "defaultVariant",
+          foreignField: "_id",
+          as: "defaultVariant",
+        },
+      },
+      {
+        $unwind: {
+          path: "$defaultVariant",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+
       // Product Collection
       {
         $lookup: {
-          from: "productcollections",
+          from: "collections",
           localField: "productCollection",
           foreignField: "_id",
           as: "productCollection",
