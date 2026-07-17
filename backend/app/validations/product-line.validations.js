@@ -8,8 +8,8 @@ exports.createProductLineSchema = Joi.object({
   }),
 
   brand: Joi.string().required().messages({
-    "string.empty": "Brand không được để trống",
-    "any.required": "Brand là bắt buộc",
+    "string.empty": "Thương hiệu không được để trống",
+    "any.required": "Thương hiệu là bắt buộc",
   }),
 
   description: Joi.string().allow("").optional(),
@@ -20,7 +20,7 @@ exports.updateProductLineSchema = Joi.object({
   }),
 
   brand: Joi.string().regex(REGEX._ID).messages({
-    "string.pattern.base": "Brand không hợp lệ",
+    "string.pattern.base": "Thương hiệu không hợp lệ",
   }),
 
   description: Joi.string().allow(""),
