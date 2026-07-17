@@ -43,16 +43,27 @@ const resetForm = () => {
   const data = {}
 
   props.fields.forEach((field) => {
-    if (field.type === 'checkbox' || field.type === 'multiselect') {
-      data[field.name] = []
-    } else {
-      data[field.name] = ''
+    switch (field.type) {
+      case 'checkbox':
+      case 'multiselect':
+        data[field.name] = []
+        break
+
+      case 'checkbox-group':
+        field.options.forEach((item) => {
+          data[item.name] = false
+        })
+        break
+
+      default:
+        data[field.name] = ''
     }
   })
 
   if (props.showImage) {
     data.image = null
   }
+
   formData.value = data
   uploadImage.value?.reset()
   emit('clearError')
@@ -77,17 +88,39 @@ watch(
   () => props.fields,
   (fields) => {
     if (!fields) return
-    // Chỉ khởi tạo các key nếu formData hiện tại chưa có, tránh overwrite sạch sẽ data cũ
+
     fields.forEach((field) => {
-      if (formData.value[field.name] === undefined) {
-        formData.value[field.name] =
-          field.type === 'checkbox' || field.type === 'multiselect' ? [] : ''
+      if (field.type === 'checkbox-group') {
+        field.options.forEach((item) => {
+          if (formData.value[item.name] === undefined) {
+            formData.value[item.name] = false
+          }
+        })
+      } else if (formData.value[field.name] === undefined) {
+        switch (field.type) {
+          case 'checkbox':
+          case 'multiselect':
+            formData.value[field.name] = []
+            break
+
+          default:
+            formData.value[field.name] = ''
+        }
       }
     })
   },
   {
-    immediate: true, // chạy lần đầu khi component chạy
-    // deep: true, // Để theo dõi sâu nếu options bên trong thay đổi
+    immediate: true,
+  },
+)
+
+// check isSale
+watch(
+  () => formData.value.discountPercent,
+  (value) => {
+    const discount = Number(value) || 0
+
+    formData.value.isSale = discount > 0
   },
 )
 
@@ -167,6 +200,15 @@ const closeDialog = () => {
             :placeholder="field.placeholder"
           />
 
+          <input
+            :id="formData[field.name]"
+            v-if="field.type === 'number'"
+            min="0"
+            v-model="formData[field.name]"
+            type="number"
+            :placeholder="field.placeholder"
+          />
+
           <!-- password -->
           <div v-if="field.type === 'password'" class="password-box">
             <input
@@ -184,16 +226,15 @@ const closeDialog = () => {
           </div>
 
           <div v-if="field.type === 'radio'" class="radio-box">
-            <label v-for="item in field.options" :key="item">
+            <label v-for="item in field.options" :key="item.value">
               <input
                 type="radio"
                 class="radio"
                 :name="field.name"
-                :value="item"
+                :value="item.value"
                 v-model="formData[field.name]"
               />
-
-              {{ item }}
+              {{ item.label }}
             </label>
           </div>
 
@@ -208,6 +249,13 @@ const closeDialog = () => {
               />
 
               {{ item }}
+            </label>
+          </div>
+
+          <div v-if="field.type === 'checkbox-group'" class="checkbox-group">
+            <label v-for="item in field.options" :key="item.name">
+              <input type="checkbox" class="checkbox-product" v-model="formData[item.name]" />
+              {{ item.label }}
             </label>
           </div>
 
@@ -268,7 +316,7 @@ dialog label {
   gap: 15px;
   flex-wrap: wrap;
   background: var(--bg-color-while-2);
-  padding: 12px;
+  padding: 0 12px;
   border-radius: 10px;
   border: 1px solid var(--color-while);
 }
@@ -310,6 +358,33 @@ h3 {
   color: var(--text-gray-4);
   border-left: 4px solid var(--color-bule);
   padding-left: 12px;
+}
+
+/* checkbox-trạng thái như sale,... */
+.checkbox-group {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+
+  padding: 12px;
+  border: 1px solid var(--color-while);
+  border-radius: 10px;
+  background: var(--bg-color-while-2);
+}
+
+.checkbox-group label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  cursor: pointer;
+}
+
+.checkbox-product {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
 }
 
 @media (max-width: 767px) {
