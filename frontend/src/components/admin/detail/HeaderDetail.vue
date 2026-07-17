@@ -42,12 +42,12 @@ const emit = defineEmits(['delete'])
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 10px 0 15px;
+  padding: 10px 10px 0 0;
 }
 
 .header-container {
   border-bottom: 1px solid var(--border-gray-3);
-  padding: 20px;
+  padding: 20px 0;
 }
 
 .delete-btn {
