@@ -1,10 +1,11 @@
 <script setup>
 import { useRoute } from 'vue-router'
-import { ref } from 'vue'
 import avatar from '@/assets/images/hinh-anh-avatar-ngau-nu-1.jpg'
 import { ROUTE_NAMES } from '@/constants/routes'
+import { useUiStore } from '@/stores/ui'
+import { storeToRefs } from 'pinia'
 const route = useRoute()
-
+const uiStore = useUiStore()
 const props = defineProps({
   isShow: Boolean,
   handle: Function,
@@ -26,10 +27,7 @@ const handleLinkClick = (e) => {
   }
 }
 
-const showSystemConfigMenu = ref(false)
-const showProductMenu = ref(false)
-const showUserMenu = ref(false)
-const showOrderMenu = ref(false)
+const { showProductMenu, showOrderMenu, showUserMenu, showSystemConfigMenu } = storeToRefs(uiStore)
 
 const toggleSystemConfigMenu = () => {
   showSystemConfigMenu.value = !showSystemConfigMenu.value
@@ -42,6 +40,10 @@ const toggleUserMenu = () => {
 }
 const toggleOrderMenu = () => {
   showOrderMenu.value = !showOrderMenu.value
+}
+
+const isActiveMenu = (menuName) => {
+  return route.name === menuName || route.meta.activeMenu === menuName
 }
 </script>
 
@@ -86,15 +88,60 @@ const toggleOrderMenu = () => {
         <!--  :class="{ active: route.name === ROUTE_NAMES.PRODUCT_LINES }" -->
         <Transition name="slide">
           <div v-if="showProductMenu" class="submenu">
-            <RouterLink :to="{ name: ROUTE_NAMES.CATEGORIES }"> Danh Mục </RouterLink>
-            <RouterLink :to="{ name: ROUTE_NAMES.BRANDS }"> Thương Hiệu </RouterLink>
-            <RouterLink :to="{ name: ROUTE_NAMES.PRODUCT_LINES }"> Dòng Sản Phẩm</RouterLink>
-            <RouterLink :to="{ name: ROUTE_NAMES.PRODUCT_TYPES }"> Loại Sản Phẩm</RouterLink>
-            <RouterLink :to="{ name: ROUTE_NAMES.STYLES }"> Kiểu Dáng</RouterLink>
-            <RouterLink :to="{ name: ROUTE_NAMES.COLLECTIONS }"> Bộ Sưu Tập</RouterLink>
-            <RouterLink :to="{ name: ROUTE_NAMES.PRODUCTS }"> Sản Phẩm</RouterLink>
-            <RouterLink :to="{ name: ROUTE_NAMES.PRODUCT_VARIANTS }"> Biến Thể Sản Phẩm</RouterLink>
-            <RouterLink :to="{ name: ROUTE_NAMES.PRODUCT_VARIANT_ITEMS }"> SKU</RouterLink>
+            <RouterLink
+              :to="{ name: ROUTE_NAMES.CATEGORIES }"
+              :class="{ active: isActiveMenu(ROUTE_NAMES.CATEGORIES) }"
+            >
+              Danh Mục
+            </RouterLink>
+            <RouterLink
+              :to="{ name: ROUTE_NAMES.BRANDS }"
+              :class="{ active: isActiveMenu(ROUTE_NAMES.BRANDS) }"
+            >
+              Thương Hiệu
+            </RouterLink>
+            <RouterLink
+              :to="{ name: ROUTE_NAMES.PRODUCT_LINES }"
+              :class="{ active: isActiveMenu(ROUTE_NAMES.PRODUCT_LINES) }"
+            >
+              Dòng Sản Phẩm</RouterLink
+            >
+            <RouterLink
+              :to="{ name: ROUTE_NAMES.PRODUCT_TYPES }"
+              :class="{ active: isActiveMenu(ROUTE_NAMES.PRODUCT_TYPES) }"
+            >
+              Loại Sản Phẩm</RouterLink
+            >
+            <RouterLink
+              :to="{ name: ROUTE_NAMES.STYLES }"
+              :class="{ active: isActiveMenu(ROUTE_NAMES.STYLES) }"
+            >
+              Kiểu Dáng</RouterLink
+            >
+            <RouterLink
+              :to="{ name: ROUTE_NAMES.COLLECTIONS }"
+              :class="{ active: isActiveMenu(ROUTE_NAMES.COLLECTIONS) }"
+            >
+              Bộ Sưu Tập</RouterLink
+            >
+            <RouterLink
+              :to="{ name: ROUTE_NAMES.PRODUCTS }"
+              :class="{ active: isActiveMenu(ROUTE_NAMES.PRODUCTS) }"
+            >
+              Sản Phẩm</RouterLink
+            >
+            <RouterLink
+              :to="{ name: ROUTE_NAMES.PRODUCT_VARIANTS }"
+              :class="{ active: isActiveMenu(ROUTE_NAMES.PRODUCT_VARIANTS) }"
+            >
+              Biến Thể Sản Phẩm</RouterLink
+            >
+            <RouterLink
+              :to="{ name: ROUTE_NAMES.PRODUCT_VARIANT_ITEMS }"
+              :class="{ active: isActiveMenu(ROUTE_NAMES.PRODUCT_VARIANT_ITEMS) }"
+            >
+              SKU</RouterLink
+            >
           </div>
         </Transition>
       </div>
@@ -448,6 +495,7 @@ const toggleOrderMenu = () => {
     transition: opacity 0.3s ease;
   }
 
+  /* màu nềm  sau xám */
   .sidebar-overlay.show {
     opacity: 1;
     visibility: visible;
@@ -455,15 +503,11 @@ const toggleOrderMenu = () => {
 
   .sidebar {
     position: fixed;
-
     top: 0;
     left: 0;
-
     width: 260px;
     height: 100vh;
-
     z-index: 1000;
-
     transform: translateX(-100%);
     transition: transform 0.3s ease;
   }
