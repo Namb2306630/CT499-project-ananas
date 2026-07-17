@@ -123,27 +123,33 @@ const cancelDelete = () => {
         <div class="top-info">
           <div class="form">
             <!-- name -->
-            <label for="name">Tên bộ sưu tập</label>
-            <input type="text" name="" id="name" v-model="collection.name" />
-            <p v-if="errors.name" class="error">{{ errors.name }}</p>
+            <div class="form-group">
+              <label for="name">Tên bộ sưu tập</label>
+              <input type="text" name="" id="name" v-model="collection.name" />
+              <p v-if="errors.name" class="error">{{ errors.name }}</p>
+            </div>
 
             <!-- slug -->
-            <label for="slug">Đường dẫn thân thiện (Slug)</label>
-            <input type="text" name="" id="slug" readonly v-model="collection.slug" />
-            <p v-if="errors.slug" class="error">{{ errors.slug }}</p>
+            <div class="form-group">
+              <label for="slug">Đường dẫn thân thiện (Slug)</label>
+              <input type="text" name="" id="slug" readonly v-model="collection.slug" />
+              <p v-if="errors.slug" class="error">{{ errors.slug }}</p>
+            </div>
 
             <!-- mô tả -->
-            <label for="description">Mô tả thêm</label>
-            <textarea
-              id="description"
-              v-model="collection.description"
-              rows="5"
-              class="description"
-              placeholder="Thêm mô tả cho bộ sưu tập..."
-            ></textarea>
-            <p v-if="errors.description" class="error">
-              {{ errors.description }}
-            </p>
+            <div class="form-group">
+              <label for="description">Mô tả thêm</label>
+              <textarea
+                id="description"
+                v-model="collection.description"
+                rows="5"
+                class="description"
+                placeholder="Thêm mô tả cho bộ sưu tập..."
+              ></textarea>
+              <p v-if="errors.description" class="error">
+                {{ errors.description }}
+              </p>
+            </div>
           </div>
         </div>
       </DetailLayout>

@@ -149,23 +149,24 @@ const cancelDelete = () => {
           </div>
 
           <div class="form">
-            <label class="p-0 m-0" for="name"> Tên danh mục </label>
+            <div class="form-group">
+              <label for="name"> Tên danh mục </label>
+              <input id="name" v-model="category.name" />
+              <p v-if="errors.name" class="error p-0 m-0">
+                {{ errors.name }}
+              </p>
+            </div>
 
-            <input id="name" v-model="category.name" />
-            <p v-if="errors.name" class="error p-0 m-0">
-              {{ errors.name }}
-            </p>
+            <div class="form-group">
+              <label for="slug"> Đường dẫn thân thiện (Slug) </label>
+              <input id="slug" v-model="category.slug" readonly />
+              <p v-if="errors.slug" class="error p-0 m-0">
+                {{ errors.slug }}
+              </p>
+            </div>
 
-            <label class="p-0 m-0" for="slug"> Đường dẫn thân thiện (Slug) </label>
-
-            <input id="slug" v-model="category.slug" readonly />
-            <p v-if="errors.slug" class="error p-0 m-0">
-              {{ errors.slug }}
-            </p>
-
-            <div class="parent">
-              <label for="cate" class="mr-3"> Danh mục cha </label>
-
+            <div class="form-group">
+              <label for="cate"> Danh mục cha </label>
               <div class="select-box">
                 <select id="cate" v-model="category.parent">
                   <option value="">Không có</option>

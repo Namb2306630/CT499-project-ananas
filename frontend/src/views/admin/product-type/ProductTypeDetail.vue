@@ -126,27 +126,33 @@ const cancelDelete = () => {
         <div class="top-info">
           <div class="form">
             <!-- name -->
-            <label for="name" class="p-0 m-0">Tên loại sản phẩm</label>
-            <input type="text" name="name" id="name" v-model="productType.name" />
-            <p v-if="errors.name" class="p-0 m-0 error">{{ errors.name }}</p>
+            <div class="form-group">
+              <label for="name">Tên loại sản phẩm</label>
+              <input type="text" name="name" id="name" v-model="productType.name" />
+              <p v-if="errors.name" class="p-0 m-0 error">{{ errors.name }}</p>
+            </div>
 
             <!-- slug -->
-            <label for="slug" class="p-0 m-0">Đường dẫn thân thiện (Slug)</label>
-            <input type="text" name="" id="slug" v-model="productType.slug" readonly />
-            <p v-if="errors.slug" class="p-0 m-0 error">{{ errors.slug }}</p>
+            <div class="form-group">
+              <label for="slug">Đường dẫn thân thiện (Slug)</label>
+              <input type="text" name="" id="slug" v-model="productType.slug" readonly />
+              <p v-if="errors.slug" class="p-0 m-0 error">{{ errors.slug }}</p>
+            </div>
 
             <!-- mô tả -->
-            <label for="description" class="p-0 m-0">Mô tả thêm</label>
-            <textarea
-              id="description"
-              v-model="productType.description"
-              rows="5"
-              class="description"
-              placeholder="Thêm mô tả cho loại sản phẩm..."
-            ></textarea>
-            <p v-if="errors.description" class="p-0 m-0 error">
-              {{ errors.description }}
-            </p>
+            <div class="form-group">
+              <label for="description">Mô tả thêm</label>
+              <textarea
+                id="description"
+                v-model="productType.description"
+                rows="5"
+                class="description"
+                placeholder="Thêm mô tả cho loại sản phẩm..."
+              ></textarea>
+              <p v-if="errors.description" class="p-0 m-0 error">
+                {{ errors.description }}
+              </p>
+            </div>
           </div>
         </div>
       </DetailLayout>
