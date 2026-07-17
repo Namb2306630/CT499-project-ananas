@@ -76,8 +76,8 @@ main {
 
 .content-wrapper {
   width: 100%;
-  max-width: var(--max-width);
-  min-width: 0; 
+  max-width: 1200px;
+  min-width: 0;
 }
 
 .main-wrapper.full {
@@ -97,6 +97,7 @@ main {
     min-height: 0;
   }
 
+  /* ko bị ảnh hưởng bới sidebar */
   .sidebar-wrapper {
     position: fixed;
     top: 0;
