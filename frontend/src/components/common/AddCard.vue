@@ -23,8 +23,8 @@ const openForm = () => {
 <style scoped>
 .card-add {
   border: 3px dashed var(--border-gray-3);
-  min-height: 300px;
-  width: 100%;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+
   margin-top: 10px;
   margin-bottom: 10px;
   display: flex;
@@ -32,6 +32,7 @@ const openForm = () => {
   align-items: center;
   border-radius: 10px;
   transition: all 0.3s ease;
+  min-height: 370px;
 }
 
 .card-add i {
