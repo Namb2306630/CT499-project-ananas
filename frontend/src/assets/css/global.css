@@ -187,6 +187,12 @@ textarea {
     box-shadow 0.2s ease;
 }
 
+input,
+select,
+textarea {
+  font-weight: 500;
+}
+
 /* ======================================== */
 /* ICON SELECT */
 .select-box {
