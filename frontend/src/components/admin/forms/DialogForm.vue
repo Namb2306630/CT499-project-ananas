@@ -342,6 +342,7 @@ select {
   cursor: pointer;
 }
 
+
 .description {
   width: 100%;
   min-height: 120px;
