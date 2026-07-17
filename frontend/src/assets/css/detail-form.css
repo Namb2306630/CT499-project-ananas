@@ -6,6 +6,11 @@ label {
   margin: 20px 0 0 0;
 }
 
+.form-group {
+  gap: 0;
+  margin: 0;
+}
+
 .container-detail {
   min-height: 100vh;
   display: flex;
@@ -86,12 +91,33 @@ select:hover {
   box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
 }
 
-.form label {
+.form label:not(.radio):not(.switch-container) {
   display: block;
   margin-bottom: 6px;
   font-size: 14px;
   font-weight: 600;
   color: var(--color-4);
+  /* màu chữ label */
+}
+
+/* icon trong ô input */
+.input-icon {
+  position: relative;
+}
+
+.input-icon input {
+  width: 100%;
+  padding-right: 50px;
+}
+
+.input-icon .suffix {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6b7280;
+  font-weight: 600;
+  pointer-events: none;
 }
 
 @media (max-width: 767px) {
