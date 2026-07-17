@@ -131,41 +131,49 @@ const cancelDelete = () => {
         <div class="top-info">
           <div class="form">
             <!-- name -->
-            <label for="name" class="p-0 m-0">Tên dòng sản phẩm</label>
-            <input type="text" name="name" id="name" v-model="productLine.name" />
-            <p v-if="errors.name" class="p-0 m-0 error">{{ errors.name }}</p>
+            <div class="form-group">
+              <label for="name">Tên dòng sản phẩm</label>
+              <input type="text" name="name" id="name" v-model="productLine.name" />
+              <p v-if="errors.name" class="p-0 m-0 error">{{ errors.name }}</p>
+            </div>
 
             <!-- slug -->
-            <label for="slug" class="p-0 m-0">Đường dẫn thân thiện (Slug)</label>
-            <input type="text" name="" id="slug" v-model="productLine.slug" readonly />
-            <p v-if="errors.slug" class="p-0 m-0 error">{{ errors.slug }}</p>
+            <div class="form-group">
+              <label for="slug">Đường dẫn thân thiện (Slug)</label>
+              <input type="text" name="" id="slug" v-model="productLine.slug" readonly />
+              <p v-if="errors.slug" class="p-0 m-0 error">{{ errors.slug }}</p>
+            </div>
 
             <!-- brand -->
-            <label for="brand" class="p-0 m-0">Thuộc thương hiệu</label>
-            <div class="select-box">
-              <select id="brand" v-model="productLine.brand">
-                <option v-for="brand in brands" :key="brand._id" :value="brand._id">
-                  {{ brand.name }}
-                </option>
-              </select>
-              <i class="fa-solid fa-chevron-down"></i>
+            <div class="form-group">
+              <label for="brand" >Thuộc thương hiệu</label>
+              <div class="select-box">
+                <select id="brand" v-model="productLine.brand">
+                  <option v-for="brand in brands" :key="brand._id" :value="brand._id">
+                    {{ brand.name }}
+                  </option>
+                </select>
+                <i class="fa-solid fa-chevron-down"></i>
+              </div>
+              <p v-if="errors.brand" class="error">
+                {{ errors.brand }}
+              </p>
             </div>
-            <p v-if="errors.brand" class="error">
-              {{ errors.brand }}
-            </p>
 
             <!-- mô tả -->
-            <label for="description" class="p-0 m-0">Mô tả thêm</label>
-            <textarea
-              id="description"
-              v-model="productLine.description"
-              rows="5"
-              class="description"
-              placeholder="Thêm mô tả cho dòng sản phẩm..."
-            ></textarea>
-            <p v-if="errors.description" class="p-0 m-0 error">
-              {{ errors.description }}
-            </p>
+            <div class="form-group">
+              <label for="description">Mô tả thêm</label>
+              <textarea
+                id="description"
+                v-model="productLine.description"
+                rows="5"
+                class="description"
+                placeholder="Thêm mô tả cho dòng sản phẩm..."
+              ></textarea>
+              <p v-if="errors.description" class="p-0 m-0 error">
+                {{ errors.description }}
+              </p>
+            </div>
           </div>
         </div>
       </DetailLayout>
