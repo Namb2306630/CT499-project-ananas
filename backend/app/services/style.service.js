@@ -172,7 +172,7 @@ class StyleService {
             {
               $match: {
                 $expr: {
-                  $eq: ["$styles", "$$styleId"],
+                  $eq: ["$style", "$$styleId"],
                 },
                 status: {
                   $ne: "discontinued",
@@ -234,7 +234,9 @@ class StyleService {
         },
       },
     ]);
-
+    if (!style) {
+      throw ErrorCode.STYLE_NOT_EXISTS();
+    }
     return style;
   }
 
