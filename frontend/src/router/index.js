@@ -23,10 +23,9 @@ import AdminLayout from '@/layouts/AdminLayout.vue'
 // import SystemNotFoundPage from '@/views/admin/system/NotFoundPage.vue'
 
 //Detail
-import ProductVariantItemPage from '@/views/admin/product/ProductVariantItemPage.vue'
 import CategoryDetail from '@/views/admin/category/CategoryDetail.vue'
 import BrandDetail from '@/views/admin/brand/BrandDetail.vue'
-import ProductLineDetail from '@/views/admin/product/ProductLineDetail.vue'
+import ProductLineDetail from '@/views/admin/product-line/ProductLineDetail.vue'
 import StyleDetail from '@/views/admin/style/StyleDetail.vue'
 import ProductTypeDetail from '@/views/admin/product-type/ProductTypeDetail.vue'
 import ProductDetail from '@/views/admin/product/ProductDetail.vue'
@@ -135,7 +134,7 @@ const router = createRouter({
         {
           path: 'product-lines',
           name: ROUTE_NAMES.PRODUCT_LINES,
-          component: () => import('@/views/admin/product/ProductLinePage.vue'),
+          component: () => import('@/views/admin/product-line/ProductLinePage.vue'),
         },
 
         {
@@ -147,13 +146,13 @@ const router = createRouter({
         {
           path: 'product-variants',
           name: ROUTE_NAMES.PRODUCT_VARIANTS,
-          component: () => import('@/views/admin/product/ProductVariantPage.vue'),
+          component: () => import('@/views/admin/product-variant/ProductVariantPage.vue'),
         },
 
         {
           path: 'product-variant-items',
           name: ROUTE_NAMES.PRODUCT_VARIANT_ITEMS,
-          component: () => import('@/views/admin/product/ProductVariantItemPage.vue'),
+          component: () => import('@/views/admin/product-variant-item/ProductVariantItemPage.vue'),
         },
 
         // Not Found
