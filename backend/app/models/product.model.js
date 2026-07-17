@@ -64,6 +64,12 @@ const productSchema = new mongoose.Schema(
     },
     // Giá bán
 
+    // giá trước giảm
+    originalPrice: {
+      type: Number,
+      default: 0,
+    },
+
     gender: {
       type: String,
       enum: ["male", "female", "unisex"],
@@ -101,7 +107,7 @@ const productSchema = new mongoose.Schema(
     },
 
     defaultVariant: {
-      type: String,
+      type: mongoose.Schema.Types.String,
       ref: "ProductVariant",
       default: null,
     },
