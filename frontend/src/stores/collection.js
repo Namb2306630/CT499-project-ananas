@@ -133,6 +133,9 @@ export const useCollectionStore = defineStore('collecions', {
           general: data?.message || 'Lỗi lấy dữ liệu bộ sưu tập sản phẩm!',
           errors: data?.errors || {},
         }
+        return null
+      } finally {
+        this.loading = false
       }
     },
   },

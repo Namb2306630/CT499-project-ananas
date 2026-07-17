@@ -117,6 +117,7 @@ export const useBrandStore = defineStore('brand', {
           general: data?.message || 'Lỗi lấy thương hiệu!',
           errors: data?.errors || {},
         }
+        return null
       } finally {
         this.loading = false
       }

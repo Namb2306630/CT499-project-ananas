@@ -137,6 +137,7 @@ export const useStyleStore = defineStore('style', {
           general: data?.message || 'Lỗi lấy kiểu dáng sản phẩm!',
           errors: data?.errors || {},
         }
+        return null
       } finally {
         this.loading = false
       }

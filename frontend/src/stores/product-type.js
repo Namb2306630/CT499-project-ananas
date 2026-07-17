@@ -136,6 +136,9 @@ export const useProductType = defineStore('product-types', {
           general: data?.message || 'Lỗi lấy dữ liệu cho loại sản phẩm!',
           errors: data?.errors || {},
         }
+        return null
+      } finally {
+        this.loading = false
       }
     },
   },
