@@ -340,25 +340,12 @@ const cancel = () => {
 }
 label {
   padding: 0;
-  margin: 0;
+  margin: 20px 0 5px 0;
+  /* color: var(--color-4); */
 }
-.input-icon {
-  position: relative;
-}
-
-.input-icon input {
-  width: 100%;
-  padding-right: 50px;
-}
-
-.input-icon .suffix {
-  position: absolute;
-  right: 14px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #6b7280;
-  font-weight: 600;
-  pointer-events: none;
+small {
+  padding: 0;
+  margin: 10px 0 5px 0;
 }
 
 .radio-card {
