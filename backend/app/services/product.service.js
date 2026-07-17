@@ -10,6 +10,8 @@ const updateFields = require("../utils/updateFields.util");
 const systemConfigService = require("./system-config.service");
 const ProductVari = require("../models/product-variant.model");
 const ProductType = require("../models/product-type.model");
+const ProductVariant = require("../models/product-variant.model");
+const mongoose = require("mongoose");
 const {
   calculateBasePrice,
   calculateSellingPrice,
@@ -137,25 +139,37 @@ class ProductService {
 
       const basePrice = calculateBasePrice({
         costPrice: payload.costPrice,
-        vatPercent: system.vatPercent,
+        // vatPercent: system.vatPercent,
         operatingCostPercent: system.operatingCostPercent,
         profitPercent: system.profitPercent,
       });
 
+      const originalPrice = basePrice;
+
       const sellingPrice = calculateSellingPrice(
-        basePrice,
+        originalPrice,
         payload.discountPercent,
       );
+
+      const isSale = payload.discountPercent > 0;
 
       const product = await Product.create({
         ...validated,
         name,
         slug,
         basePrice,
+        originalPrice,
         sellingPrice,
+        isSale,
         status: "active",
       });
-      return { data: product, action: "created" };
+
+      const card = await this.getCardById(product._id);
+
+      return {
+        data: card,
+        action: "created",
+      };
     }
 
     //  RESTORE (soft delete)
@@ -211,7 +225,7 @@ class ProductService {
       "gender",
       "isBestSeller",
       "isNewArrival",
-      "isSale",
+      // "isSale",
       "defaultVariant",
       "status",
     ]);
@@ -259,14 +273,17 @@ class ProductService {
       });
 
       product.basePrice = newBasePrice;
+      product.originalPrice = newBasePrice;
     }
 
     const finalDiscount = discountPercent ?? product.discountPercent;
-
     if (costPrice !== undefined || discountPercent !== undefined) {
       product.discountPercent = finalDiscount;
-
-      product.sellingPrice = calculateSellingPrice(newBasePrice, finalDiscount);
+      product.isSale = finalDiscount > 0;
+      product.sellingPrice = calculateSellingPrice(
+        product.originalPrice,
+        finalDiscount,
+      );
     }
 
     await product.save();
@@ -290,19 +307,99 @@ class ProductService {
   async getAllForAdmin(page = 1) {
     page = Number(page);
     const limit = 10;
-    //tính số sản phẩm cần bỏ qua
     const skip = (page - 1) * limit;
 
-    //chạy 2 query cùng lúc
     const [products, total] = await Promise.all([
-      Product.find()
-        .populate("productLine")
-        .populate("categories")
-        .sort({ createdAt: -1 })
-        .skip(skip)
-        .limit(limit),
+      Product.aggregate([
+        // lấy productLine
+        // {
+        //   $lookup: {
+        //     from: "productlines",
+        //     localField: "productLine",
+        //     foreignField: "_id",
+        //     as: "productLine",
+        //   },
+        // },
 
-      //Có bao nhiêu sản phẩm
+        // // đổi array thành object
+        // {
+        //   $unwind: {
+        //     path: "$productLine",
+        //     preserveNullAndEmptyArrays: true,
+        //   },
+        // },
+
+        // lấy productType
+        {
+          $lookup: {
+            from: "producttypes",
+            localField: "productType",
+            foreignField: "_id",
+            as: "productType",
+          },
+        },
+
+        {
+          $unwind: {
+            path: "$productType",
+            preserveNullAndEmptyArrays: true,
+          },
+        },
+
+        // đếm variant
+        {
+          $lookup: {
+            from: "productvariants",
+            let: {
+              productId: "$_id",
+            },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $eq: ["$product", "$$productId"],
+                  },
+                },
+              },
+              {
+                $count: "total",
+              },
+            ],
+            as: "variantCount",
+          },
+        },
+
+        // lấy số lượng ra ngoài
+        {
+          $addFields: {
+            variantCount: {
+              $ifNull: [
+                {
+                  $arrayElemAt: ["$variantCount.total", 0],
+                },
+                0,
+              ],
+            },
+          },
+        },
+
+        // sắp xếp
+        {
+          $sort: {
+            createdAt: -1,
+          },
+        },
+
+        // phân trang
+        {
+          $skip: skip,
+        },
+
+        {
+          $limit: limit,
+        },
+      ]),
+
       Product.countDocuments(),
     ]);
 
@@ -326,13 +423,89 @@ class ProductService {
   }
 
   async getBySlug(slug) {
-    const product = await Product.findOne({
-      slug,
-      status: "active",
-    })
-      .populate("categories")
-      .populate("styles")
-      .populate("productLine");
+    const [product] = await Product.aggregate([
+      {
+        $match: {
+          slug,
+          status: "active",
+        },
+      },
+
+      // Categories (array)
+      {
+        $lookup: {
+          from: "categories",
+          localField: "categories",
+          foreignField: "_id",
+          as: "categories",
+        },
+      },
+
+      // Product Type
+      {
+        $lookup: {
+          from: "producttypes",
+          localField: "productType",
+          foreignField: "_id",
+          as: "productType",
+        },
+      },
+      {
+        $unwind: {
+          path: "$productType",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+
+      // Product Collection
+      {
+        $lookup: {
+          from: "productcollections",
+          localField: "productCollection",
+          foreignField: "_id",
+          as: "productCollection",
+        },
+      },
+      {
+        $unwind: {
+          path: "$productCollection",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+
+      // Product Line
+      {
+        $lookup: {
+          from: "productlines",
+          localField: "productLine",
+          foreignField: "_id",
+          as: "productLine",
+        },
+      },
+      {
+        $unwind: {
+          path: "$productLine",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+
+      // Style
+      {
+        $lookup: {
+          from: "styles",
+          localField: "style",
+          foreignField: "_id",
+          as: "style",
+        },
+      },
+      {
+        $unwind: {
+          path: "$style",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+    ]);
+
     if (!product) {
       throw ErrorCode.PRODUCT_NOT_EXISTS();
     }
@@ -364,6 +537,36 @@ class ProductService {
       status: { $ne: "inactive" },
     }).populate("variants");
     return product.variants;
+  }
+
+  async getCardById(id) {
+    const [product] = await Product.aggregate([
+      {
+        $match: {
+          _id: new mongoose.Types.ObjectId(id),
+        },
+      },
+
+      {
+        $lookup: {
+          from: "producttypes",
+          localField: "productType",
+          foreignField: "_id",
+          as: "productType",
+        },
+      },
+
+      {
+        $unwind: {
+          path: "$productType",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+
+      // lookup variantCount...
+    ]);
+
+    return product;
   }
 }
 
