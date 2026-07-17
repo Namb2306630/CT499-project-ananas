@@ -47,6 +47,8 @@ defineProps({
 </template>
 
 <style scoped>
+@import '../../../assets/css/swtich.css';
+
 h4 {
   border-left: 4px solid var(--bg-active);
   padding-left: 10px;
@@ -60,61 +62,5 @@ h4 {
 
 .description {
   color: var(--text-gray-3);
-}
-
-/* nút hiển thị website */
-.switch-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  cursor: pointer;
-  gap: 16px;
-  margin-top: 10px;
-}
-
-.content {
-  flex: 1;
-  min-width: 0;
-}
-
-.switch {
-  flex-shrink: 0;
-  width: 45px;
-  height: 24px;
-  position: relative;
-}
-
-.switch input {
-  display: none;
-}
-
-.slider {
-  position: absolute;
-  inset: 0;
-  background: var(--color-7);
-  border-radius: 30px;
-  transition: 0.3s;
-}
-
-.slider::before {
-  content: '';
-  position: absolute;
-  width: 18px;
-  height: 18px;
-  left: 3px;
-  top: 3px;
-  background: white;
-  border-radius: 50%;
-  transition: 0.3s;
-}
-
-.switch input:checked + .slider {
-  background: var(--color-4);
-}
-
-
-/* nút tròn */
-.switch input:checked + .slider::before {
-  transform: translateX(21px);
 }
 </style>
