@@ -144,11 +144,10 @@ const columns = computed(() => {
 .card-grid,
 .card-grid.no-sidebar {
   display: grid;
-  gap: 12px;
   width: 100%;
-  min-width: 0;
+  gap: 16px;
 
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
 }
 
 .card-grid > * {
@@ -160,6 +159,7 @@ const columns = computed(() => {
 .container-tool {
   width: 100%;
   min-width: 0;
+  margin-top: 5px;
 }
 .list-container {
   display: flex;
@@ -184,31 +184,5 @@ const columns = computed(() => {
   gap: 10px;
 
   padding: 6px 0; /* để box-shadow không sát mép */
-}
-
-@media (max-width: 992px) {
-  .main-wrapper {
-    padding: 16px;
-  }
-
-  .card-grid {
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  }
-}
-
-@media (max-width: 767px) {
-  .main-wrapper {
-    padding: 12px;
-  }
-
-  .card-grid {
-    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
-  }
-}
-
-@media (max-width: 480px) {
-  .card-grid {
-    grid-template-columns: 1fr;
-  }
 }
 </style>
