@@ -42,6 +42,6 @@ defineProps({
 }
 
 .info-card-1 {
-  padding: 30px;
+  padding: 10px 30px 30px 30px;
 }
 </style>
