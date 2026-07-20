@@ -13,12 +13,19 @@ import MultiSelect from '@/components/admin/forms/MultiSelect.vue'
 import HeaderDetail from '@/components/admin/detail/HeaderDetail.vue'
 import DetailLayout from '@/components/admin/detail/DetailLayout.vue'
 import DetailActions from '@/components/admin/detail/DetailActions.vue'
-import DetailStats from '@/components/admin/detail/DetailStats.vue'
-import DetailStatus from '@/components/admin/detail/DetailStatus.vue'
+// import DetailStats from '@/components/admin/detail/DetailStats.vue'
+// import DetailStatus from '@/components/admin/detail/DetailStatus.vue'
+import DialogForm from '@/components/admin/forms/DialogForm.vue'
 import { useSystemConfigStore } from '@/stores/system-config'
 import { useRoute, useRouter } from 'vue-router'
 import { ref, onMounted, watch, computed } from 'vue'
-
+import {
+  formatCurrency,
+  formatProfit,
+  calculateProfitPercent,
+  calculateSellingPrice,
+  calculateOriginalPrice,
+} from '@/utils/formatCurrency'
 import { ROUTE_NAMES } from '@/constants/routes'
 
 const toastStore = useToastStore()
@@ -40,9 +47,98 @@ const { styles } = storeToRefs(styleStore)
 const { categories } = storeToRefs(categoryStore)
 const { showConfirm, deleteItem, openDelete, closeDelete } = useDelete()
 
+const showForm = ref(false)
+
+// field thêm
+const fields = computed(() => [
+  {
+    name: 'productType',
+    type: 'select',
+    label: 'Loại sản phẩm',
+    placeholder: 'Chọn loại sản phẩm',
+    options: productTypes.value,
+  },
+  {
+    name: 'productLine',
+    type: 'select',
+    label: 'Dòng sản phẩm',
+    placeholder: 'Chọn dòng sản phẩm',
+    options: productLines.value,
+  },
+  {
+    name: 'productCollection',
+    type: 'select',
+    label: 'Bộ sưu tập',
+    placeholder: 'Chọn bộ sưu tập',
+    options: collections.value,
+  },
+  {
+    name: 'categories',
+    type: 'multiselect',
+    label: 'Danh mục',
+    placeholder: 'Chọn danh mục',
+    options: categories.value,
+  },
+  {
+    name: 'style',
+    type: 'select',
+    label: 'Kiểu dáng',
+    placeholder: 'Chọn kiểu dáng',
+    options: styles.value,
+  },
+
+  // 3. Thuộc tính
+  {
+    name: 'gender',
+    type: 'radio',
+    label: 'Giới tính',
+    options: [
+      { label: 'Nam', value: 'male' },
+      { label: 'Nữ', value: 'female' },
+      { label: 'Phi giới tính', value: 'unisex' },
+    ],
+  },
+
+  // 4. Giá
+  {
+    name: 'costPrice',
+    type: 'number',
+    label: 'Giá nhập',
+    placeholder: 'Giá nhập sản phẩm',
+  },
+  {
+    name: 'discountPercent',
+    type: 'number',
+    label: 'Giảm giá (%)',
+    placeholder: 'Nhập % giảm giá',
+  },
+
+  // 5. Trạng thái nổi bật
+  {
+    type: 'checkbox-group',
+    label: 'Đánh dấu',
+    options: [
+      { name: 'isBestSeller', label: 'Bán chạy' },
+      { name: 'isNewArrival', label: 'Sản phẩm mới' },
+      { name: 'isSale', label: 'Sale' },
+    ],
+  },
+  {
+    name: 'description',
+    type: 'textarea',
+    label: 'Mô tả sản phẩm',
+    placeholder: 'Mô tả sản phẩm',
+  },
+])
+
 const route = useRoute() // lấy params
 const router = useRouter() // điều hướng
 const errors = computed(() => error.value.errors)
+
+const openAddForm = () => {
+  showForm.value = true
+  productStore.clearError()
+}
 
 onMounted(async () => {
   const slug = route.params.slug
@@ -87,12 +183,34 @@ const cancelDelete = () => {
   toastStore.showToast('Đã hủy thay đổi', 'warning')
 }
 
+const cancelDialogForm = () => {
+  showForm.value = false
+  toastStore.showToast('Đã hủy thay đổi', 'warning')
+}
+
+const addProductVariant = async () => {
+  console.log('TEST')
+}
+
 // product
 const statuses = [
   { value: 'active', label: 'Đang bán' },
   { value: 'inactive', label: 'Ẩn' },
   { value: 'discontinued', label: 'Ngừng kinh doanh' },
 ]
+const originalPrice = computed(() => {
+  if (!systemConfig.value) return 0
+
+  return calculateOriginalPrice(Number(product.value.costPrice), systemConfig.value)
+})
+
+const sellingPrice = computed(() => {
+  return calculateSellingPrice(
+    Number(product.value.costPrice),
+    Number(product.value.discountPercent),
+    systemConfig.value,
+  )
+})
 </script>
 
 <template>
@@ -100,7 +218,7 @@ const statuses = [
     <HeaderDetail
       title-delete="Xóa sản phẩm"
       title-go-back="Chi tiết sản phẩm"
-      @delete="openDelete(brand)"
+      @delete="openDelete(product)"
     />
     <div class="detail-grid">
       <div class="detail-row">
@@ -133,16 +251,72 @@ const statuses = [
             </div>
           </DetailLayout>
           <br />
-          <DetailLayout title="Quản lý hình ảnh">
+          <DetailLayout title="Quản lý hình ảnh" icon="image">
             <div class="top-info">
-              <div class="form"></div>
+              <div class="form">
+                <div class="image-guide">
+                  <span class="material-symbols-outlined">info</span>
+
+                  <div>
+                    <p class="image-guide-title">Chọn một biến thể sản phẩm để làm ảnh đại diện.</p>
+                    <p class="image-guide-desc">
+                      Ảnh chính của biến thể sẽ được sử dụng làm ảnh hiển thị mặc định của sản phẩm.
+                    </p>
+                  </div>
+                </div>
+                <!-- Bộ sưu tập SP -->
+                <div class="select-box mb-3">
+                  <label for="collection" class="mr-3"> Biến thể (Variants) </label>
+                  <div class="select-box">
+                    <select id="collection">
+                      <option value="">{{ product.productCollection?.name }}</option>
+
+                      <option
+                        v-for="collection in collections"
+                        :key="collection._id"
+                        :value="collection._id"
+                      >
+                        {{ collection.name }}
+                      </option>
+                    </select>
+                    <i class="fa-solid fa-chevron-down"></i>
+                  </div>
+
+                  <p v-if="errors.parent" class="error p-0 m-0">
+                    {{ errors.parent }}
+                  </p>
+                </div>
+                <div class="product-image">
+                  <template v-if="product.defaultVariant">
+                    <img :src="product.defaultVariant.mainImage" alt="Ảnh sản phẩm" />
+                  </template>
+
+                  <template v-else>
+                    <span class="material-symbols-outlined">hide_image</span>
+                    <p>Chưa chọn biến thể làm ảnh đại diện</p>
+                  </template>
+                </div>
+              </div>
             </div>
           </DetailLayout>
 
           <br />
-          <DetailLayout title="Quản lý hình ảnh">
+          <DetailLayout title="Biến thể sản phẩm (Variants)" icon="layers">
             <div class="top-info">
-              <div class="form"></div>
+              <div class="form">
+                <div class="variant-header">
+                  <button class="btn-add-variant" @click="openAddForm">
+                    <i class="fa-solid fa-plus"></i>
+                    <span>Thêm biến thể</span>
+                  </button>
+
+                  <div class="variant-stock">
+                    <span
+                      >Tổng kho: <strong>{{ totalStock }}</strong></span
+                    >
+                  </div>
+                </div>
+              </div>
             </div>
           </DetailLayout>
 
@@ -161,14 +335,14 @@ const statuses = [
 
                 <!-- giá bán -->
                 <div class="form-group">
-                  <label for="selling">Giá nhập</label>
+                  <label for="selling">Giá bán</label>
                   <div class="input-icon">
                     <input
                       type="number"
                       name="selling"
                       id="selling"
                       readonly
-                      v-model="product.sellingPrice"
+                      :value="originalPrice"
                     />
                     <span class="suffix">{{ systemConfig.currency }}</span>
                   </div>
@@ -182,10 +356,35 @@ const statuses = [
                       type="number"
                       name="discount"
                       id="discount"
-                      readonly
                       v-model="product.discountPercent"
                     />
                     <span class="suffix">%</span>
+                  </div>
+                </div>
+
+                <!-- giá sau giảm-->
+                <div class="form-group original-price">
+                  <div class="profit">
+                    <div class="profit-icon">
+                      <span class="material-symbols-outlined"> finance_mode </span>
+                    </div>
+                    <div>
+                      <p>LỢI NHUẬN ƯỚC TÍNH</p>
+                      <div class="profit-box">
+                        <span>
+                          {{ formatProfit(product.costPrice, sellingPrice, systemConfig.currency) }}
+                        </span>
+                        <span>
+                          ({{ calculateProfitPercent(product.costPrice, sellingPrice) }}%)
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <p>Giá sau khi giảm</p>
+                    <span>
+                      {{ formatCurrency(sellingPrice, systemConfig.currency) }}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -196,7 +395,27 @@ const statuses = [
           <DetailLayout title="Phân loại" icon="category">
             <div class="top-info">
               <div class="form">
-                <div class="check-box">
+                <!-- LOại SP -->
+                <div class="select-box">
+                  <label for="type" class="mr-3"> Loại sản phẩm </label>
+                  <div class="select-box">
+                    <select id="type">
+                      <option value="">{{ product.productType?.name }}</option>
+
+                      <option v-for="type in productTypes" :key="type._id" :value="type._id">
+                        {{ type.name }}
+                      </option>
+                    </select>
+                    <i class="fa-solid fa-chevron-down"></i>
+                  </div>
+
+                  <p v-if="errors.parent" class="error p-0 m-0">
+                    {{ errors.parent }}
+                  </p>
+                </div>
+
+                <!-- dòng SP -->
+                <div class="select-box">
                   <label for="lines" class="mr-3"> Dòng sản phẩm </label>
                   <div class="select-box">
                     <select id="lines">
@@ -213,6 +432,7 @@ const statuses = [
                     {{ errors.parent }}
                   </p>
                 </div>
+                <!-- Bộ sưu tập SP -->
                 <div class="select-box">
                   <label for="collection" class="mr-3"> Bộ sưu tập </label>
                   <div class="select-box">
@@ -387,6 +607,17 @@ const statuses = [
     </div>
   </div>
 
+  <DialogForm
+    title="Thêm sản phẩm"
+    :fields="fields"
+    :show="showForm"
+    @submit="addProductVariant"
+    @close="cancelDialogForm"
+    :errors="error.errors"
+    :general-error="error.general"
+    @clear-error="clearError"
+  />
+
   <ConfirmDialog
     :show="showConfirm"
     title="Xóa sản phẩm"
@@ -526,6 +757,180 @@ const statuses = [
   border-radius: 5px;
 }
 
+/* ước tính lợi nhuận */
+.original-price {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  margin-top: 30px;
+  border-radius: 4px;
+  border: 1px solid var(--color-9);
+  background-color: var(--color-13);
+}
+
+.original-price p {
+  padding: 0;
+  margin: 0;
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.profit {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+.profit .material-symbols-outlined {
+  color: var(--color-9);
+}
+
+.profit-icon {
+  padding: 8px;
+  background-color: var(--color-14);
+  border-radius: 5px;
+}
+
+.profit-box span:first-child {
+  color: var(--color-9);
+}
+
+.profit-box > span:nth-child(2) {
+  color: var(--text-gray-3);
+  font-size: 12px;
+}
+
+.variant-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.btn-add-variant {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  background: var(--color-7);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-add-variant:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+  background: var(--color-9);
+}
+
+.btn-add-variant:active {
+  transform: translateY(0);
+}
+
+.variant-stock {
+  font-size: 16px;
+  color: #666;
+}
+
+.variant-stock strong {
+  color: var(--color-7);
+}
+
+.image-guide {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 14px 16px;
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+}
+
+.image-guide .material-symbols-outlined {
+  color: var(--color-9);
+  font-size: 24px;
+  margin-top: 2px;
+}
+
+.product-image {
+  width: 100%;
+  height: 260px;
+  border: 2px dashed var(--border-gray-2);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  background: #fafafa;
+}
+
+.product-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.empty-image .material-symbols-outlined,
+.product-image .material-symbols-outlined {
+  font-size: 64px;
+  color: #bdbdbd;
+}
+
+.empty-image p,
+.product-image p {
+  margin: 0;
+  color: var(--text-gray-3);
+  font-size: 14px;
+}
+
+@media (max-width: 767px) {
+  .original-price {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+    padding: 16px;
+  }
+
+  .profit {
+    width: 100%;
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
+
+  .profit-icon,
+  .material-symbols-outlined {
+    display: none;
+  }
+
+  .profit-box {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+  }
+
+  .original-price > div:last-child {
+    width: 100%;
+    padding-top: 12px;
+    border-top: 1px solid var(--border-gray-2);
+  }
+
+  .original-price > div:last-child span {
+    font-size: 18px;
+    font-weight: 600;
+  }
+}
 
 @media (max-width: 767px) {
   .detail-row {
