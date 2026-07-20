@@ -12,6 +12,7 @@ import { useToastStore } from '@/stores/toast'
 import ConfirmDialog from '@/components/common/ConfirmDialog.vue'
 import { useRouter } from 'vue-router'
 import { useDelete } from '@/composables/useDelete'
+import CategoryCard from '@/components/common/cards/category/CategoryCard.vue'
 
 const { showConfirm, deleteItem, openDelete, closeDelete } = useDelete()
 
@@ -54,7 +55,7 @@ const fields = computed(() => {
   return [
     {
       name: 'name',
-      label: 'Tên danh mục *',
+      label: 'Tên danh mục',
       type: 'text',
       placeholder: 'Nhập tên danh mục',
     },
@@ -138,36 +139,8 @@ const cancelDelete = () => {
     <AdminToolbar
       content="Thêm danh mục"
       :items="categories"
-      :error="error"
-      :showAddCard="true"
-      :showSidebar="showSidebar"
-      :fields="[
-        {
-          name: 'image',
-          type: 'image',
-        },
-
-        {
-          name: 'name',
-          type: 'title',
-        },
-        {
-          name: 'productCount',
-          type: 'count',
-        },
-        {
-          name: 'parent',
-          type: 'ref',
-        },
-        {
-          name: 'description',
-          type: 'text',
-        },
-        {
-          name: 'isActive',
-          type: 'status',
-        },
-      ]"
+      :card-component="CategoryCard"
+      :show-sidebar="showSidebar"
       @add="openAddForm"
       @edit="openEdit"
       @delete="openDelete"

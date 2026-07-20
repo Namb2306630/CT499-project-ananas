@@ -16,6 +16,7 @@ import ConfirmDialog from '@/components/common/ConfirmDialog.vue'
 import AppPagination from '@/components/common/AppPagination.vue'
 import { ROUTE_NAMES } from '@/constants/routes'
 import router from '@/router'
+import ProductCard from '@/components/common/cards/product/ProductCard.vue'
 
 const toastStore = useToastStore()
 const categoryStore = useCategoryStore()
@@ -223,46 +224,7 @@ const cancelDelete = () => {
       :show-sidebar="showSidebar"
       count-label="Dòng sản phẩm"
       object-fit="cover"
-      :fields="[
-        {
-          name: 'imageProduct',
-          type: 'image',
-        },
-        {
-          name: 'name',
-          type: 'title',
-        },
-        // {
-        //   name: 'productType',
-        //   type: 'ref',
-        // },
-        // {
-        //   name: 'gender',
-        //   type: 'gender',
-        // },
-        { type: 'product-badges' },
-        { type: 'product-info' },
-        {
-          name: 'price',
-          type: 'price',
-          costPrice: 'costPrice',
-          sellingPrice: 'sellingPrice',
-        },
-
-        // {
-        //   name: 'rating',
-        //   type: 'rating',
-        //   average: 'ratingAverage',
-        //   count: 'ratingCount',
-        // },
-        // {
-        //   name: 'status',
-        //   type: 'product-status',
-        // },
-        {
-          type: 'product-meta',
-        },
-      ]"
+      :card-component="ProductCard"
     />
   </div>
   <DialogForm

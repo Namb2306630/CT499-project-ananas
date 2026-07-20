@@ -11,6 +11,7 @@ import ConfirmDialog from '@/components/common/ConfirmDialog.vue'
 import { storeToRefs } from 'pinia'
 import { ref, onMounted } from 'vue'
 import { ROUTE_NAMES } from '@/constants/routes'
+import ProductLineListItem from '@/components/common/lists/product-line/ProductLineListItem.vue'
 
 const { showConfirm, deleteItem, openDelete, closeDelete } = useDelete()
 const toastStore = useToastStore()
@@ -136,42 +137,14 @@ const cancelDelete = () => {
       count-label="Sản phẩm"
       :show-add-card="false"
       :show-card-item="false"
-      :fields="[
-        {
-          name: 'name',
-          label: 'Tên dòng SP',
-          type: 'title',
-          width: '1.5fr',
-        },
-        {
-          name: 'description',
-          label: 'Mô tả',
-          type: 'text',
-          width: '2.5fr',
-        },
-        {
-          name: 'brand',
-          label: 'Hãng',
-          type: 'ref',
-          width: '1.5fr',
-        },
-        {
-          name: 'productCount',
-          label: 'Số SP',
-          type: 'count',
-          width: '80px',
-        },
-        {
-          name: 'createdAt',
-          label: 'Ngày tạo',
-          type: 'createdAt',
-          width: '120px',
-        },
-        {
-          name: 'isActive',
-          type: 'isActive',
-        },
+      :headers="[
+        { label: 'Tên dòng SP', width: '1.5fr' },
+        { label: 'Mô tả', width: '2.5fr' },
+        { label: 'Hãng', width: '1.5fr' },
+        { label: 'Số SP', width: '80px' },
+        { label: 'Ngày tạo', width: '120px' },
       ]"
+      :list-component="ProductLineListItem"
     />
   </div>
 

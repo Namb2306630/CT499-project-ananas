@@ -10,6 +10,7 @@ import { ROUTE_NAMES } from '@/constants/routes'
 import router from '@/router'
 import { useDelete } from '@/composables/useDelete'
 import ConfirmDialog from '@/components/common/ConfirmDialog.vue'
+import StyleListItem from '@/components/common/lists/style/StyleListItem.vue'
 
 const { showConfirm, deleteItem, openDelete, closeDelete } = useDelete()
 const styleStore = useStyleStore()
@@ -119,35 +120,23 @@ const cancelDelete = () => {
       @edit="openEdit"
       :show-add-card="false"
       :show-card-item="false"
-      :fields="[
+      :list-component="StyleListItem"
+      :headers="[
         {
-          name: 'name',
           label: 'Kiểu dáng',
-          type: 'title',
           width: '1.5fr',
         },
         {
-          name: 'description',
           label: 'Mô tả',
-          type: 'text',
           width: '2.5fr',
         },
-
         {
-          name: 'productCount',
           label: 'Số SP',
-          type: 'count',
           width: '80px',
         },
         {
-          name: 'createdAt',
           label: 'Ngày tạo',
-          type: 'createdAt',
           width: '120px',
-        },
-        {
-          name: 'isActive',
-          type: 'isActive',
         },
       ]"
     />

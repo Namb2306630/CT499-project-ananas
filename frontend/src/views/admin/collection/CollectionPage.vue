@@ -10,6 +10,7 @@ import { storeToRefs } from 'pinia'
 import { ref, onMounted } from 'vue'
 import { ROUTE_NAMES } from '@/constants/routes'
 import { useCollectionStore } from '@/stores/collection'
+import CollectionListItem from '@/components/common/lists/collection/CollectionListItem.vue'
 
 const { showConfirm, deleteItem, openDelete, closeDelete } = useDelete()
 const toastStore = useToastStore()
@@ -116,34 +117,23 @@ const cancelDelete = () => {
       count-label="Sản phẩm"
       :show-add-card="false"
       :show-card-item="false"
-      :fields="[
+      :list-component="CollectionListItem"
+      :headers="[
         {
-          name: 'name',
           label: 'Tên bộ sưu tập',
-          type: 'title',
           width: '1.5fr',
         },
         {
-          name: 'description',
           label: 'Mô tả',
-          type: 'text',
           width: '2.5fr',
         },
         {
-          name: 'productCount',
           label: 'Số SP',
-          type: 'count',
           width: '80px',
         },
         {
-          name: 'createdAt',
           label: 'Ngày tạo',
-          type: 'createdAt',
           width: '120px',
-        },
-        {
-          name: 'isActive',
-          type: 'isActive',
         },
       ]"
     />

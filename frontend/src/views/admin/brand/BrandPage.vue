@@ -10,6 +10,7 @@ import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useDelete } from '@/composables/useDelete'
 import { ROUTE_NAMES } from '@/constants/routes'
+import BrandCard from '@/components/common/cards/brand/BrandCard.vue'
 const router = useRouter()
 
 const { showConfirm, deleteItem, openDelete, closeDelete } = useDelete()
@@ -131,36 +132,12 @@ const cancelDelete = () => {
     <!--  :loading="loading" -->
     <AdminToolbar
       content="Thêm thương hiệu"
-      @add="openAddForm"
       :items="brands"
-      :error="error"
+      :card-component="BrandCard"
       :show-sidebar="showSidebar"
+      @add="openAddForm"
       @edit="openEdit"
       @delete="openDelete"
-      count-label="Dòng sản phẩm"
-      object-fit="cover"
-      :fields="[
-        {
-          name: 'logo',
-          type: 'image',
-        },
-        {
-          name: 'name',
-          type: 'title',
-        },
-        {
-          name: 'productLines',
-          type: 'count',
-        },
-        {
-          name: 'productLineNames',
-          type: 'tags',
-        },
-        {
-          name: 'isActive',
-          type: 'status',
-        },
-      ]"
     />
   </div>
   <DialogForm
