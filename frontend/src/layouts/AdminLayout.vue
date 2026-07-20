@@ -84,7 +84,7 @@ main {
   width: 100%;
 }
 
-@media (max-width: 767px) {
+@media (max-width: 768px) {
   .app-layout {
     width: 100%;
     min-height: 100vh;
