@@ -73,15 +73,15 @@ exports.getAll = async (req, res, next) => {
     next(err);
   }
 };
-exports.getById = async (req, res, next) => {
+exports.getBySlug = async (req, res, next) => {
   try {
-    const id = req.params.id;
-    const data = await service.getById(id);
+    const slug = req.params.slug;
+    const data = await service.getBySlug(slug);
 
     return ApiResponse.success({
       res,
       data,
-      message: "Lấy sản phẩm ngừng king doanh thành công",
+      message: "Lấy biến thể sản phẩm ngừng king doanh thành công",
     });
   } catch (err) {
     next(err);
@@ -95,8 +95,8 @@ exports.updateOutOfStock = async (req, res, next) => {
 
     return ApiResponse.success({
       res,
-      data: true,
-      message: "Cập nhật sản phẩm tạm hết hàng thành công",
+      data,
+      message: "Cập nhật biến thể sản phẩm tạm hết hàng thành công",
     });
   } catch (err) {
     next(err);
