@@ -1,4 +1,4 @@
-<script setup>
+<!-- <script setup>
 import { computed } from 'vue'
 
 const props = defineProps({
@@ -82,68 +82,5 @@ const handleDelete = () => emit('delete', props.item)
 </template>
 
 <style scoped>
-.list-item:hover {
-  cursor: pointer;
-}
-.list-content {
-  display: contents;
-}
-
-.tag-list {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-}
-
-.tag {
-  background: #eee;
-  padding: 4px 8px;
-  border-radius: 20px;
-  font-size: 12px;
-}
-
-.more {
-  background: #2563eb;
-  color: white;
-}
-
-.list-status {
-  text-align: start;
-}
-
-.active {
-  padding: 6px 12px;
-  border-radius: 20px;
-  background: #d1fae5;
-  color: #047857;
-}
-
-.inactive {
-  padding: 6px 12px;
-  border-radius: 20px;
-  background: #fee2e2;
-}
-
-.list-actions {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-}
-
-.list-actions button {
-  width: 35px;
-  height: 35px;
-  border: none;
-  border-radius: 50%;
-  color: white;
-  cursor: pointer;
-}
-
-.edit {
-  background: #2563eb;
-}
-
-.delete {
-  background: #dc2626;
-}
-</style>
+@import '../../assets/css/list-item.css';
+</style> -->
