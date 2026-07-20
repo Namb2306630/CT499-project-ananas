@@ -7,14 +7,15 @@ const createProductVariantSchema = Joi.object({
     "string.empty": "Mã sản phẩm không được rỗng",
     "any.required": "Mã sản phẩm là bắt buộc",
   }),
-  product: Joi.string().required().messages({
-    "string.base": "Product phải là string",
-    "any.required": "Product là bắt buộc",
-    "string.pattern.base": "Mã Product không hợp lệ",
+  product: Joi.string().trim().required().messages({
+    "string.base": "Sản phẩm không hợp lệ",
+    "string.empty": "Sản phẩm không được để trống",
+    "any.required": "Sản phẩm là bắt buộc",
   }),
 
   colorName: Joi.string().trim().required().messages({
     "string.base": "Tên màu không hợp lệ",
+    "string.empty": "Tên màu không được để trống",
     "any.required": "Tên màu là bắt buộc",
   }),
 
@@ -24,21 +25,27 @@ const createProductVariantSchema = Joi.object({
     .pattern(/^#?[0-9A-F]{6}$/i)
     .required()
     .messages({
-      "string.pattern.base": "Mã màu phải là HEX (vd: #FF0000)",
+      "string.base": "Mã màu không hợp lệ",
+      "string.empty": "Mã màu không được để trống",
+      "string.pattern.base": "Mã màu phải là HEX (VD: #FF0000)",
       "any.required": "Mã màu là bắt buộc",
     }),
 
-  // mainImage: Joi.string().trim().required().messages({
-  //   "any.required": "Main image là bắt buộc",
-  //   "string.base": "Main image phải là string",
-  // }),
+  mainImage: Joi.string().trim().required().messages({
+    "string.base": "Ảnh chính không hợp lệ",
+    "string.empty": "Ảnh chính không được để trống",
+    "any.required": "Ảnh chính là bắt buộc",
+  }),
 
-  // hoverImage: Joi.string().trim().required().messages({
-  //   "any.required": "Hover image là bắt buộc",
-  //   "string.base": "Hover image phải là string",
-  // }),
+  hoverImage: Joi.string().trim().required().messages({
+    "string.base": "Ảnh hover không hợp lệ",
+    "string.empty": "Ảnh hover không được để trống",
+    "any.required": "Ảnh hover là bắt buộc",
+  }),
 
-  // images: Joi.array().items(Joi.string()).default([]),
+  images: Joi.array().items(Joi.string()).messages({
+    "array.base": "Danh sách ảnh không hợp lệ",
+  }),
 });
 
 const updateProductVariantSchema = Joi.object({

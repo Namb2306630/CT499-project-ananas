@@ -25,14 +25,6 @@ class ProductVariantService {
     if (files.images.length > 10) throw ErrorCode.MAX_IMAGES();
   }
 
-  buildDisplayName(variant) {
-    return `${variant.product.productLine.name} ${variant.product.name} - ${variant.product.style.name}`;
-  }
-
-  buildDetailName(variant) {
-    return `${this.buildDisplayName(variant)} - ${variant.colorName}`;
-  }
-
   async create(payload, files) {
     const { product, colorCode, _id } = payload;
 
@@ -147,53 +139,123 @@ class ProductVariantService {
     await proVari.save();
   }
   async getAll() {
-    const variants = await ProductVariant.find({
-      status: { $ne: "inactive" },
-    })
-      .populate({
-        path: "product",
-        populate: [
-          {
-            path: "productLine",
-            select: "name",
-          },
-          {
-            path: "style",
-            select: "name",
-          },
-        ],
-      })
-      .sort({
-        createdAt: -1,
-      });
-    return variants.map((item) => {
-      const obj = item.toObject();
+    return await ProductVariant.aggregate([
+      {
+        $match: {
+          status: { $ne: "inactive" },
+        },
+      },
 
-      obj.displayName = this.buildDisplayName(obj);
+      // join Product
+      {
+        $lookup: {
+          from: "products",
+          localField: "product",
+          foreignField: "_id",
+          as: "product",
+        },
+      },
 
-      return obj;
-    });
+      {
+        $unwind: "$product",
+      },
+
+      // join VariantItem
+      {
+        $lookup: {
+          from: "productvariantitems",
+          localField: "_id",
+          foreignField: "variant",
+          as: "variantItems",
+        },
+      },
+
+      // đếm số size
+      {
+        $addFields: {
+          variantItemCount: {
+            $size: "$variantItems",
+          },
+
+          displayName: {
+            $concat: ["$product.name", " - ", "$colorName"],
+          },
+        },
+      },
+
+      {
+        $project: {
+          variantItems: 0,
+        },
+      },
+
+      {
+        $sort: {
+          createdAt: -1,
+        },
+      },
+    ]);
   }
-  async getById(id) {
-    const proVari = await ProductVariant.findById(id).populate({
-      path: "product",
-      populate: [
-        {
-          path: "productLine",
-          select: "name",
+  async getBySlug(slug) {
+    const [proVari] = await ProductVariant.aggregate([
+      {
+        $match: {
+          slug,
         },
-        {
-          path: "style",
-          select: "name",
+      },
+
+      // join Product
+      {
+        $lookup: {
+          from: "products",
+          localField: "product",
+          foreignField: "_id",
+          as: "product",
         },
-      ],
-    });
+      },
+
+      {
+        $unwind: "$product",
+      },
+
+      // join VariantItem
+      {
+        $lookup: {
+          from: "productvariantitems",
+          localField: "_id",
+          foreignField: "variant",
+          as: "variantItems",
+        },
+      },
+
+      // đếm số size
+      {
+        $addFields: {
+          variantItemCount: {
+            $size: "$variantItems",
+          },
+
+          displayName: {
+            $concat: ["$product.name", " - ", "$colorName"],
+          },
+        },
+      },
+
+      {
+        $project: {
+          variantItems: 0,
+        },
+      },
+
+      {
+        $sort: {
+          createdAt: -1,
+        },
+      },
+    ]);
 
     if (!proVari) throw ErrorCode.PRODUCT_VARI_NOT_EXISTS();
     const data = proVari.toObject();
-
-    data.displayName = this.buildDisplayName(data);
-    data.detailName = this.buildDetailName(data);
 
     return data;
   }
@@ -233,9 +295,50 @@ class ProductVariantService {
   }
 
   async getColors(colorCode) {
-    return await ProductVariant.find({
-      colorCode: colorCode,
-    });
+    return await ProductVariant.aggregate([
+      {
+        $match: {
+          colorCode,
+        },
+      },
+      {
+        $lookup: {
+          from: "products",
+          localField: "product",
+          foreignField: "_id",
+          as: "product",
+        },
+      },
+      {
+        $unwind: "$product",
+      },
+      {
+        $lookup: {
+          from: "productvariantitems",
+          localField: "_id",
+          foreignField: "variant",
+          as: "variantItems",
+        },
+      },
+      {
+        $addFields: {
+          displayName: {
+            $concat: ["$product.name", " - ", "$colorName"],
+          },
+          variantItemCount: {
+            $size: "$variantItems",
+          },
+          totalStock: {
+            $sum: "$variantItems.stock",
+          },
+        },
+      },
+      {
+        $project: {
+          variantItems: 0,
+        },
+      },
+    ]);
   }
 
   async syncVariantStatus(variantId) {
