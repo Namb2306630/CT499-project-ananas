@@ -105,6 +105,8 @@ const reset = () => {
     fileInput.value.value = ''
   }
 }
+
+//cho phép component cha truy cập vào biến hoặc hàm của component con thông qua ref
 defineExpose({
   reset,
 })
