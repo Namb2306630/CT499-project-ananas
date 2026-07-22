@@ -1,7 +1,8 @@
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, watch, onMounted } from 'vue'
 import UploadImage from './UploadImage.vue'
 import { validateImage } from '@/utils/validateFile.js'
+import { useProductStore } from '@/stores/product.js'
 
 const props = defineProps({
   show: Boolean,
@@ -15,14 +16,49 @@ const props = defineProps({
     type: Object,
     default: () => ({}),
   },
+
+  generalError: {
+    type: String,
+    default: '',
+  },
+})
+
+const productStore = useProductStore()
+
+const getDefaultForm = () => ({
+  _id: '',
+  code: '',
+  product: '',
+  colorName: '',
+  colorCode: '#000000',
+  mainImage: null,
+  imageHover: null,
+  images: [],
+})
+
+const formData = ref(getDefaultForm())
+
+const resetForm = () => {
+  formData.value = getDefaultForm()
+  images.value = []
+  countImage.value = 0
+  colorCode.value = '#000000'
+  mainImageRef.value?.reset()
+  hoverImageRef.value?.reset()
+}
+
+onMounted(async () => {
+  if (productStore.products.length > 0) {
+    //
+  }
+
+  await productStore.fetchForUser()
 })
 
 const dialog = ref(null)
-const formData = ref({
-  productId: '',
-})
 const colorCode = ref('#000000')
-const errors = ref({})
+const mainImageRef = ref(null)
+const hoverImageRef = ref(null)
 
 const updateColor = (e) => {
   let value = e.target.value
@@ -41,6 +77,7 @@ watch(
       dialog.value.showModal()
     } else {
       dialog.value.close()
+      resetForm()
     }
   },
 )
@@ -48,25 +85,25 @@ watch(
 const emit = defineEmits(['submit', 'close'])
 
 const submitForm = () => {
-  console.log(formData.value)
-
   emit('submit', formData.value)
 }
 
 const closeDialog = () => {
-  emit('close')
+  resetForm()
+  emit('close', 'clearError')
 }
 
 const images = ref([])
+const imageErrors = ref([])
 const countImage = ref(0)
 
 const uploadImages = (e) => {
   const files = Array.from(e.target.files)
 
-  errors.value.images = []
+  imageErrors.value = []
 
   if (images.value.length + files.length > 10) {
-    errors.value.images.push('Chỉ được upload tối đa 10 ảnh')
+    imageErrors.value.push('Chỉ được upload tối đa 10 ảnh')
     return
   }
 
@@ -76,7 +113,7 @@ const uploadImages = (e) => {
     const error = validateImage(file)
 
     if (error) {
-      errors.value.images.push(error)
+      imageErrors.value.push(error)
     } else {
       validImages.push({
         file,
@@ -97,7 +134,7 @@ const uploadImages = (e) => {
   <dialog ref="dialog" :class="{ show: show }" class="dialog-form">
     <form @submit.prevent="submitForm">
       <div class="dialog-header">
-        <h3>Thêm sản phẩm</h3>
+        <h3>Thêm biến thể sản phẩm</h3>
 
         <button type="button" class="close-btn" @click="closeDialog">
           <i class="fa-solid fa-xmark"></i>
@@ -106,49 +143,49 @@ const uploadImages = (e) => {
 
       <div class="dialog-body">
         <div class="form-group">
-          <label for="code"> Nhập mã sản phẩm * </label>
+          <label for="id"> Nhập mã sản phẩm </label>
           <input
-            id="code"
+            id="id"
             name=""
-            v-model="formData.code"
+            v-model="formData._id"
             type="text"
             placeholder="Nhập mã sản phẩm"
           />
         </div>
         <div class="form-group select-box">
-          <label for="productId">Thuộc sản phẩm *</label>
-          <selec id="productId" v-model="formData.productId">
-            <option disabled value="">-- Thuộc biến thể --</option>
+          <label for="product">Chọn sản phẩm</label>
+          <select id="product" v-model="formData.product">
+            <option disabled value="">-- Chọn sản phẩm --</option>
 
             <option v-for="item in products" :key="item._id" :value="item._id">
               {{ item.name }}
             </option>
-          </selec>
+          </select>
           <i class="fa-solid fa-chevron-down"></i>
         </div>
 
         <div class="form-group">
-          <label for="color">Sản phẩm có màu *</label>
+          <label for="colorName">Sản phẩm có màu</label>
           <input
-            v-model="formData.color"
+            v-model="formData.colorName"
             type="text"
             name=""
-            id="color"
+            id="colorName"
             placeholder="Màu của sản phẩm"
           />
         </div>
 
         <div class="form-group">
-          <label for="colorCode">Code color *</label>
+          <label for="colorCode">Code color</label>
 
           <div class="color-picker">
-            <input id="" type="color" v-model="colorCode" />
+            <input id="" type="color" v-model="formData.colorCode" />
 
             <input
               id="colorCode"
               class="hex-input"
               type="text"
-              v-model="colorCode"
+              v-model="formData.colorCode"
               @input="updateColor"
               placeholder="#000000"
             />
@@ -163,7 +200,8 @@ const uploadImages = (e) => {
             <div class="image-upload-row">
               <div class="image-upload-item">
                 <UploadImage
-                  @change="formData.imageMain = $event"
+                  ref="mainImageRef"
+                  @change="formData.mainImage = $event"
                   contentImg="Ảnh chính"
                   descImg="Dùng làm ảnh đại hiện"
                   icon="add_a_photo"
@@ -175,9 +213,10 @@ const uploadImages = (e) => {
               </div>
               <div class="image-upload-item">
                 <UploadImage
-                  @change="formData.imageHover = $event"
+                  ref="hoverImageRef"
+                  @change="formData.hoverImage = $event"
                   contentImg="Ảnh khi hover"
-                  descImg="Hiệu ứng danh sách"
+                  descImg="Hiệu ứng khi hover"
                   icon="flip_camera_ios"
                   :showBGImage="false"
                   height="200px"
@@ -197,7 +236,7 @@ const uploadImages = (e) => {
 
             <div class="preview-images">
               <!-- nút thêm ảnh -->
-              <label v-if="images.length < 10" class="add-image">
+              <label v-if="images.length < 10" class="add-image" aria-label="Thêm ảnh">
                 <i class="fa-solid fa-plus"></i>
 
                 <input
@@ -211,15 +250,15 @@ const uploadImages = (e) => {
 
               <!-- ảnh đã chọn -->
               <div v-for="(img, index) in images" :key="index" class="image-item">
-                <img :src="img.url" />
+                <img :src="img.url" alt="Ảnh phụ" />
               </div>
             </div>
           </div>
           <p>Hỗ trợ JPG, PNG hoặc WEBP (Tối đa 2MB)</p>
-          <p v-if="errors.images?.length" class="error">
-            {{ errors.images[0] }}
-          </p>
         </div>
+        <p v-if="generalError" class="error p-0 mt-3 m-0 d-flex justify-content-center">
+          {{ generalError }}
+        </p>
       </div>
 
       <div class="dialog-footer">
@@ -233,6 +272,11 @@ const uploadImages = (e) => {
 
 <style scoped>
 @import '../../../assets/css/dialog.css';
+
+.dialog-header h3 {
+  border-left: 5px solid var(--color-9);
+  padding-left: 10px;
+}
 .label-image {
   display: flex;
   align-items: center;
@@ -393,6 +437,8 @@ label {
 @media (max-width: 767px) {
   .image-upload-row {
     flex-direction: column;
+    justify-content: center;
+    align-items: center;
   }
 }
 </style>
