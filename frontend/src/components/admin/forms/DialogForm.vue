@@ -272,7 +272,10 @@ const closeDialog = () => {
             {{ errors[field.name] }}
           </p>
         </div>
-        <p v-if="generalError && Object.keys(errors).length === 0" class="error p-0 m-0">
+        <!-- <p v-if="generalError && Object.keys(errors).length === 0" class="error p-0 m-0">
+          {{ generalError }}
+        </p> -->
+        <p v-if="generalError" class="error p-0 mt-3 m-0 d-flex justify-content-center">
           {{ generalError }}
         </p>
       </div>
@@ -288,6 +291,7 @@ const closeDialog = () => {
 
 <style scoped>
 @import '../../../assets/css/dialog.css';
+
 dialog label {
   padding: 0;
   margin: 0;
@@ -342,7 +346,6 @@ select {
   cursor: pointer;
 }
 
-
 .description {
   width: 100%;
   min-height: 120px;
@@ -389,19 +392,12 @@ h3 {
 }
 
 @media (max-width: 767px) {
-  .dialog-form {
-    width: 500px;
-    height: 600px;
-  }
-}
-@media (max-width: 667px) {
-  .dialog-form {
-    width: 450px;
-  }
-}
-@media (max-width: 450px) {
-  .dialog-form {
-    width: 300px;
+  .checkbox-group,
+  .checkbox-box,
+  .radio-box {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
   }
 }
 </style>
