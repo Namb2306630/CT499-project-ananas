@@ -2,34 +2,18 @@
 import { computed } from 'vue'
 import LoadingState from '../common/LoadingState.vue'
 import AddCard from '../common/AddCard.vue'
-import CardItem from '../common/CardItem.vue'
-import ListItem from '../common/ListItem.vue'
 
 const props = defineProps({
   content: String,
-
   items: {
     type: Array,
     default: () => [],
   },
-
   loading: Boolean,
-
   error: {
     type: [String, Object],
     default: null,
   },
-
-  fields: {
-    type: Array,
-    default: () => [],
-  },
-
-  countLabel: {
-    type: String,
-    default: 'Sản phẩm',
-  },
-
   showAddCard: {
     type: Boolean,
     default: true,
@@ -38,25 +22,28 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
-
   showSidebar: {
     type: Boolean,
     default: true,
   },
-  objectFit: {
-    type: String,
-    default: 'cover',
+  cardComponent: {
+    type: Object,
+    default: null,
+  },
+  listComponent: {
+    type: Object,
+    default: null,
+  },
+  headers: {
+    type: Array,
+    default: () => [],
   },
 })
 
 const emit = defineEmits(['add', 'edit', 'delete'])
 
 const columns = computed(() => {
-  return [
-    ...props.fields.filter((f) => f.type !== 'isActive').map((f) => f.width || '1fr'),
-    '120px', // Trạng thái
-    '80px', // Thao tác
-  ].join(' ')
+  return [...props.headers.map((h) => h.width || '1fr'), '120px', '80px'].join(' ')
 })
 </script>
 
@@ -72,15 +59,13 @@ const columns = computed(() => {
       ]"
     >
       <template v-if="showCardItem">
-        <CardItem
+        <component
+          :is="cardComponent"
           v-for="item in items"
           :key="item._id"
           :item="item"
-          :fields="fields"
           @edit="emit('edit', $event)"
           @delete="emit('delete', $event)"
-          :count-label="countLabel"
-          :object-fit="objectFit"
         />
       </template>
 
@@ -88,23 +73,19 @@ const columns = computed(() => {
         <div class="list-scroll">
           <div class="list-wrapper">
             <div class="list-item header" :style="{ gridTemplateColumns: columns }">
-              <div
-                v-for="field in fields.filter((f) => f.type !== 'isActive')"
-                :key="field.name"
-                class="cell"
-              >
-                {{ field.label }}
+              <div v-for="header in headers" :key="header.label" class="cell">
+                {{ header.label }}
               </div>
               <div class="cell">Trạng thái</div>
               <div class="cell">Thao tác</div>
             </div>
 
             <template v-if="items.length">
-              <ListItem
+              <component
+                :is="listComponent"
                 v-for="item in items"
                 :key="item._id"
                 :item="item"
-                :fields="fields"
                 @edit="emit('edit', $event)"
                 @delete="emit('delete', $event)"
               />
@@ -130,7 +111,68 @@ const columns = computed(() => {
 </template>
 
 <style scoped>
-@import '../../assets/css/list-item.css';
+.list-item {
+  display: grid;
+  gap: 20px;
+  align-items: center;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  transition: 0.2s;
+  min-width: 767px;
+}
+
+.list-item:hover {
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+}
+
+.cell {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0 2px 0 2px;
+}
+.header {
+  background: var(--color-9);
+  color: white;
+  font-weight: 600;
+  margin-bottom: 0;
+}
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 767px;
+  min-height: 220px;
+  padding: 40px 20px;
+
+  background: #fff;
+  border: 2px dashed #dbe3ec;
+  border-radius: 12px;
+
+  color: #64748b;
+}
+
+.empty i {
+  font-size: 56px;
+  color: #cbd5e1;
+  margin-bottom: 16px;
+}
+
+.empty h3 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #334155;
+}
+
+.empty p {
+  margin-top: 8px;
+  font-size: 14px;
+  color: #94a3b8;
+}
 .card-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
