@@ -484,7 +484,7 @@ const isActiveMenu = (menuName) => {
   transform: translateY(0);
   max-height: auto;
 }
-@media (max-width: 767px) {
+@media (max-width: 768px) {
   .sidebar-overlay {
     position: fixed;
     inset: 0;
