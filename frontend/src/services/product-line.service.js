@@ -29,4 +29,7 @@ export default {
   getProductsByProductLine(id) {
     return api.get(`/product-lines/${id}/products`)
   },
+  getOptions() {
+    return api.get('/product-lines/options')
+  },
 }

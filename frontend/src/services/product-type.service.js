@@ -27,4 +27,8 @@ export default {
   getAllForAdmin() {
     return api.get('/admin/product-types')
   },
+
+  getOptions() {
+    return api.get('/product-types/options')
+  },
 }

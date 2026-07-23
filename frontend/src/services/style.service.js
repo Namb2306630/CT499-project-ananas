@@ -26,4 +26,7 @@ export default {
   getBySlug(slug) {
     return api.get(`/admin/styles/${slug}`)
   },
+  getOptions() {
+    return api.get('/styles/options')
+  },
 }
