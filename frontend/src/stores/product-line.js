@@ -6,6 +6,7 @@ export const useProductLineStore = defineStore('product-line', {
     loading: false,
     productLine: {},
     productLines: [],
+    productLineOptions: [],
     error: {
       code: null,
       general: '',
@@ -138,6 +139,20 @@ export const useProductLineStore = defineStore('product-line', {
         }
       } finally {
         this.loading = false
+      }
+    },
+
+    async fetchOptions() {
+      try {
+        const res = await ProductLineService.getOptions()
+        this.productLineOptions = res.data.result
+      } catch (error) {
+        const data = error.response?.data
+        this.error = {
+          code: data?.code || 500,
+          general: data?.message || 'Lỗi lấy dữ liệu!',
+          errors: data?.errors || {},
+        }
       }
     },
   },

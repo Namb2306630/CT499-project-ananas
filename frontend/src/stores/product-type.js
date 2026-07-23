@@ -6,6 +6,7 @@ export const useProductType = defineStore('product-types', {
     loading: false,
     productTypes: [],
     productType: {},
+    productTypeOptions: [],
     error: {
       code: null,
       general: '',
@@ -139,6 +140,19 @@ export const useProductType = defineStore('product-types', {
         return null
       } finally {
         this.loading = false
+      }
+    },
+    async fetchOptions() {
+      try {
+        const res = await ProductTypeService.getOptions()
+        this.productTypeOptions = res.data.result
+      } catch (error) {
+        const data = error.response?.data
+        this.error = {
+          code: data?.code || 500,
+          general: data?.message || 'Lỗi lấy dữ liệu!',
+          errors: data?.errors || {},
+        }
       }
     },
   },

@@ -5,7 +5,7 @@ export const useProductStore = defineStore('product', {
   state: () => ({
     loading: false,
     products: [],
-    product: null,
+    product: {},
     pagination: {
       page: 1,
       totalPages: 1,
@@ -52,7 +52,7 @@ export const useProductStore = defineStore('product', {
         this.clearError()
         const res = await ProductService.update(id, data)
 
-        const index = this.products.indexOf((item) => item._id === id)
+        const index = this.products.findIndex((item) => item._id === id)
 
         this.products[index] = res.data.result
 
@@ -88,6 +88,7 @@ export const useProductStore = defineStore('product', {
     async getBySlug(slug) {
       try {
         this.clearError()
+        this.loading = true
         const res = await ProductService.getBySlug(slug)
 
         this.product = res.data.result ?? {}

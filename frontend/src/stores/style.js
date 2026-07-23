@@ -6,6 +6,7 @@ export const useStyleStore = defineStore('style', {
     loading: false,
     styles: [],
     style: {},
+    styleOptions: [],
     error: {
       code: null,
       errors: {},
@@ -140,6 +141,20 @@ export const useStyleStore = defineStore('style', {
         return null
       } finally {
         this.loading = false
+      }
+    },
+
+    async fetchOptions() {
+      try {
+        const res = await StyleService.getOptions()
+        this.collectionOptions = res.data.result
+      } catch (error) {
+        const data = error.response?.data
+        this.error = {
+          code: data?.code || 500,
+          general: data?.message || 'Lỗi lấy dữ liệu!',
+          errors: data?.errors || {},
+        }
       }
     },
   },
