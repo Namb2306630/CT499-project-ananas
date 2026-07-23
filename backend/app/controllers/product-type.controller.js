@@ -105,6 +105,18 @@ class ProductTypeController {
       next(error);
     }
   }
+
+  async getOptions(req, res, next) {
+    try {
+      const data = await ProductTypeService.getOptions();
+      return ApiResponse.success({
+        res,
+        data,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 module.exports = new ProductTypeController();

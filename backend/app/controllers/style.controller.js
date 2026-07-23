@@ -110,3 +110,15 @@ exports.getProducts = async (req, res, next) => {
     data,
   });
 };
+
+exports.getOptions = async (req, res, next) => {
+  try {
+    const data = await styleService.getOptions();
+    return ApiResponse.success({
+      res,
+      data,
+    });
+  } catch (error) {
+    next(error);
+  }
+};

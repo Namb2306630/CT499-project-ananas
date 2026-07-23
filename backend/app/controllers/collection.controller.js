@@ -123,3 +123,14 @@ exports.getProducts = async (req, res, next) => {
     next(err);
   }
 };
+exports.getOptions = async (req, res, next) => {
+  try {
+    const data = await service.getOptions();
+    return ApiResponse.success({
+      res,
+      data,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
