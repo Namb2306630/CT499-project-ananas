@@ -5,18 +5,23 @@ const authRouter = require("./app/routes/auth.route");
 const provinceRouter = require("./app/routes/province.route");
 const addressRouter = require("./app/routes/address.route");
 const userRouter = require("./app/routes/user.route");
+const productTypeRouter = require("./app/routes/product-type.route");
+const styleRouter = require("./app/routes/style.route");
+const productLineRouter = require("./app/routes/product-line.route");
+const collectionRouter = require("./app/routes/collection.route");
+const productVariantRouter = require("./app/routes/product-variant.route");
 
 //admin
-const systemConfigRouter = require("./app/routes/admin/system-config.route");
-const categoryRouter = require("./app/routes/admin/category.route");
-const brandRouter = require("./app/routes/admin/brand.route");
-const productLineRouter = require("./app/routes/admin/product-line.route");
-const styleRouter = require("./app/routes/admin/style.route");
-const productRouter = require("./app/routes/admin/product.route");
-const collectionRouter = require("./app/routes/admin/collection.route");
-const ProVariItemRouter = require("./app/routes/admin/product-variant-item.route");
-const productVariantRouter = require("./app/routes/admin/product-variant.route");
-const productTypeRouter = require("./app/routes/admin/product-type.route");
+const systemConfigAdminRouter = require("./app/routes/admin/system-config.route");
+const categoryAdminRouter = require("./app/routes/admin/category.route");
+const brandAdminRouter = require("./app/routes/admin/brand.route");
+const productLineAdminRouter = require("./app/routes/admin/product-line.route");
+const styleAdminRouter = require("./app/routes/admin/style.route");
+const productAdminRouter = require("./app/routes/admin/product.route");
+const collectionAdminRouter = require("./app/routes/admin/collection.route");
+const ProVariItemAdminRouter = require("./app/routes/admin/product-variant-item.route");
+const productVariantAdminRouter = require("./app/routes/admin/product-variant.route");
+const productTypeAdminRouter = require("./app/routes/admin/product-type.route");
 //user
 const productLineUserRouter = require("./app/routes/user/product-line.route");
 const categoryUserRouter = require("./app/routes/user/category.route");
@@ -58,18 +63,23 @@ app.use("/api/auth", authRouter);
 app.use("/api/provinces", provinceRouter);
 app.use("/api/addresses", addressRouter);
 app.use("/api/users", userRouter);
+app.use("/api/product-types/options", productTypeRouter);
+app.use("/api/styles/options", styleRouter);
+app.use("/api/collections/options", collectionRouter);
+app.use("/api/product-lines/options", productLineRouter);
+app.use("/api/product-variants/options", productVariantRouter);
 
 //admin
-app.use("/api/admin/system-config", systemConfigRouter);
-app.use("/api/admin/categories", categoryRouter);
-app.use("/api/admin/product-lines", productLineRouter);
-app.use("/api/admin/styles", styleRouter);
-app.use("/api/admin/collections", collectionRouter);
-app.use("/api/admin/products", productRouter);
-app.use("/api/admin/product-variant-items", ProVariItemRouter);
-app.use("/api/admin/brands", brandRouter);
-app.use("/api/admin/product-variants", productVariantRouter);
-app.use("/api/admin/product-types", productTypeRouter);
+app.use("/api/admin/system-config", systemConfigAdminRouter);
+app.use("/api/admin/categories", categoryAdminRouter);
+app.use("/api/admin/product-lines", productLineAdminRouter);
+app.use("/api/admin/styles", styleAdminRouter);
+app.use("/api/admin/collections", collectionAdminRouter);
+app.use("/api/admin/products", productAdminRouter);
+app.use("/api/admin/product-variant-items", ProVariItemAdminRouter);
+app.use("/api/admin/brands", brandAdminRouter);
+app.use("/api/admin/product-variants", productVariantAdminRouter);
+app.use("/api/admin/product-types", productTypeAdminRouter);
 //user
 app.use("/api/brands", brandUserRouter);
 app.use("/api/categories", categoryUserRouter);
