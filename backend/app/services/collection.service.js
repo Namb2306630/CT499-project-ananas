@@ -226,6 +226,17 @@ class CollectionService {
 
     return products;
   }
+  async getOptions() {
+    return await Collection.find(
+      {
+        isDeleted: false,
+        isActive: true,
+      },
+      {
+        name: 1,
+      },
+    ).sort({ name: 1 });
+  }
 }
 
 module.exports = new CollectionService();

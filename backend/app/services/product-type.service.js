@@ -260,6 +260,18 @@ class ProductTypeService {
     }
     return productStyle;
   }
+
+  async getOptions() {
+    return await ProductType.find(
+      {
+        isDeleted: false,
+        isActive: true,
+      },
+      {
+        name: 1,
+      },
+    ).sort({ name: 1 });
+  }
 }
 
 module.exports = new ProductTypeService();

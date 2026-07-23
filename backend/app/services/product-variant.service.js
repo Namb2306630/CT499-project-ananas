@@ -353,6 +353,15 @@ class ProductVariantService {
     await ProductVariant.updateOne({ _id: variantId }, { status });
     return status;
   }
+
+  async getOptions() {
+    return await ProductVariant.find(
+      { status: { $ne: "inactive" } },
+      {
+        name: 1,
+      },
+    ).sort({ name: 1 });
+  }
 }
 
 module.exports = new ProductVariantService();

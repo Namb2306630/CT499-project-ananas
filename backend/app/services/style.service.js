@@ -248,6 +248,17 @@ class StyleService {
 
     return products;
   }
+  async getOptions() {
+    return await Style.find(
+      {
+        isDeleted: false,
+        isActive: true,
+      },
+      {
+        name: 1,
+      },
+    ).sort({ name: 1 });
+  }
 }
 
 module.exports = new StyleService();
