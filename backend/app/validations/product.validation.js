@@ -92,9 +92,7 @@ exports.updateProductSchema = Joi.object({
     "string.pattern.base": "Mã kiểu dáng không hợp lệ",
   }),
 
-  defaultVariant: Joi.string().pattern(REGEX._ID).allow(null, "").messages({
-    "string.pattern.base": "Mã biến thể mặc định không hợp lệ",
-  }),
+  defaultVariant: Joi.string().allow(null, ""),
 
   costPrice: Joi.number().min(0).messages({
     "number.base": "Giá nhập phải là số",
