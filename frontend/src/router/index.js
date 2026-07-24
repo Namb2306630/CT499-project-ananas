@@ -29,6 +29,7 @@ import ProductLineDetail from '@/views/admin/product-line/ProductLineDetail.vue'
 import StyleDetail from '@/views/admin/style/StyleDetail.vue'
 import ProductTypeDetail from '@/views/admin/product-type/ProductTypeDetail.vue'
 import ProductDetail from '@/views/admin/product/ProductDetail.vue'
+import ProductVariantDetail from '@/views/admin/product-variant/ProductVariantDetail.vue'
 import CollectionDetail from '@/views/admin/collection/CollectionDetail.vue'
 
 //notfound
@@ -225,6 +226,15 @@ const router = createRouter({
           component: () => ProductDetail,
           meta: {
             activeMenu: ROUTE_NAMES.PRODUCTS,
+          },
+        },
+
+        {
+          path: 'product-variants/:id',
+          name: ROUTE_NAMES.PRODUCT_VARIANT_DETAIL,
+          component: () => ProductVariantDetail,
+          meta: {
+            activeMenu: ROUTE_NAMES.PRODUCT_VARIANTS,
           },
         },
       ],

@@ -1,6 +1,11 @@
 /* ---------------------------------------- */
 /* DETAIL */
-
+.form input,
+.form textarea,
+.form select {
+  width: 100%;
+  box-sizing: border-box;
+}
 label {
   padding: 0;
   margin: 20px 0 0 0;
@@ -26,12 +31,21 @@ label {
 
 .top-info {
   display: flex;
-  gap: 30px;
-  align-items: center;
+  gap: 36px;
+  align-items: flex-start;
 }
 
 .image-box {
-  position: relative;
+  flex-shrink: 0;
+  align-self: center;
+  padding: 16px;
+  border: 1px solid var(--border-gray-2);
+  border-radius: 16px;
+  background: var(--bg-color-while-2);
+  box-shadow: var(--shadow-black-3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .image-box img {

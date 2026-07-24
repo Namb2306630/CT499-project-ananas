@@ -64,7 +64,7 @@ const closeDialog = () => {
 </script>
 
 <template>
-  <dialog ref="dialog" :class="{ show: show }" class="dialog-form">
+  <dialog ref="dialog" :class="{ show: show }" class="dialog-form sku-dialog">
     <form @submit.prevent="submitForm">
       <div class="dialog-header">
         <h3>Thêm SKU sản phẩm</h3>
@@ -106,9 +106,13 @@ const closeDialog = () => {
             <input id="stock" type="number" min="0" v-model="item.stock" />
           </div>
 
-          <button type="button" class="remove-btn" @click="removeSize(index)">
-            <i class="fa-solid fa-trash"></i>
-          </button>
+          <div class="form-group remove-group">
+            <label>&nbsp;</label>
+
+            <button type="button" class="remove-btn" @click="removeSize(index)">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </div>
         </div>
 
         <button type="button" class="add-size" @click="addSize">
@@ -128,6 +132,7 @@ const closeDialog = () => {
 
 <style scoped>
 @import '../../../assets/css/dialog.css';
+
 input,
 select {
   height: 42px;
@@ -154,7 +159,7 @@ label {
 .size-card {
   display: flex;
   gap: 12px;
-  align-items: end;
+  align-items: center;
   background: var(--bg-color-while-2);
   padding: 12px;
   border-radius: 10px;
@@ -163,8 +168,8 @@ label {
 }
 
 .size-card .form-group {
-  flex: 1;
-  margin: 0;
+  flex: 1 1 0;
+  min-width: 0;
 }
 
 .remove-btn {
@@ -174,9 +179,12 @@ label {
   border-radius: 8px;
   background: #fee2e2;
   color: var(--text-color-red);
+  flex: 0 0 42px;
   cursor: pointer;
 }
-
+.remove-group {
+  flex: 0 0 42px !important;
+}
 .remove-btn:hover {
   background: #fecaca;
 }
@@ -240,7 +248,9 @@ label {
   }
 
   .size-card .form-group {
-    width: 100%;
+    flex: 1;
+    min-width: 0;
+    width: auto;
   }
 
   .remove-btn {

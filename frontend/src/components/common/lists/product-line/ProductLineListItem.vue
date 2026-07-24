@@ -20,19 +20,40 @@ const columns = '1.5fr 2.5fr 1.5fr 80px 120px 120px 80px'
   >
     <!-- Slot mặc định chứa các cell dữ liệu -->
     <template #default="{ item: line }">
-      <div class="cell">
-        <strong>{{ line.name }}</strong>
+      <!-- Tên -->
+      <div class="cell line-name">
+        <strong class="name">
+          {{ line.name }}
+        </strong>
+
+        <div class="slug">
+          {{ line.slug }}
+        </div>
       </div>
-      <div class="cell">
+
+      <!-- Mô tả -->
+      <div class="cell description">
         {{ line.description || 'Không có mô tả' }}
       </div>
+
+      <!-- Brand -->
       <div class="cell">
-        {{ line.brand?.name || 'Chưa gắn hãng' }}
+        <span class="brand-badge">
+          {{ line.brand?.name || 'Chưa gắn hãng' }}
+        </span>
       </div>
-      <div class="cell">
-        {{ line.productCount || 0 }}
+
+      <!-- Product count -->
+      <div class="cell product-count">
+        <span>
+          {{ line.productCount || 0 }}
+        </span>
       </div>
-      <div class="cell">
+
+      <!-- Created -->
+      <div class="cell created-date">
+        <span class="material-symbols-outlined"> calendar_today </span>
+
         {{ new Date(line.createdAt).toLocaleDateString('vi-VN') }}
       </div>
     </template>
@@ -40,4 +61,14 @@ const columns = '1.5fr 2.5fr 1.5fr 80px 120px 120px 80px'
 </template>
 <style scoped>
 @import '@/assets/css/list-item.css';
+.brand-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: var(--color-10);
+  color: var(--color-bule);
+  font-size: 13px;
+  font-weight: 600;
+}
 </style>

@@ -1,11 +1,11 @@
 import api from '@/api/axios'
 
 export default {
-  async create(data) {
+  create(data) {
     return api.post('/admin/collections', data)
   },
 
-  async update(id, data) {
+  update(id, data) {
     const payload = {
       name: data.name,
       slug: data.slug,
@@ -15,18 +15,21 @@ export default {
     return api.put(`/admin/collections/${id}`, payload)
   },
 
-  async delete(id) {
+  delete(id) {
     return api.delete(`/admin/collections/${id}`)
   },
 
-  async fetchForAdmin() {
+  fetchForAdmin() {
     return api.get('/admin/collections')
   },
 
-  async fetchForUser() {
+  fetchForUser() {
     return api.get('/collections')
   },
-  async getBySlug(slug) {
+  getBySlug(slug) {
     return api.get(`/admin/collections/${slug}`)
+  },
+  getOptions() {
+    return api.get('/collections/options')
   },
 }

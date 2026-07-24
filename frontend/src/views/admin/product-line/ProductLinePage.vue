@@ -31,6 +31,9 @@ onMounted(async () => {
   }
   await loadData()
 })
+defineProps({
+  showSidebar: Boolean,
+})
 
 const openAddForm = () => {
   showForm.value = true

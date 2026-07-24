@@ -28,10 +28,10 @@ const styleStore = useStyleStore()
 
 const { categories } = storeToRefs(categoryStore)
 const { products, pagination, loading, error } = storeToRefs(productStore)
-const { collections } = storeToRefs(collectionStore)
-const { productLines } = storeToRefs(productLineStore)
-const { productTypes } = storeToRefs(productTypeStore)
-const { styles } = storeToRefs(styleStore)
+const { collectionOptions } = storeToRefs(collectionStore)
+const { productLineOptions } = storeToRefs(productLineStore)
+const { productTypeOptions } = storeToRefs(productTypeStore)
+const { styleOptions } = storeToRefs(styleStore)
 
 //phân trang
 const changePage = async (page) => {
@@ -45,19 +45,29 @@ const { showConfirm, deleteItem, openDelete, closeDelete } = useDelete()
 const showForm = ref(false)
 
 onMounted(async () => {
+  if (productStore.products.length > 0) {
+    //
+  }
+
   await Promise.all([
     categoryStore.fetchCategories(),
-    productLineStore.fetchForAdmin(),
-    collectionStore.fetchForAdmin(),
-    styleStore.fetchForAdmin(),
+    productLineStore.fetchOptions(),
+    collectionStore.fetchOptions(),
+    productTypeStore.fetchOptions(),
+    styleStore.fetchOptions(),
     productStore.fetchForAdmin(),
   ])
+})
+
+defineProps({
+  showSidebar: Boolean,
 })
 
 const openAddForm = () => {
   showForm.value = true
   productStore.clearError()
 }
+
 const clearError = () => {
   productStore.clearError()
 }
@@ -105,35 +115,26 @@ const opentEdit = (product) => {
 }
 
 const fields = computed(() => [
-  // 1. Thông tin cơ bản
-  // {
-  //   name: 'name',
-  //   type: 'text',
-  //   label: 'Tên sản phẩm',
-  //   placeholder: 'Nhập tên sản phẩm',
-  // },
-
-  // 2. Phân loại
   {
     name: 'productType',
     type: 'select',
     label: 'Loại sản phẩm',
     placeholder: 'Chọn loại sản phẩm',
-    options: productTypes.value,
+    options: productTypeOptions.value,
   },
   {
     name: 'productLine',
     type: 'select',
     label: 'Dòng sản phẩm',
     placeholder: 'Chọn dòng sản phẩm',
-    options: productLines.value,
+    options: productLineOptions.value,
   },
   {
     name: 'productCollection',
     type: 'select',
     label: 'Bộ sưu tập',
     placeholder: 'Chọn bộ sưu tập',
-    options: collections.value,
+    options: collectionOptions.value,
   },
   {
     name: 'categories',
@@ -147,7 +148,7 @@ const fields = computed(() => [
     type: 'select',
     label: 'Kiểu dáng',
     placeholder: 'Chọn kiểu dáng',
-    options: styles.value,
+    options: styleOptions.value,
   },
 
   // 3. Thuộc tính

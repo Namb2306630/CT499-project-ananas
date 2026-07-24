@@ -32,6 +32,7 @@ export const useProductVariant = defineStore('product-variants', {
 
         const res = await service.create(data)
         this.productVariants.unshift(res.data.result)
+
         return res.data
       } catch (error) {
         const data = error.response?.data
@@ -95,10 +96,11 @@ export const useProductVariant = defineStore('product-variants', {
         this.loading = true
       }
     },
-    async getBySlug(slug) {
+    async getById(id) {
       try {
         this.clearError()
-        const res = await service.getBySlug(slug)
+        this.loading = true
+        const res = await service.getById(id)
         this.productVariant = res.data.result ?? {}
         return this.productVariant
       } catch (error) {
@@ -108,12 +110,15 @@ export const useProductVariant = defineStore('product-variants', {
           general: data?.message || 'Lỗi lấy dữ liệu biến thể sản phẩm!',
           errors: data?.errors || {},
         }
+        throw this.error
+      } finally {
+        this.loading = false
       }
     },
 
-    async fetchOptions() {
+    async fetchOptions(productId) {
       try {
-        const res = await service.getOptions()
+        const res = await service.fetchOptions(productId)
         this.productVariantOptions = res.data.result
       } catch (error) {
         const data = error.response?.data

@@ -35,6 +35,27 @@ const category = ref({
   createdAt: '',
 })
 
+onMounted(async () => {
+  try {
+    const slug = route.params.slug
+    await categoryStore.fetchCategories()
+    if (categoryStore.category?.slug === slug) {
+      Object.assign(category.value, categoryStore.category)
+    }
+    const data = await categoryStore.getCategoryBySlug(route.params.slug)
+
+    Object.assign(category.value, data)
+
+    category.value = {
+      ...data,
+      parent: data.parent?._id || data.parent || '',
+    }
+  } catch (error) {
+    toastStore.showToast(error.general, 'error')
+    router.replace({ name: ROUTE_NAMES.CATEGORIES })
+  }
+})
+
 watch(
   () => category.value.name,
   (newName) => {
@@ -43,30 +64,7 @@ watch(
     }
   },
 )
-onMounted(async () => {
-  const slug = route.params.slug
-  console.log('route slug:', route.params.slug)
-  await categoryStore.fetchCategories()
-  if (categoryStore.category?.slug === slug) {
-    Object.assign(category.value, categoryStore.category)
-  }
-  const data = await categoryStore.getCategoryBySlug(route.params.slug)
 
-  if (data) {
-    Object.assign(category.value, data)
-  }
-
-  if (data) {
-    category.value = {
-      ...data,
-      parent: data.parent?._id || data.parent || '',
-    }
-  }
-  if (!data) {
-    toastStore.showToast(error.value.general, 'error')
-    router.replace({ name: ROUTE_NAMES.CATEGORIES })
-  }
-})
 const handleUpload = (image) => {
   category.value.image = image
 }
@@ -150,7 +148,7 @@ const cancelDelete = () => {
 
           <div class="form">
             <div class="form-group">
-              <label for="name"> Tên danh mục </label>
+              <label for="name" class="mt-0"> Tên danh mục </label>
               <input id="name" v-model="category.name" />
               <p v-if="errors.name" class="error p-0 m-0">
                 {{ errors.name }}

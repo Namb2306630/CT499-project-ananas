@@ -23,6 +23,35 @@ const route = useRoute()
 const router = useRouter()
 const errors = computed(() => error.value.errors)
 
+const productType = ref({
+  _id: '',
+  name: '',
+  slug: '',
+  description: '',
+  isActive: true,
+  createdAt: '',
+  productCount: 0,
+})
+
+onMounted(async () => {
+  try {
+    const slug = route.params.slug
+
+    if (productTypeStore.productType?.slug === slug) {
+      Object.assign(productType.value, productTypeStore.productType)
+    }
+    const data = await productTypeStore.getBySlug(slug)
+
+    //thêm dữ liệu và productLine
+
+    //copy data[0] qua productLine.value
+    Object.assign(productType.value, data)
+  } catch (error) {
+    toastStore.showToast(error.general, 'error')
+    router.replace({ name: ROUTE_NAMES.PRODUCT_TYPES })
+  }
+})
+
 const confirmDelete = async () => {
   if (!deleteItem.value) return
 
@@ -45,16 +74,6 @@ const confirmDelete = async () => {
   }
 }
 
-const productType = ref({
-  _id: '',
-  name: '',
-  slug: '',
-  description: '',
-  isActive: true,
-  createdAt: '',
-  productCount: 0,
-})
-
 watch(
   () => productType.value.name,
   (newName) => {
@@ -63,24 +82,6 @@ watch(
     }
   },
 )
-onMounted(async () => {
-  const slug = route.params.slug
-
-  if (productTypeStore.productType?.slug === slug) {
-    Object.assign(productType.value, productTypeStore.productType)
-  }
-  const data = await productTypeStore.getBySlug(slug)
-
-  //thêm dữ liệu và productLine
-  if (data) {
-    //copy data[0] qua productLine.value
-    Object.assign(productType.value, data)
-  }
-  if (!data) {
-    toastStore.showToast(error.value.general, 'error')
-    router.replace({ name: ROUTE_NAMES.PRODUCT_TYPES })
-  }
-})
 const saveProductType = async () => {
   const res = await productTypeStore.update(productType.value._id, productType.value)
 
@@ -127,7 +128,7 @@ const cancelDelete = () => {
           <div class="form">
             <!-- name -->
             <div class="form-group">
-              <label for="name">Tên loại sản phẩm</label>
+              <label for="name" class="mt-0">Tên loại sản phẩm</label>
               <input type="text" name="name" id="name" v-model="productType.name" />
               <p v-if="errors.name" class="p-0 m-0 error">{{ errors.name }}</p>
             </div>

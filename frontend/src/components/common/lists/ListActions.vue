@@ -15,5 +15,25 @@ defineEmits(['edit', 'delete'])
 </template>
 
 <style scoped>
-@import '@/assets/css/list-item.css';
+.list-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.list-actions button {
+  width: 35px;
+  height: 35px;
+  border: none;
+  border-radius: 50%;
+  color: white;
+  cursor: pointer;
+}
+.edit {
+  background: #2563eb;
+}
+
+.delete {
+  background: #dc2626;
+}
 </style>

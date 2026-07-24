@@ -1,128 +1,65 @@
-/* .list-item {
-  display: grid;
-  gap: 20px;
-  align-items: center;
-  padding: 15px;
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  transition: 0.2s;
-  min-width: 767px;
-}
-
-.list-item:hover {
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
-}
-
 .cell {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
-  padding: 0 2px 0 2px;
-}
-.header {
-  background: var(--color-9);
-  color: white;
-  font-weight: 600;
-  margin-bottom: 0;
 }
 
-.empty {
-  display: flex;
+/* tên */
+.collection-name,
+.line-name,
+.type-name,
+.style-name {
   flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.collection-name .name {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-8);
+}
+
+.collection-name .slug {
+  font-size: 12px;
+  color: var(--text-gray-3);
+}
+
+/* mô tả */
+.description {
+  color: var(--text-gray-3);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* số lượng */
+.product-count {
+  gap: 6px;
+}
+
+.product-count span {
+  min-width: 34px;
+  height: 34px;
+  display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 767px;
-  min-height: 220px;
-  padding: 40px 20px;
-
-  background: #fff;
-  border: 2px dashed #dbe3ec;
-  border-radius: 12px;
-
-  color: #64748b;
-}
-
-.empty i {
-  font-size: 56px;
-  color: #cbd5e1;
-  margin-bottom: 16px;
-}
-
-.empty h3 {
-  margin: 0;
-  font-size: 20px;
-  font-weight: 600;
-  color: #334155;
-}
-
-.empty p {
-  margin-top: 8px;
-  font-size: 14px;
-  color: #94a3b8;
-} */
-
-/* css trong ListItem */
-.list-item:hover {
-  cursor: pointer;
-}
-.list-content {
-  display: contents;
-}
-
-.tag-list {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-}
-
-.tag {
-  background: #eee;
-  padding: 4px 8px;
-  border-radius: 20px;
-  font-size: 12px;
-}
-
-.more {
-  background: #2563eb;
-  color: white;
-}
-
-.list-status {
-  text-align: start;
-}
-
-.active {
-  padding: 6px 12px;
-  border-radius: 20px;
-  background: #d1fae5;
-  color: #047857;
-}
-
-.inactive {
-  padding: 6px 12px;
-  border-radius: 20px;
-  background: #fee2e2;
-}
-
-.list-actions {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-}
-
-.list-actions button {
-  width: 35px;
-  height: 35px;
-  border: none;
   border-radius: 50%;
-  color: white;
-  cursor: pointer;
+  background: var(--bg-color-green-2);
+  color: var(--text-green);
+  font-weight: 700;
 }
 
-.edit {
-  background: #2563eb;
+.product-count small {
+  color: var(--text-gray-3);
 }
 
-.delete {
-  background: #dc2626;
+/* ngày */
+.created-date {
+  gap: 6px;
+  color: var(--text-gray-3);
+  font-size: 14px;
+}
+
+.created-date .material-symbols-outlined {
+  font-size: 18px;
 }

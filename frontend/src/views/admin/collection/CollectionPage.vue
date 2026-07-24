@@ -24,6 +24,9 @@ onMounted(async () => {
   }
   await collecionStore.fetchForAdmin()
 })
+defineProps({
+  showSidebar: Boolean,
+})
 
 const openAddForm = () => {
   showForm.value = true

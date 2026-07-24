@@ -39,7 +39,7 @@ const formatDate = (date) => {
         {{ count }}
       </b>
     </div>
-    <template v-if="productLines?.length">
+    <template v-if="lists.length">
       <div class="product-lines">
         <p class="label p-0 m-0">Dòng sản phẩm</p>
 
@@ -71,34 +71,60 @@ const formatDate = (date) => {
 
 .stats {
   display: flex;
-  justify-content: space-between;
-}
-
-.product-lines,
-.count,
-.time {
-  margin-top: 10px;
-}
-
-.label {
-  color: var(--text-gray-3);
-  font-size: 15px;
-  font-weight: 500;
+  flex-direction: column;
+  gap: 20px;
 }
 
 .tags {
   display: flex;
-  flex-wrap: wrap;
   gap: 8px;
-  margin-top: 5px;
+  flex-wrap: wrap;
+  margin-top: 10px;
 }
 
 .tag {
-  padding: 5px 12px;
+  padding: 6px 12px;
   border-radius: 999px;
-  background: var(--bg-active);
-  color: var(--text-white);
+  background: var(--color-13);
+  color: var(--color-bule);
   font-size: 13px;
+  font-weight: 600;
+  transition: 0.2s;
+}
+
+.tag:hover {
+  background: var(--color-14);
+}
+.count {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.count b {
+  font-size: 42px;
+  line-height: 1;
+  font-weight: 700;
+  color: var(--primary-color);
+}
+
+.time {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-gray-2);
+}
+.label {
+  color: var(--text-gray-3);
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
   font-weight: 500;
+}
+
+.time b {
+  font-size: 15px;
+  font-weight: 600;
 }
 </style>

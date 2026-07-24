@@ -22,6 +22,7 @@ export default {
 
       isBestSeller: data.isBestSeller,
       isNewArrival: data.isNewArrival,
+      isSale: data.isSale,
       gender: data.gender,
       status: data.status,
     }
@@ -39,5 +40,8 @@ export default {
   },
   getBySlug(slug) {
     return api.get(`/admin/products/${slug}`)
+  },
+  fetchOptions() {
+    return api.get('/products/options')
   },
 }

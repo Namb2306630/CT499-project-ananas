@@ -98,7 +98,7 @@ export const useProductLineStore = defineStore('product-line', {
           general: data?.message || 'Lỗi lấy dòng sản phẩm!',
           errors: data?.errors || {},
         }
-        return null
+        throw this.error
       } finally {
         this.loading = false
       }

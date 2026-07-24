@@ -1,9 +1,7 @@
 <script setup>
 import { ref, watch, onMounted } from 'vue'
-import UploadImage from './UploadImage.vue'
-import { validateImage } from '@/utils/validateFile.js'
 import { useProductStore } from '@/stores/product.js'
-
+import VariantImageManager from './VariantImageManager.vue'
 const props = defineProps({
   show: Boolean,
 
@@ -40,11 +38,7 @@ const formData = ref(getDefaultForm())
 
 const resetForm = () => {
   formData.value = getDefaultForm()
-  images.value = []
-  countImage.value = 0
   colorCode.value = '#000000'
-  mainImageRef.value?.reset()
-  hoverImageRef.value?.reset()
 }
 
 onMounted(async () => {
@@ -57,8 +51,6 @@ onMounted(async () => {
 
 const dialog = ref(null)
 const colorCode = ref('#000000')
-const mainImageRef = ref(null)
-const hoverImageRef = ref(null)
 
 const updateColor = (e) => {
   let value = e.target.value
@@ -92,42 +84,6 @@ const closeDialog = () => {
   resetForm()
   emit('close', 'clearError')
 }
-
-const images = ref([])
-const imageErrors = ref([])
-const countImage = ref(0)
-
-const uploadImages = (e) => {
-  const files = Array.from(e.target.files)
-
-  imageErrors.value = []
-
-  if (images.value.length + files.length > 10) {
-    imageErrors.value.push('Chỉ được upload tối đa 10 ảnh')
-    return
-  }
-
-  const validImages = []
-
-  files.forEach((file) => {
-    const error = validateImage(file)
-
-    if (error) {
-      imageErrors.value.push(error)
-    } else {
-      validImages.push({
-        file,
-        url: URL.createObjectURL(file),
-      })
-    }
-  })
-
-  images.value.push(...validImages)
-
-  formData.value.images = images.value.map((item) => item.file)
-
-  countImage.value = images.value.length
-}
 </script>
 
 <template>
@@ -151,17 +107,23 @@ const uploadImages = (e) => {
             type="text"
             placeholder="Nhập mã sản phẩm"
           />
+          <p v-if="errors._id" class="error">{{ errors._id }}</p>
         </div>
-        <div class="form-group select-box">
-          <label for="product">Chọn sản phẩm</label>
-          <select id="product" v-model="formData.product">
-            <option disabled value="">-- Chọn sản phẩm --</option>
 
-            <option v-for="item in products" :key="item._id" :value="item._id">
-              {{ item.name }}
-            </option>
-          </select>
-          <i class="fa-solid fa-chevron-down"></i>
+        <div class="form-group">
+          <label for="product">Chọn sản phẩm</label>
+          <div class="select-box">
+            <select id="product" v-model="formData.product">
+              <option disabled value="">-- Chọn sản phẩm --</option>
+
+              <option v-for="item in products" :key="item._id" :value="item._id">
+                {{ item.name }}
+              </option>
+            </select>
+            <i class="fa-solid fa-chevron-down"></i>
+          </div>
+
+          <p v-if="errors.product" class="error">{{ errors.product }}</p>
         </div>
 
         <div class="form-group">
@@ -173,6 +135,7 @@ const uploadImages = (e) => {
             id="colorName"
             placeholder="Màu của sản phẩm"
           />
+          <p v-if="errors.colorName" class="error">{{ errors.colorName }}</p>
         </div>
 
         <div class="form-group">
@@ -189,74 +152,12 @@ const uploadImages = (e) => {
               @input="updateColor"
               placeholder="#000000"
             />
+            <p v-if="errors.colorCode" class="error">{{ errors.colorCode }}</p>
           </div>
         </div>
 
-        <div class="form-group">
-          <label for="" class="label-image"
-            ><i class="fa-regular fa-images"></i>Hình ảnh sản phẩm</label
-          >
-          <div class="upload-box">
-            <div class="image-upload-row">
-              <div class="image-upload-item">
-                <UploadImage
-                  ref="mainImageRef"
-                  @change="formData.mainImage = $event"
-                  contentImg="Ảnh chính"
-                  descImg="Dùng làm ảnh đại hiện"
-                  icon="add_a_photo"
-                  :showBGImage="false"
-                  height="200px"
-                  :container-box="false"
-                  :show-icon-b-g="false"
-                />
-              </div>
-              <div class="image-upload-item">
-                <UploadImage
-                  ref="hoverImageRef"
-                  @change="formData.hoverImage = $event"
-                  contentImg="Ảnh khi hover"
-                  descImg="Hiệu ứng khi hover"
-                  icon="flip_camera_ios"
-                  :showBGImage="false"
-                  height="200px"
-                  :container-box="false"
-                  :show-icon-b-g="false"
-                />
-              </div>
-            </div>
-          </div>
-          <div class="images-box">
-            <div class="title-images">
-              <p class="p-0 m-0">Ảnh phụ (Bộ sưu tập)</p>
-              <div class="count-image">
-                <p class="p-0 m-0 px-2">{{ countImage }}/10</p>
-              </div>
-            </div>
-
-            <div class="preview-images">
-              <!-- nút thêm ảnh -->
-              <label v-if="images.length < 10" class="add-image" aria-label="Thêm ảnh">
-                <i class="fa-solid fa-plus"></i>
-
-                <input
-                  class="input-upload-images"
-                  type="file"
-                  multiple
-                  accept="image/jpeg,image/png,image/webp"
-                  @change="uploadImages"
-                />
-              </label>
-
-              <!-- ảnh đã chọn -->
-              <div v-for="(img, index) in images" :key="index" class="image-item">
-                <img :src="img.url" alt="Ảnh phụ" />
-              </div>
-            </div>
-          </div>
-          <p>Hỗ trợ JPG, PNG hoặc WEBP (Tối đa 2MB)</p>
-        </div>
-        <p v-if="generalError" class="error p-0 mt-3 m-0 d-flex justify-content-center">
+        <VariantImageManager v-model="formData" :readonly="false" :errors="errors" />
+        <p v-if="generalError" class="error mt-3 d-flex justify-content-center">
           {{ generalError }}
         </p>
       </div>
@@ -273,20 +174,16 @@ const uploadImages = (e) => {
 <style scoped>
 @import '../../../assets/css/dialog.css';
 
+.error {
+  color: var(--text-red);
+  align-items: start;
+}
+
 .dialog-header h3 {
   border-left: 5px solid var(--color-9);
   padding-left: 10px;
 }
-.label-image {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 15px;
-}
 
-.label-image i {
-  color: var(--color-bule-2);
-}
 form {
   display: flex;
   flex-direction: column;
@@ -297,17 +194,14 @@ form {
   margin: 0;
 }
 
-.form-group p {
+.form-group > .hint {
   color: var(--text-gray-4);
-  display: flex;
-  justify-content: center;
-  padding: 0;
-  margin: 0;
+  text-align: center;
 }
 
-select {
+/* select {
   margin-bottom: 14px;
-}
+} */
 
 input {
   height: 40px;
@@ -317,7 +211,7 @@ input {
   outline: none;
   width: 100%;
   transition: 0.3s ease;
-  margin-bottom: 15px;
+  /* margin-bottom: 15px; */
 }
 
 input,
@@ -357,88 +251,5 @@ label {
   flex: 1;
   height: 42px;
   margin: 0;
-}
-
-/* icon SELECT */
-.select-box i {
-  top: 60%;
-}
-
-/* Ảnh bộ sưu tập */
-.images-box {
-  background-color: var(--bg-color-3);
-  border-radius: 5px;
-  padding: 10px;
-}
-.title-images {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-}
-.count-image {
-  background-color: var(--bg-color-4);
-  border-radius: 3px;
-  color: var(--text-gray-3);
-}
-.title-images > p:first-child {
-  color: var(--text-gray-3);
-}
-
-/* ẢNH CHÍNH */
-.image-upload-row {
-  display: flex;
-  gap: 12px;
-}
-
-.image-upload-item {
-  flex: 1;
-}
-
-/* UPLOAD ẢNH PHỤ */
-
-.preview-images {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 15px;
-}
-
-/* ô dấu + */
-.add-image {
-  width: 100px;
-  height: 100px;
-  border: 1px dashed var(--border-gray-3);
-  border-radius: 8px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  background: white;
-}
-
-.add-image i {
-  font-size: 30px;
-  color: var(--text-gray-3);
-}
-
-/* ẩn input */
-.input-upload-images {
-  display: none;
-}
-
-/* ảnh */
-.image-item img {
-  width: 100px;
-  height: 100px;
-  object-fit: cover;
-  border-radius: 8px;
-}
-
-@media (max-width: 767px) {
-  .image-upload-row {
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
 }
 </style>

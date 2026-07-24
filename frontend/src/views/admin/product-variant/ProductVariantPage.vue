@@ -11,13 +11,14 @@ import { ROUTE_NAMES } from '@/constants/routes'
 import router from '@/router'
 import { useProductVariant } from '@/stores/product-variant'
 import { useProductStore } from '@/stores/product'
+import ProductVariantCard from '@/components/common/cards/product-variant/ProductVariantCard.vue'
 
 const { showConfirm, deleteItem, openDelete, closeDelete } = useDelete()
 const toastStore = useToastStore()
 const productVariStore = useProductVariant()
 const productStore = useProductStore()
 const { productVariants, error, loading } = storeToRefs(productVariStore)
-const { products } = storeToRefs(productStore)
+const { productOptions } = storeToRefs(productStore)
 
 const showForm = ref(false)
 
@@ -29,10 +30,11 @@ onMounted(async () => {
     //
   }
   await productVariStore.fetchForAdmin()
+  await productStore.fetchOptions()
 })
 
 const openAddForm = () => {
-  showForm.value = false
+  showForm.value = true
   productVariStore.clearError()
 }
 
@@ -70,8 +72,13 @@ const cancelDelete = () => {
   closeDelete()
   toastStore.showToast('Đã hủy thay đổi', 'warning')
 }
-const opentEdit = () => {
-  console.log('EDIT')
+const opentEdit = (productVariant) => {
+  router.push({
+    name: ROUTE_NAMES.PRODUCT_VARIANT_DETAIL,
+    params: {
+      id: productVariant._id,
+    },
+  })
 }
 </script>
 
@@ -90,43 +97,7 @@ const opentEdit = () => {
       :items="productVariants"
       @delete="openDelete"
       @edit="opentEdit"
-      object-fit="cover"
-      :fields="[
-        {
-          name: '_id',
-          type: 'id',
-        },
-        {
-          name: 'mainImage',
-          type: 'image',
-        },
-
-        {
-          name: 'hoverImage',
-          type: 'image-hover',
-        },
-
-        {
-          name: 'displayName',
-          type: 'title',
-        },
-        {
-          name: 'colorName',
-          type: 'title',
-        },
-        {
-          name: 'colorCode',
-          type: 'color',
-        },
-        {
-          name: 'variantItemCount',
-          type: 'count',
-        },
-        {
-          name: 'status',
-          type: 'status',
-        },
-      ]"
+      :card-component="ProductVariantCard"
     />
   </div>
   <ProductVariantForm
@@ -135,7 +106,7 @@ const opentEdit = () => {
     :general-error="error.general"
     :errors="error.errors"
     @close="cancelDialogForm"
-    :products="products"
+    :products="productOptions"
     @clear-error="clearError"
   />
 

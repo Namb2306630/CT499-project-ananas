@@ -119,7 +119,7 @@ export const useCategoryStore = defineStore('category', {
           general: data?.message || 'Lỗi lấy dữ liệu danh mục!',
           errors: data?.errors || {},
         }
-        return null
+        throw this.error
       } finally {
         this.loading = false
       }

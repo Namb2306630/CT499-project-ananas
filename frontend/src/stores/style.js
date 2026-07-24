@@ -138,7 +138,7 @@ export const useStyleStore = defineStore('style', {
           general: data?.message || 'Lỗi lấy kiểu dáng sản phẩm!',
           errors: data?.errors || {},
         }
-        return null
+        throw this.error
       } finally {
         this.loading = false
       }
@@ -147,7 +147,7 @@ export const useStyleStore = defineStore('style', {
     async fetchOptions() {
       try {
         const res = await StyleService.getOptions()
-        this.collectionOptions = res.data.result
+        this.styleOptions = res.data.result
       } catch (error) {
         const data = error.response?.data
         this.error = {

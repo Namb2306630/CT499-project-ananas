@@ -19,6 +19,10 @@ defineProps({
     type: String,
     default: 'Khách hàng có thể thấy dữ liệu này',
   },
+  lists: {
+    type: Array,
+    default: () => [],
+  },
 })
 </script>
 
@@ -50,8 +54,20 @@ defineProps({
 @import '../../../assets/css/swtich.css';
 
 h4 {
-  border-left: 4px solid var(--bg-active);
-  padding-left: 10px;
+  margin-bottom: 18px;
+  padding-left: 12px;
+  border-left: 4px solid var(--primary-color);
+  font-size: 18px;
+}
+
+.switch-container {
+  padding: 16px;
+  border-radius: 12px;
+  background: var(--bg-color-while-2);
+  border: 1px solid var(--border-gray-2);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 .card {
   padding: 20px;
@@ -61,6 +77,9 @@ h4 {
 }
 
 .description {
-  color: var(--text-gray-3);
+  margin-top: 6px;
+  font-size: 13px;
+  color: #8b8b8b;
+  line-height: 1.5;
 }
 </style>

@@ -36,5 +36,27 @@ const handleDelete = () => emit('delete', props.item)
 </template>
 
 <style scoped>
-@import '@/assets/css/list-item.css';
+/* css trong ListItem */
+.list-item:hover {
+  cursor: pointer;
+}
+.list-content {
+  display: contents;
+}
+.list-status {
+  text-align: start;
+}
+.active {
+  padding: 6px 12px;
+  border-radius: 20px;
+  background: #d1fae5;
+  color: #047857;
+  font-weight: 500;
+}
+
+.inactive {
+  padding: 6px 12px;
+  border-radius: 20px;
+  background: #fee2e2;
+}
 </style>

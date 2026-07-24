@@ -58,6 +58,27 @@ const productLine = ref({
   productCount: 0,
 })
 
+onMounted(async () => {
+  try {
+    await brandStore.fetchAdminBrands()
+    const slug = route.params.slug
+
+    if (productLineStore.productLine?.slug === slug) {
+      Object.assign(productLine.value, productLineStore.productLine)
+    }
+    const data = await productLineStore.getBySlug(slug)
+
+    //thêm dữ liệu và productLine
+
+    //copy data[0] qua productLine.value
+    Object.assign(productLine.value, data)
+    productLine.value.brand = data.brand._id
+  } catch (error) {
+    toastStore.showToast(error.general, 'error')
+    router.replace({ name: ROUTE_NAMES.PRODUCT_LINES })
+  }
+})
+
 watch(
   () => productLine.value.name,
   (newName) => {
@@ -66,26 +87,7 @@ watch(
     }
   },
 )
-onMounted(async () => {
-  await brandStore.fetchAdminBrands()
-  const slug = route.params.slug
 
-  if (productLineStore.productLine?.slug === slug) {
-    Object.assign(productLine.value, productLineStore.productLine)
-  }
-  const data = await productLineStore.getBySlug(slug)
-
-  //thêm dữ liệu và productLine
-  if (data) {
-    //copy data[0] qua productLine.value
-    Object.assign(productLine.value, data)
-    productLine.value.brand = data.brand._id
-  }
-  if (!data) {
-    toastStore.showToast(error.value.general, 'error')
-    router.replace({ name: ROUTE_NAMES.PRODUCT_LINES })
-  }
-})
 const saveProductLine = async () => {
   const res = await productLineStore.update(productLine.value._id, productLine.value)
 
@@ -132,7 +134,7 @@ const cancelDelete = () => {
           <div class="form">
             <!-- name -->
             <div class="form-group">
-              <label for="name">Tên dòng sản phẩm</label>
+              <label for="name" class="mt-0">Tên dòng sản phẩm</label>
               <input type="text" name="name" id="name" v-model="productLine.name" />
               <p v-if="errors.name" class="p-0 m-0 error">{{ errors.name }}</p>
             </div>
@@ -146,7 +148,7 @@ const cancelDelete = () => {
 
             <!-- brand -->
             <div class="form-group">
-              <label for="brand" >Thuộc thương hiệu</label>
+              <label for="brand">Thuộc thương hiệu</label>
               <div class="select-box">
                 <select id="brand" v-model="productLine.brand">
                   <option v-for="brand in brands" :key="brand._id" :value="brand._id">

@@ -32,6 +32,21 @@ const collection = ref({
   isActive: true,
 })
 
+onMounted(async () => {
+  try {
+    const slug = route.params.slug
+    if (collectionStore.collection?.slug == slug) {
+      Object.assign(collection.value, collectionStore.collection)
+    }
+    const data = await collectionStore.getBySlug(slug)
+
+    Object.assign(collection.value, data)
+  } catch (error) {
+    toastStore.showToast(error.general, 'error')
+    router.replace({ name: ROUTE_NAMES.COLLECTIONS })
+  }
+})
+
 watch(
   () => collection.value.name,
   (newName) => {
@@ -40,22 +55,6 @@ watch(
     }
   },
 )
-
-onMounted(async () => {
-  const slug = route.params.slug
-  if (collectionStore.collection?.slug == slug) {
-    Object.assign(collection.value, collectionStore.collection)
-  }
-  const data = await collectionStore.getBySlug(slug)
-
-  if (data) {
-    Object.assign(collection.value, data)
-  }
-  if (!data) {
-    toastStore.showToast(error.value.general, 'error')
-    router.replace({ name: ROUTE_NAMES.COLLECTIONS })
-  }
-})
 
 const confirmDelete = async () => {
   if (!deleteItem.value) return
@@ -124,7 +123,7 @@ const cancelDelete = () => {
           <div class="form">
             <!-- name -->
             <div class="form-group">
-              <label for="name">Tên bộ sưu tập</label>
+              <label for="name" class="mt-0">Tên bộ sưu tập</label>
               <input type="text" name="" id="name" v-model="collection.name" />
               <p v-if="errors.name" class="error">{{ errors.name }}</p>
             </div>

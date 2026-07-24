@@ -48,20 +48,19 @@ watch(
 )
 
 onMounted(async () => {
-  const slug = route.params.slug
+  try {
+    const slug = route.params.slug
 
-  //kt dữ liệu có trong pinia chưa
-  if (brandStore.brand?.slug === slug) {
-    Object.assign(brand.value, brandStore.brand)
-  }
+    //kt dữ liệu có trong pinia chưa
+    if (brandStore.brand?.slug === slug) {
+      Object.assign(brand.value, brandStore.brand)
+    }
 
-  const data = await brandStore.getBySlug(slug)
+    const data = await brandStore.getBySlug(slug)
 
-  if (data) {
     Object.assign(brand.value, data)
-  }
-  if (!data) {
-    toastStore.showToast(error.value.general, 'error')
+  } catch (error) {
+    toastStore.showToast(error.general, 'error')
     router.replace({ name: ROUTE_NAMES.BRANDS })
   }
 })
@@ -146,7 +145,7 @@ const cancelDelete = () => {
           </div>
           <div class="form">
             <div class="form-group">
-              <label for="name">Tên thương hiệu</label>
+              <label for="name" class="mt-0">Tên thương hiệu</label>
               <input name="" id="name" v-model="brand.name" />
               <p v-if="errors.name" class="p-0 m-0 error">{{ errors.name }}</p>
             </div>
@@ -179,7 +178,7 @@ const cancelDelete = () => {
           :count="brand.productLineCount"
           :created-at="brand.createdAt"
           count-label="Dòng sản phẩm hiện có"
-          :list="brand.productLines"
+          :lists="brand.productLines"
         />
 
         <DetailStatus

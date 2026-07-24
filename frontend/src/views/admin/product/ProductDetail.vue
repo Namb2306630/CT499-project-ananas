@@ -7,6 +7,7 @@ import { useCollectionStore } from '@/stores/collection'
 import { useProductType } from '@/stores/product-type'
 import { useStyleStore } from '@/stores/style'
 import { storeToRefs } from 'pinia'
+import { useProductVariant } from '@/stores/product-variant'
 import { useDelete } from '@/composables/useDelete'
 import ConfirmDialog from '@/components/common/ConfirmDialog.vue'
 import MultiSelect from '@/components/admin/forms/MultiSelect.vue'
@@ -19,6 +20,7 @@ import DialogForm from '@/components/admin/forms/DialogForm.vue'
 import { useSystemConfigStore } from '@/stores/system-config'
 import { useRoute, useRouter } from 'vue-router'
 import { ref, onMounted, watch, computed } from 'vue'
+import { createSlug } from '@/utils/slug'
 import {
   formatCurrency,
   formatProfit,
@@ -26,8 +28,10 @@ import {
   calculateSellingPrice,
   calculateOriginalPrice,
 } from '@/utils/formatCurrency'
+const BASE_URL = import.meta.env.VITE_BACKEND
 import { ROUTE_NAMES } from '@/constants/routes'
 
+const productVariantStore = useProductVariant()
 const toastStore = useToastStore()
 const productStore = useProductStore()
 const categoryStore = useCategoryStore()
@@ -39,11 +43,12 @@ const styleStore = useStyleStore()
 const systemConfigStore = useSystemConfigStore()
 const { systemConfig } = storeToRefs(systemConfigStore)
 
-const { product, loading, error } = storeToRefs(productStore)
-const { collections } = storeToRefs(collectionStore)
-const { productLines } = storeToRefs(productLineStore)
-const { productTypes } = storeToRefs(productTypeStore)
-const { styles } = storeToRefs(styleStore)
+const { productVariantOptions } = storeToRefs(productVariantStore)
+const { loading, error } = storeToRefs(productStore)
+const { collectionOptions } = storeToRefs(collectionStore)
+const { productLineOptions } = storeToRefs(productLineStore)
+const { productTypeOptions } = storeToRefs(productTypeStore)
+const { styleOptions } = storeToRefs(styleStore)
 const { categories } = storeToRefs(categoryStore)
 const { showConfirm, deleteItem, openDelete, closeDelete } = useDelete()
 
@@ -56,21 +61,21 @@ const fields = computed(() => [
     type: 'select',
     label: 'Loại sản phẩm',
     placeholder: 'Chọn loại sản phẩm',
-    options: productTypes.value,
+    options: productTypeOptions.value,
   },
   {
     name: 'productLine',
     type: 'select',
     label: 'Dòng sản phẩm',
     placeholder: 'Chọn dòng sản phẩm',
-    options: productLines.value,
+    options: productLineOptions.value,
   },
   {
     name: 'productCollection',
     type: 'select',
     label: 'Bộ sưu tập',
     placeholder: 'Chọn bộ sưu tập',
-    options: collections.value,
+    options: collectionOptions.value,
   },
   {
     name: 'categories',
@@ -84,7 +89,7 @@ const fields = computed(() => [
     type: 'select',
     label: 'Kiểu dáng',
     placeholder: 'Chọn kiểu dáng',
-    options: styles.value,
+    options: styleOptions.value,
   },
 
   // 3. Thuộc tính
@@ -140,33 +145,101 @@ const openAddForm = () => {
   productStore.clearError()
 }
 
+const product = ref({
+  _id: '',
+  name: '',
+  slug: '',
+  description: '',
+  productType: {},
+  productLine: {},
+  productCollection: {},
+  categories: [],
+  costPrice: '',
+  // sellingPrice: '',
+  // originalPrice: '',
+  gender: '',
+  discountPercent: '',
+  style: {},
+  isBestSeller: false,
+  isNewArrival: false,
+  isSale: false,
+  status: '',
+  ratingAverage: '',
+  ratingCount: '',
+  variantCount: 0,
+})
+
 onMounted(async () => {
-  const slug = route.params.slug
-  if (productStore.product?.slug === slug) {
-    Object.assign(product.value, productStore.product)
-  }
+  try {
+    const slug = route.params.slug
+    //kt dữ liệu có trong pinia chưa
+    if (productStore.product?.slug === slug) {
+      Object.assign(product.value, productStore.brand)
+    }
+    await Promise.all([
+      productTypeStore.fetchOptions(),
+      productLineStore.fetchOptions(),
+      collectionStore.fetchOptions(),
+      styleStore.fetchOptions(),
+      categoryStore.fetchCategories(),
+      systemConfigStore.get(),
+    ])
 
-  const data = await productStore.getBySlug(slug)
+    const data = await productStore.getBySlug(slug)
 
-  if (data) {
+    await productVariantStore.fetchOptions(data._id)
+
     data.categories = data.categories.map((item) => item._id)
+    data.productType = data.productType?._id
+    data.productLine = data.productLine?._id
+    data.productCollection = data.productCollection?._id ?? null
+    data.style = data.style?._id ?? null
+    data.defaultVariant = data.defaultVariant?._id ?? null
+
     Object.assign(product.value, data)
-  }
-  if (!data) {
-    toastStore.showToast(error.value.general, 'error')
-    router.replace({ name: ROUTE_NAMES.PRODUCTS })
+  } catch (error) {
+    toastStore.showToast(error.general, 'error')
+
+    await router.replace({
+      name: ROUTE_NAMES.PRODUCTS,
+    })
   }
 })
 
-const saveProduct = async () => {
-  const res = true
+// lấy
+const selectedVariant = computed(() =>
+  productVariantOptions.value.find((variant) => variant._id === product.value.defaultVariant),
+)
+const selectedProductType = computed(() =>
+  productTypeOptions.value.find((i) => i._id === product.value.productType),
+)
 
-  if (res) {
+const selectedProductLine = computed(() =>
+  productLineOptions.value.find((i) => i._id === product.value.productLine),
+)
+
+const selectedCollection = computed(() =>
+  collectionOptions.value.find((i) => i._id === product.value.productCollection),
+)
+
+const selectedStyle = computed(() => styleOptions.value.find((i) => i._id === product.value.style))
+
+const saveProduct = async () => {
+  const res = await productStore.update(product.value._id, product.value)
+
+  if (res?.code === 200) {
     errors.value = {}
     toastStore.showToast(res.message, 'success')
     setTimeout(() => {
       router.back()
     }, 300)
+  } else {
+    const message =
+      Object.values(productStore.error.errors)[0] ||
+      productStore.error.general ||
+      'Cập nhật sản phẩm thất bại!'
+
+    toastStore.showToast(message, 'error')
   }
 }
 
@@ -188,6 +261,7 @@ const cancelDialogForm = () => {
   toastStore.showToast('Đã hủy thay đổi', 'warning')
 }
 
+// thêm variant trong product
 const addProductVariant = async () => {
   console.log('TEST')
 }
@@ -226,8 +300,9 @@ const sellingPrice = computed(() => {
           <DetailLayout title="Thông tin cơ bản của sản phẩm">
             <div class="top-info">
               <div class="form">
+                <!-- <pre>{{ product }}</pre> -->
                 <!-- name -->
-                <label for="name">Tên sản phẩm</label>
+                <label for="name" class="mt-0">Tên sản phẩm</label>
                 <input type="text" name="name" id="name" readonly v-model="product.name" />
 
                 <!-- slug -->
@@ -266,17 +341,19 @@ const sellingPrice = computed(() => {
                 </div>
                 <!-- Bộ sưu tập SP -->
                 <div class="select-box mb-3">
-                  <label for="collection" class="mr-3"> Biến thể (Variants) </label>
+                  <label for="variant" class="mr-3"> Biến thể (Variants) </label>
                   <div class="select-box">
-                    <select id="collection">
-                      <option value="">{{ product.productCollection?.name }}</option>
+                    <select id="variant" v-model="product.defaultVariant">
+                      <option :value="null" :disabled="productVariantOptions.length > 0">
+                        Không tồn tại
+                      </option>
 
                       <option
-                        v-for="collection in collections"
-                        :key="collection._id"
-                        :value="collection._id"
+                        v-for="productVariant in productVariantOptions"
+                        :key="productVariant._id"
+                        :value="productVariant._id"
                       >
-                        {{ collection.name }}
+                        {{ productVariant.colorName }}
                       </option>
                     </select>
                     <i class="fa-solid fa-chevron-down"></i>
@@ -287,8 +364,8 @@ const sellingPrice = computed(() => {
                   </p>
                 </div>
                 <div class="product-image">
-                  <template v-if="product.defaultVariant">
-                    <img :src="product.defaultVariant.mainImage" alt="Ảnh sản phẩm" />
+                  <template v-if="selectedVariant">
+                    <img :src="`${BASE_URL}/${selectedVariant.mainImage}`" alt="Ảnh sản phẩm" />
                   </template>
 
                   <template v-else>
@@ -311,9 +388,8 @@ const sellingPrice = computed(() => {
                   </button>
 
                   <div class="variant-stock">
-                    <span
-                      >Tổng kho: <strong>{{ totalStock }}</strong></span
-                    >
+                    <span class="label">Số biến thể:</span>
+                    <strong class="value">{{ product.variantCount }}</strong>
                   </div>
                 </div>
               </div>
@@ -371,7 +447,7 @@ const sellingPrice = computed(() => {
                     <div>
                       <p>LỢI NHUẬN ƯỚC TÍNH</p>
                       <div class="profit-box">
-                        <span>
+                        <span class="font-weight-bold">
                           {{ formatProfit(product.costPrice, sellingPrice, systemConfig.currency) }}
                         </span>
                         <span>
@@ -399,10 +475,11 @@ const sellingPrice = computed(() => {
                 <div class="select-box">
                   <label for="type" class="mr-3"> Loại sản phẩm </label>
                   <div class="select-box">
-                    <select id="type">
-                      <option value="">{{ product.productType?.name }}</option>
-
-                      <option v-for="type in productTypes" :key="type._id" :value="type._id">
+                    <select id="type" v-model="product.productType">
+                      <option value="">
+                        {{ selectedProductType?.name }}
+                      </option>
+                      <option v-for="type in productTypeOptions" :key="type._id" :value="type._id">
                         {{ type.name }}
                       </option>
                     </select>
@@ -418,10 +495,10 @@ const sellingPrice = computed(() => {
                 <div class="select-box">
                   <label for="lines" class="mr-3"> Dòng sản phẩm </label>
                   <div class="select-box">
-                    <select id="lines">
-                      <option value="">{{ product.productLine?.name }}</option>
+                    <select id="lines" v-model="product.productLine">
+                      <option value="">{{ selectedProductLine?.name }}</option>
 
-                      <option v-for="line in productLines" :key="line._id" :value="line._id">
+                      <option v-for="line in productLineOptions" :key="line._id" :value="line._id">
                         {{ line.name }}
                       </option>
                     </select>
@@ -436,11 +513,11 @@ const sellingPrice = computed(() => {
                 <div class="select-box">
                   <label for="collection" class="mr-3"> Bộ sưu tập </label>
                   <div class="select-box">
-                    <select id="collection">
-                      <option value="">{{ product.productCollection?.name }}</option>
+                    <select id="collection" name="collection" v-model="product.productCollection">
+                      <option value="">{{ selectedCollection?.name }}</option>
 
                       <option
-                        v-for="collection in collections"
+                        v-for="collection in collectionOptions"
                         :key="collection._id"
                         :value="collection._id"
                       >
@@ -455,7 +532,7 @@ const sellingPrice = computed(() => {
                   </p>
                 </div>
                 <div class="multi-select">
-                  <label for="collection" class="mr-3"> Danh mục </label>
+                  <label for="category" class="mr-3"> Danh mục </label>
                   <MultiSelect
                     v-model="product.categories"
                     :options="categories"
@@ -474,10 +551,10 @@ const sellingPrice = computed(() => {
                 <div class="select-box">
                   <label for="style" class="mr-3">Kiểu dáng sản phẩm </label>
                   <div class="select-box">
-                    <select id="style">
-                      <option value="">{{ product.style?.name }}</option>
+                    <select id="style" v-model="product.style">
+                      <option value="">{{ selectedStyle?.name }}</option>
 
-                      <option v-for="style in styles" :key="style._id" :value="style._id">
+                      <option v-for="style in styleOptions" :key="style._id" :value="style._id">
                         {{ style.name }}
                       </option>
                     </select>
@@ -586,7 +663,7 @@ const sellingPrice = computed(() => {
                     <i v-else class="fa-regular fa-star"></i>
                   </template>
                 </div>
-                <strong>{{ product.ratingAverage }}</strong>
+                <strong class="rating-average">{{ product.ratingAverage }}</strong>
                 <p>Dựa trên {{ product.ratingCount }} đánh giá</p>
                 <div class="btn-read-review">
                   <button>Xem chi tiết đánh giá</button>
@@ -742,8 +819,9 @@ const sellingPrice = computed(() => {
 }
 
 .start-box strong {
-  font-size: 30px;
-  font-weight: 500;
+  color: #f59e0b;
+  font-size: 32px;
+  font-weight: 700;
 }
 
 .start-box p {
@@ -838,12 +916,27 @@ const sellingPrice = computed(() => {
 }
 
 .variant-stock {
-  font-size: 16px;
-  color: #666;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 8px 14px;
+  border-radius: 999px;
+
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
 }
 
-.variant-stock strong {
-  color: var(--color-7);
+.variant-stock .label {
+  color: #64748b;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.variant-stock .value {
+  color: var(--primary-color);
+  font-size: 20px;
+  font-weight: 700;
 }
 
 .image-guide {
@@ -872,13 +965,15 @@ const sellingPrice = computed(() => {
   justify-content: center;
   align-items: center;
   gap: 10px;
+  overflow: hidden;
   background: #fafafa;
 }
 
 .product-image img {
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
+  border-radius: 2px;
 }
 
 .empty-image .material-symbols-outlined,

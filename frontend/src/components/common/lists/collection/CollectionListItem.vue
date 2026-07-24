@@ -18,16 +18,33 @@ const columns = '1.5fr 2.5fr 80px 120px 120px 80px'
     @delete="$emit('delete', $event)"
   >
     <template #default="{ item: coll }">
-      <div class="cell">
-        <strong>{{ coll.name }}</strong>
+      <!-- Tên collection -->
+      <div class="cell collection-name">
+        <strong class="name">
+          {{ coll.name }}
+        </strong>
+
+        <div class="slug">
+          {{ coll.slug }}
+        </div>
       </div>
-      <div class="cell">
+
+      <!-- Mô tả -->
+      <div class="cell description">
         {{ coll.description || 'Không có mô tả' }}
       </div>
-      <div class="cell">
-        {{ coll.productCount || 0 }}
+
+      <!-- Số sản phẩm -->
+      <div class="cell product-count">
+        <span>
+          {{ coll.productCount || 0 }}
+        </span>
       </div>
-      <div class="cell">
+
+      <!-- Ngày -->
+      <div class="cell created-date">
+        <span class="material-symbols-outlined"> calendar_today </span>
+
         {{ new Date(coll.createdAt).toLocaleDateString('vi-VN') }}
       </div>
     </template>

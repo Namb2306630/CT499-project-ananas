@@ -232,7 +232,7 @@ const upload = (e) => {
   padding: 5px 10px 10px 10px;
   border-radius: 10px;
   box-shadow: var(--shadow-gray);
-  margin-bottom: 18px;
+  /* margin-bottom: 18px; */
 }
 
 .upload-box:hover,

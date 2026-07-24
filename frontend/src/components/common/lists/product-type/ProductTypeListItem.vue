@@ -23,19 +23,26 @@ const columns = '1.5fr 2.5fr 80px 120px 120px 80px'
   >
     <!-- Slot mặc định chứa các cell dữ liệu -->
     <template #default="{ item: type }">
-      <div class="cell">
-        <strong>{{ type.name }}</strong>
+      <!-- tên -->
+      <div class="cell type-name">
+        <strong class="name">{{ type.name }}</strong>
+        <div class="slug">
+          {{ type.slug }}
+        </div>
       </div>
 
-      <div class="cell">
+      <div class="cell description">
         {{ type.description || 'Không có mô tả' }}
       </div>
 
-      <div class="cell">
-        {{ type.productCount || 0 }}
+      <div class="cell product-count">
+        <span>
+          {{ type.productCount || 0 }}
+        </span>
       </div>
 
-      <div class="cell">
+      <div class="cell created-date">
+        <span class="material-symbols-outlined"> calendar_today </span>
         {{ new Date(type.createdAt).toLocaleDateString('vi-VN') }}
       </div>
     </template>

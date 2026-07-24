@@ -4,7 +4,7 @@ import { storeToRefs } from 'pinia'
 import { useSystemConfigStore } from '@/stores/system-config'
 import { formatCurrency } from '@/utils/formatCurrency'
 import BaseCard from '@/components/common/cards/CardBase.vue'
-
+import { PRODUCT_STATUS, PRODUCT_GENDER } from '@/constants/status'
 const BASE_URL = import.meta.env.VITE_BACKEND
 const systemConfigStore = useSystemConfigStore()
 const { systemConfig } = storeToRefs(systemConfigStore)
@@ -15,18 +15,6 @@ const props = defineProps({
 })
 
 defineEmits(['edit', 'delete'])
-
-const statusMap = {
-  active: { label: 'Đang bán', class: 'active' },
-  inactive: { label: 'Ẩn', class: 'inactive' },
-  discontinued: { label: 'Ngừng kinh doanh', class: 'discontinued' },
-}
-
-const genderMap = {
-  unisex: { label: 'Phi giới tính' },
-  male: { label: 'Nam' },
-  female: { label: 'Nữ' },
-}
 
 const calculateOriginalPrice = (sellingPrice, discountPercent) => {
   if (!discountPercent) return null
@@ -39,8 +27,8 @@ const calculateOriginalPrice = (sellingPrice, discountPercent) => {
     <!-- Slot Ảnh -->
     <template #image>
       <img
-        v-if="item.image"
-        :src="`${BASE_URL}/${item.image}`"
+        v-if="item.defaultVariant?.mainImage"
+        :src="`${BASE_URL}/${item.defaultVariant.mainImage}`"
         alt="Ảnh sản phẩm"
         :style="{ objectFit: objectFit }"
       />
@@ -51,7 +39,9 @@ const calculateOriginalPrice = (sellingPrice, discountPercent) => {
 
     <!-- Slot Nội dung -->
     <template #content>
-      <h5>{{ item.name }}</h5>
+      <div class="card-header">
+        <h5>{{ item.name }}</h5>
+      </div>
 
       <div class="product-badges">
         <span v-if="item.isBestSeller" class="best-seller product-status">Bán chạy</span>
@@ -61,7 +51,7 @@ const calculateOriginalPrice = (sellingPrice, discountPercent) => {
 
       <div class="product-info">
         <span>{{ item.productType?.name }}</span>
-        <span class="gender-box">{{ genderMap[item.gender]?.label }}</span>
+        <span class="gender-box">{{ PRODUCT_GENDER[item.gender]?.label }}</span>
       </div>
 
       <div class="price-box">
@@ -89,8 +79,8 @@ const calculateOriginalPrice = (sellingPrice, discountPercent) => {
       </div>
 
       <div class="product-meta">
-        <div class="product-status-box" :class="statusMap[item.status]?.class">
-          {{ statusMap[item.status]?.label }}
+        <div class="product-status-box" :class="PRODUCT_STATUS[item.status]?.class">
+          {{ PRODUCT_STATUS[item.status]?.label }}
         </div>
         <div class="rating-box">
           <i class="fa-solid fa-star"></i>
@@ -104,4 +94,123 @@ const calculateOriginalPrice = (sellingPrice, discountPercent) => {
 
 <style scoped>
 @import '@/assets/css/card.css';
+.rating-box {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end; /* nằm bên phải */
+  gap: 4px;
+  padding: 0 15px;
+  margin-top: 6px;
+}
+
+.rating-box i,
+.rating-box span {
+  padding: 0 !important; /* bỏ padding 15px mặc định */
+}
+
+.rating-box i {
+  color: #ffc107;
+  font-size: 14px;
+}
+
+.rating-box span {
+  font-size: 13px;
+}
+
+.rating-count {
+  color: #777;
+}
+
+.current-price {
+  color: var(--color-red);
+  font-weight: 700;
+}
+
+.product-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  margin-top: 10px;
+}
+
+.product-status-box {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.product-info {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  gap: 10px;
+}
+
+.product-info span {
+  background-color: var(--color-7);
+  border-radius: 5px;
+  padding: 3px 8px;
+  font-weight: 600;
+  margin: 10px 0;
+}
+.product-info > span:first-child {
+  background-color: var(--color-9);
+  color: #fff;
+}
+
+.product-status {
+  padding: 5px 12px;
+  border-radius: 20px;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.best-seller {
+  background: var(--color-4);
+}
+
+.new-arrival {
+  background: var(--color-bule);
+}
+
+.sale {
+  background: var(--color-12);
+}
+
+.product-badges {
+  position: absolute;
+  top: 20px;
+  right: 10px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.price-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.selling-price span {
+  color: var(--color-bule);
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.price-box p {
+  padding: 0;
+  margin: 0;
+  color: var(--color-11);
+  font-weight: bold;
+}
+
+.original-price {
+  color: var(--text-gray-3);
+  text-decoration: line-through;
+  font-size: 13px;
+}
 </style>

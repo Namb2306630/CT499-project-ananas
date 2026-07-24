@@ -5,6 +5,7 @@ export const useProductStore = defineStore('product', {
   state: () => ({
     loading: false,
     products: [],
+    productOptions: [],
     product: {},
     pagination: {
       page: 1,
@@ -100,7 +101,7 @@ export const useProductStore = defineStore('product', {
           general: data?.message || 'Lỗi lấy dữ liệu sản phẩm!',
           errors: data?.errors || {},
         }
-        return null
+        throw this.error
       } finally {
         this.loading = false
       }
@@ -143,6 +144,20 @@ export const useProductStore = defineStore('product', {
         }
       } finally {
         this.loading = false
+      }
+    },
+
+    async fetchOptions() {
+      try {
+        const res = await ProductService.fetchOptions()
+        this.productOptions = res.data.result
+      } catch (error) {
+        const data = error.response?.data
+        this.error = {
+          code: data?.code || 500,
+          general: data?.message || 'Lỗi lấy dữ liệu sản phẩm!',
+          errors: data?.errors || {},
+        }
       }
     },
   },
