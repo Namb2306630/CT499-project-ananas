@@ -73,10 +73,10 @@ exports.getAll = async (req, res, next) => {
     next(err);
   }
 };
-exports.getBySlug = async (req, res, next) => {
+exports.getById = async (req, res, next) => {
   try {
-    const slug = req.params.slug;
-    const data = await service.getBySlug(slug);
+    const id = req.params.id;
+    const data = await service.getById(id);
 
     return ApiResponse.success({
       res,
@@ -154,7 +154,10 @@ exports.getColors = async (req, res, next) => {
 
 exports.getOptions = async (req, res, next) => {
   try {
-    const data = await service.getOptions();
+    const { productId } = req.query;
+
+    const data = await service.getOptions(productId);
+
     return ApiResponse.success({
       res,
       data,

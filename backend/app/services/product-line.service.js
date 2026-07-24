@@ -116,13 +116,29 @@ class ProductLineService {
       {
         $lookup: {
           from: "brands",
-          localField: "brand", //lấy id của brand
-          foreignField: "_id", //ss id của brand với id của productline
+          let: {
+            brandId: "$brand",
+          },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $eq: ["$_id", "$$brandId"],
+                },
+              },
+            },
+            {
+              $project: {
+                _id: 1,
+                name: 1,
+                slug: 1,
+              },
+            },
+          ],
           as: "brand",
         },
       },
       {
-        // lookup trả về mảng -> unwind ép trả về đối tượng
         $unwind: {
           path: "$brand",
           preserveNullAndEmptyArrays: true,
@@ -167,6 +183,17 @@ class ProductLineService {
               0,
             ],
           },
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          name: 1,
+          slug: 1,
+          brand: 1,
+          isActive: 1,
+          createdAt: 1,
+          productCount: 1,
         },
       },
       {

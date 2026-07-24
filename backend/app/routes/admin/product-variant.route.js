@@ -30,7 +30,7 @@ router.put(
 );
 
 router.delete("/:id", controller.remove);
-router.get("/:slug", controller.getBySlug);
+router.get("/:id", controller.getById);
 router.get("/", controller.getAll);
 router.get("/check/admin", controller.checkExist);
 

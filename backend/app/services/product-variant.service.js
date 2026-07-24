@@ -49,9 +49,9 @@ class ProductVariantService {
         hoverImage: files.hoverImage[0].path.replace(/\\/g, "/"),
         images: files.images.map((f) => f.path.replace(/\\/g, "/")),
       });
-
+      const result = await this.getById(created._id);
       return {
-        data: created,
+        data: result,
         action: "created",
       };
     }
@@ -69,7 +69,7 @@ class ProductVariantService {
       await exist.save();
 
       return {
-        data: exist,
+        data: await this.getById(exist._id),
         action: "restored",
       };
     }
@@ -131,10 +131,19 @@ class ProductVariantService {
     if (files?.hoverImage) deleteImage(oldFiles.hoverImage);
     if (files?.images) oldFiles.images.forEach(deleteImage);
 
-    return proVari;
+    return await this.getById(proVari._id);
   }
   async remove(id) {
     const proVari = await this.getByIdOrThrow(id);
+
+    const exist = await ProductVariantItem.exists({
+      variant: id,
+    });
+
+    if (exist) {
+      throw ErrorCode.PRODUCT_VARIANT_IN_USE();
+    }
+
     proVari.status = "discontinued";
     await proVari.save();
   }
@@ -183,9 +192,25 @@ class ProductVariantService {
         },
       },
 
+      // bỏ dữ liệu không cần trả vê các tường này
+      // 0 là bỏ, 1 là lấy
       {
         $project: {
-          variantItems: 0,
+          _id: 1,
+          product: {
+            _id: "$product._id",
+            name: "$product.name",
+            slug: "$product.slug",
+          },
+          colorName: 1,
+          colorCode: 1,
+          mainImage: 1,
+          hoverImage: 1,
+          status: 1,
+          createdAt: 1,
+          updatedAt: 1,
+          variantItemCount: 1,
+          displayName: 1,
         },
       },
 
@@ -196,11 +221,11 @@ class ProductVariantService {
       },
     ]);
   }
-  async getBySlug(slug) {
+  async getById(id) {
     const [proVari] = await ProductVariant.aggregate([
       {
         $match: {
-          slug,
+          _id: id,
         },
       },
 
@@ -208,8 +233,25 @@ class ProductVariantService {
       {
         $lookup: {
           from: "products",
-          localField: "product",
-          foreignField: "_id",
+          let: {
+            productId: "$product",
+          },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $eq: ["$_id", "$$productId"],
+                },
+              },
+            },
+            {
+              $project: {
+                _id: 1,
+                name: 1,
+                slug: 1,
+              },
+            },
+          ],
           as: "product",
         },
       },
@@ -255,9 +297,8 @@ class ProductVariantService {
     ]);
 
     if (!proVari) throw ErrorCode.PRODUCT_VARI_NOT_EXISTS();
-    const data = proVari.toObject();
 
-    return data;
+    return proVari;
   }
 
   async updateOutOfStock(id) {
@@ -354,11 +395,16 @@ class ProductVariantService {
     return status;
   }
 
-  async getOptions() {
+  async getOptions(productId) {
     return await ProductVariant.find(
-      { status: { $ne: "inactive" } },
       {
-        name: 1,
+        product: productId,
+        status: { $ne: "inactive" },
+      },
+      {
+        colorName: 1,
+        colorCode: 1,
+        mainImage: 1,
       },
     ).sort({ name: 1 });
   }

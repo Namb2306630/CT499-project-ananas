@@ -121,19 +121,19 @@ class BrandService {
   }
 
   async getAllForAdmin() {
-    // return await Brand.find({ isDeleted: false }).sort({
-    //   createdAt: -1,
-    // });
-    return Brand.aggregate([
+    return await Brand.aggregate([
       {
         $match: {
           isDeleted: false,
         },
       },
+
       {
         $lookup: {
           from: "productlines",
-          let: { brandId: "$_id" },
+          let: {
+            brandId: "$_id",
+          },
           pipeline: [
             {
               $match: {
@@ -141,20 +141,40 @@ class BrandService {
                   $eq: ["$brand", "$$brandId"],
                 },
                 isDeleted: false,
-                // isActive: true,
+              },
+            },
+            {
+              $project: {
+                _id: 1,
+                name: 1,
+                slug: 1,
               },
             },
           ],
           as: "productLines",
         },
       },
+
       {
         $addFields: {
-          productLines: {
+          productLineCount: {
             $size: "$productLines",
           },
         },
       },
+
+      {
+        $project: {
+          _id: 1,
+          name: 1,
+          slug: 1,
+          logo: 1,
+          isActive: 1,
+          productLineCount: 1,
+          productLines: 1,
+        },
+      },
+
       {
         $sort: {
           createdAt: -1,

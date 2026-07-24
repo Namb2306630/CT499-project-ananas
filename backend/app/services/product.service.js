@@ -225,7 +225,7 @@ class ProductService {
       "gender",
       "isBestSeller",
       "isNewArrival",
-      // "isSale",
+      "isSale",
       "defaultVariant",
       "status",
     ]);
@@ -293,6 +293,14 @@ class ProductService {
 
   async remove(id) {
     const product = await this.getByIdOrThrow(id);
+    const exist = await ProductVariant.exists({
+      product: id,
+      status: { $ne: "discontinued" },
+    });
+
+    if (exist) {
+      throw ErrorCode.PRODUCT_IN_USE();
+    }
 
     // đã xóa rồi thì không làm nữa
     if (product.status === "discontinued") {
@@ -311,30 +319,28 @@ class ProductService {
 
     const [products, total] = await Promise.all([
       Product.aggregate([
-        // lấy productLine
-        // {
-        //   $lookup: {
-        //     from: "productlines",
-        //     localField: "productLine",
-        //     foreignField: "_id",
-        //     as: "productLine",
-        //   },
-        // },
-
-        // // đổi array thành object
-        // {
-        //   $unwind: {
-        //     path: "$productLine",
-        //     preserveNullAndEmptyArrays: true,
-        //   },
-        // },
-
-        // Product variant
         {
           $lookup: {
             from: "productvariants",
-            localField: "defaultVariant",
-            foreignField: "_id",
+            let: {
+              variantId: "$defaultVariant",
+            },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $eq: ["$_id", "$$variantId"],
+                  },
+                },
+              },
+              {
+                $project: {
+                  _id: 1,
+                  colorName: 1,
+                  mainImage: 1,
+                },
+              },
+            ],
             as: "defaultVariant",
           },
         },
@@ -345,16 +351,31 @@ class ProductService {
           },
         },
 
-        // lấy productType
         {
           $lookup: {
             from: "producttypes",
-            localField: "productType",
-            foreignField: "_id",
+            let: {
+              productTypeId: "$productType",
+            },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $eq: ["$_id", "$$productTypeId"],
+                  },
+                },
+              },
+              {
+                $project: {
+                  _id: 1,
+                  name: 1,
+                  slug: 1,
+                },
+              },
+            ],
             as: "productType",
           },
         },
-
         {
           $unwind: {
             path: "$productType",
@@ -362,7 +383,6 @@ class ProductService {
           },
         },
 
-        // đếm variant
         {
           $lookup: {
             from: "productvariants",
@@ -384,8 +404,6 @@ class ProductService {
             as: "variantCount",
           },
         },
-
-        // lấy số lượng ra ngoài
         {
           $addFields: {
             variantCount: {
@@ -399,18 +417,44 @@ class ProductService {
           },
         },
 
-        // sắp xếp
+        {
+          $project: {
+            _id: 1,
+            name: 1,
+            slug: 1,
+
+            productType: 1,
+            defaultVariant: 1,
+
+            costPrice: 1,
+            sellingPrice: 1,
+            originalPrice: 1,
+
+            gender: 1,
+            discountPercent: 1,
+
+            isBestSeller: 1,
+            isNewArrival: 1,
+            isSale: 1,
+
+            status: 1,
+
+            ratingAverage: 1,
+            ratingCount: 1,
+
+            variantCount: 1,
+          },
+        },
+
         {
           $sort: {
             createdAt: -1,
           },
         },
 
-        // phân trang
         {
           $skip: skip,
         },
-
         {
           $limit: limit,
         },
@@ -451,8 +495,23 @@ class ProductService {
       {
         $lookup: {
           from: "categories",
-          localField: "categories",
-          foreignField: "_id",
+          let: { categoryIds: "$categories" },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $in: ["$_id", "$$categoryIds"],
+                },
+              },
+            },
+            {
+              $project: {
+                _id: 1,
+                name: 1,
+                slug: 1,
+              },
+            },
+          ],
           as: "categories",
         },
       },
@@ -461,8 +520,25 @@ class ProductService {
       {
         $lookup: {
           from: "producttypes",
-          localField: "productType",
-          foreignField: "_id",
+          let: {
+            id: "$productType",
+          },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $eq: ["$_id", "$$id"],
+                },
+              },
+            },
+            {
+              $project: {
+                _id: 1,
+                name: 1,
+                slug: 1,
+              },
+            },
+          ],
           as: "productType",
         },
       },
@@ -477,8 +553,25 @@ class ProductService {
       {
         $lookup: {
           from: "productvariants",
-          localField: "defaultVariant",
-          foreignField: "_id",
+          let: {
+            variantId: "$defaultVariant",
+          },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $eq: ["$_id", "$$variantId"],
+                },
+              },
+            },
+            {
+              $project: {
+                _id: 1,
+                colorName: 1,
+                mainImage: 1,
+              },
+            },
+          ],
           as: "defaultVariant",
         },
       },
@@ -493,8 +586,25 @@ class ProductService {
       {
         $lookup: {
           from: "collections",
-          localField: "productCollection",
-          foreignField: "_id",
+          let: {
+            collectionId: "$productCollection",
+          },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $eq: ["$_id", "$$collectionId"],
+                },
+              },
+            },
+            {
+              $project: {
+                _id: 1,
+                name: 1,
+                slug: 1,
+              },
+            },
+          ],
           as: "productCollection",
         },
       },
@@ -509,8 +619,25 @@ class ProductService {
       {
         $lookup: {
           from: "productlines",
-          localField: "productLine",
-          foreignField: "_id",
+          let: {
+            productLineId: "$productLine",
+          },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $eq: ["$_id", "$$productLineId"],
+                },
+              },
+            },
+            {
+              $project: {
+                _id: 1,
+                name: 1,
+                slug: 1,
+              },
+            },
+          ],
           as: "productLine",
         },
       },
@@ -525,8 +652,25 @@ class ProductService {
       {
         $lookup: {
           from: "styles",
-          localField: "style",
-          foreignField: "_id",
+          let: {
+            styleId: "$style",
+          },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $eq: ["$_id", "$$styleId"],
+                },
+              },
+            },
+            {
+              $project: {
+                _id: 1,
+                name: 1,
+                slug: 1,
+              },
+            },
+          ],
           as: "style",
         },
       },
@@ -534,6 +678,69 @@ class ProductService {
         $unwind: {
           path: "$style",
           preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $lookup: {
+          from: "productvariants",
+          let: {
+            productId: "$_id",
+          },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $eq: ["$product", "$$productId"],
+                },
+              },
+            },
+            {
+              $count: "total",
+            },
+          ],
+          as: "variantCount",
+        },
+      },
+      {
+        $addFields: {
+          variantCount: {
+            $ifNull: [
+              {
+                $arrayElemAt: ["$variantCount.total", 0],
+              },
+              0,
+            ],
+          },
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          name: 1,
+          slug: 1,
+          description: 1,
+
+          productType: 1,
+          productLine: 1,
+          productCollection: 1,
+          categories: 1,
+          style: 1,
+          defaultVariant: 1,
+
+          costPrice: 1,
+          sellingPrice: 1,
+          originalPrice: 1,
+          gender: 1,
+          discountPercent: 1,
+          isBestSeller: 1,
+          isNewArrival: 1,
+          isSale: 1,
+          status: 1,
+          ratingAverage: 1,
+          ratingCount: 1,
+          createdAt: 1,
+          updatedAt: 1,
+          variantCount: 1,
         },
       },
     ]);
@@ -599,6 +806,17 @@ class ProductService {
     ]);
 
     return product;
+  }
+
+  async getOptions() {
+    return Product.find(
+      {
+        status: { $eq: "active" },
+      },
+      {
+        name: 1,
+      },
+    ).sort({ name: 1 });
   }
 }
 
