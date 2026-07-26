@@ -17,6 +17,7 @@ import AppPagination from '@/components/common/AppPagination.vue'
 import { ROUTE_NAMES } from '@/constants/routes'
 import router from '@/router'
 import ProductCard from '@/components/common/cards/product/ProductCard.vue'
+import AppLoading from '../../../components/common/LoadingState.vue'
 
 const toastStore = useToastStore()
 const categoryStore = useCategoryStore()
@@ -25,6 +26,7 @@ const productTypeStore = useProductType()
 const collectionStore = useCollectionStore()
 const productStore = useProductStore()
 const styleStore = useStyleStore()
+const pageLoading = ref(true)
 
 const { categories } = storeToRefs(categoryStore)
 const { products, pagination, loading, error } = storeToRefs(productStore)
@@ -43,20 +45,21 @@ const changePage = async (page) => {
 const { showConfirm, deleteItem, openDelete, closeDelete } = useDelete()
 
 const showForm = ref(false)
-
+// const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 onMounted(async () => {
-  if (productStore.products.length > 0) {
-    //
+  pageLoading.value = true
+  try {
+    await Promise.all(
+      productStore.fetchForAdmin(),
+      categoryStore.fetchCategories(),
+      productLineStore.fetchOptions(),
+      collectionStore.fetchOptions(),
+      productTypeStore.fetchOptions(),
+      styleStore.fetchOptions(),
+    )
+  } finally {
+    pageLoading.value = false
   }
-
-  await Promise.all([
-    categoryStore.fetchCategories(),
-    productLineStore.fetchOptions(),
-    collectionStore.fetchOptions(),
-    productTypeStore.fetchOptions(),
-    styleStore.fetchOptions(),
-    productStore.fetchForAdmin(),
-  ])
 })
 
 defineProps({
@@ -73,9 +76,11 @@ const clearError = () => {
 }
 
 const confirmDelete = async () => {
+  if (deleteItem.value) return
   const res = await productStore.delete(deleteItem.value._id)
 
   if (res?.code === 200) {
+    clearError()
     toastStore.showToast(res.message, 'success')
     closeDelete()
   } else {
@@ -93,6 +98,7 @@ const addProduct = async (data) => {
   const result = await productStore.create(data)
 
   if (result?.code === 200) {
+    clearError()
     showForm.value = false
     toastStore.showToast(result.message, 'success')
   } else {
@@ -207,6 +213,9 @@ const cancelDelete = () => {
 </script>
 
 <template>
+  <!-- <AppLoading v-if="pageLoading" :loading="pageLoading" :error="productStore.error.general" />
+
+  <div v-else class="admin-container"> -->
   <div class="admin-container">
     <AppAdminPageHeader
       title="Quản Lý Sản Phẩm"

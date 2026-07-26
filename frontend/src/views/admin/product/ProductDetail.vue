@@ -14,13 +14,9 @@ import MultiSelect from '@/components/admin/forms/MultiSelect.vue'
 import HeaderDetail from '@/components/admin/detail/HeaderDetail.vue'
 import DetailLayout from '@/components/admin/detail/DetailLayout.vue'
 import DetailActions from '@/components/admin/detail/DetailActions.vue'
-// import DetailStats from '@/components/admin/detail/DetailStats.vue'
-// import DetailStatus from '@/components/admin/detail/DetailStatus.vue'
-import DialogForm from '@/components/admin/forms/DialogForm.vue'
 import { useSystemConfigStore } from '@/stores/system-config'
 import { useRoute, useRouter } from 'vue-router'
 import { ref, onMounted, watch, computed } from 'vue'
-import { createSlug } from '@/utils/slug'
 import {
   formatCurrency,
   formatProfit,
@@ -28,9 +24,10 @@ import {
   calculateSellingPrice,
   calculateOriginalPrice,
 } from '@/utils/formatCurrency'
-const BASE_URL = import.meta.env.VITE_BACKEND
 import { ROUTE_NAMES } from '@/constants/routes'
+import ProductVariantForm from '@/components/admin/forms/ProductVariantForm.vue'
 
+const BASE_URL = import.meta.env.VITE_BACKEND
 const productVariantStore = useProductVariant()
 const toastStore = useToastStore()
 const productStore = useProductStore()
@@ -54,95 +51,13 @@ const { showConfirm, deleteItem, openDelete, closeDelete } = useDelete()
 
 const showForm = ref(false)
 
-// field thêm
-const fields = computed(() => [
-  {
-    name: 'productType',
-    type: 'select',
-    label: 'Loại sản phẩm',
-    placeholder: 'Chọn loại sản phẩm',
-    options: productTypeOptions.value,
-  },
-  {
-    name: 'productLine',
-    type: 'select',
-    label: 'Dòng sản phẩm',
-    placeholder: 'Chọn dòng sản phẩm',
-    options: productLineOptions.value,
-  },
-  {
-    name: 'productCollection',
-    type: 'select',
-    label: 'Bộ sưu tập',
-    placeholder: 'Chọn bộ sưu tập',
-    options: collectionOptions.value,
-  },
-  {
-    name: 'categories',
-    type: 'multiselect',
-    label: 'Danh mục',
-    placeholder: 'Chọn danh mục',
-    options: categories.value,
-  },
-  {
-    name: 'style',
-    type: 'select',
-    label: 'Kiểu dáng',
-    placeholder: 'Chọn kiểu dáng',
-    options: styleOptions.value,
-  },
-
-  // 3. Thuộc tính
-  {
-    name: 'gender',
-    type: 'radio',
-    label: 'Giới tính',
-    options: [
-      { label: 'Nam', value: 'male' },
-      { label: 'Nữ', value: 'female' },
-      { label: 'Phi giới tính', value: 'unisex' },
-    ],
-  },
-
-  // 4. Giá
-  {
-    name: 'costPrice',
-    type: 'number',
-    label: 'Giá nhập',
-    placeholder: 'Giá nhập sản phẩm',
-  },
-  {
-    name: 'discountPercent',
-    type: 'number',
-    label: 'Giảm giá (%)',
-    placeholder: 'Nhập % giảm giá',
-  },
-
-  // 5. Trạng thái nổi bật
-  {
-    type: 'checkbox-group',
-    label: 'Đánh dấu',
-    options: [
-      { name: 'isBestSeller', label: 'Bán chạy' },
-      { name: 'isNewArrival', label: 'Sản phẩm mới' },
-      { name: 'isSale', label: 'Sale' },
-    ],
-  },
-  {
-    name: 'description',
-    type: 'textarea',
-    label: 'Mô tả sản phẩm',
-    placeholder: 'Mô tả sản phẩm',
-  },
-])
-
 const route = useRoute() // lấy params
 const router = useRouter() // điều hướng
 const errors = computed(() => error.value.errors)
 
 const openAddForm = () => {
   showForm.value = true
-  productStore.clearError()
+  productVariantStore.clearError()
 }
 
 const product = ref({
@@ -169,13 +84,20 @@ const product = ref({
   variantCount: 0,
 })
 
+watch(
+  () => product.value.discountPercent,
+  (value) => {
+    product.value.isSale = Number(value) > 0
+  },
+)
+
 onMounted(async () => {
   try {
     const slug = route.params.slug
     //kt dữ liệu có trong pinia chưa
-    if (productStore.product?.slug === slug) {
-      Object.assign(product.value, productStore.brand)
-    }
+    // if (productStore.product?.slug === slug) {
+    //   Object.assign(product.value, productStore.product)
+    // }
     await Promise.all([
       productTypeStore.fetchOptions(),
       productLineStore.fetchOptions(),
@@ -205,34 +127,34 @@ onMounted(async () => {
     })
   }
 })
-
 // lấy
 const selectedVariant = computed(() =>
   productVariantOptions.value.find((variant) => variant._id === product.value.defaultVariant),
 )
-const selectedProductType = computed(() =>
-  productTypeOptions.value.find((i) => i._id === product.value.productType),
-)
+// const selectedProductType = computed(() =>
+//   productTypeOptions.value.find((i) => i._id === product.value.productType),
+// )
 
-const selectedProductLine = computed(() =>
-  productLineOptions.value.find((i) => i._id === product.value.productLine),
-)
+// const selectedProductLine = computed(() =>
+//   productLineOptions.value.find((i) => i._id === product.value.productLine),
+// )
 
-const selectedCollection = computed(() =>
-  collectionOptions.value.find((i) => i._id === product.value.productCollection),
-)
+// const selectedCollection = computed(() =>
+//   collectionOptions.value.find((i) => i._id === product.value.productCollection),
+// )
 
-const selectedStyle = computed(() => styleOptions.value.find((i) => i._id === product.value.style))
+// const selectedStyle = computed(() => styleOptions.value.find((i) => i._id === product.value.style))
 
 const saveProduct = async () => {
   const res = await productStore.update(product.value._id, product.value)
 
   if (res?.code === 200) {
+    productStore.clearError()
     errors.value = {}
     toastStore.showToast(res.message, 'success')
     setTimeout(() => {
       router.back()
-    }, 300)
+    }, 500)
   } else {
     const message =
       Object.values(productStore.error.errors)[0] ||
@@ -249,6 +171,28 @@ const cancelEdit = () => {
   setTimeout(() => {
     router.back()
   }, 300)
+}
+
+const confirmDelete = async () => {
+  if (!deleteItem.value) return
+  const res = await productStore.delete(product.value._id)
+
+  if (res?.code === 200) {
+    toastStore.showToast(res.message, 'success')
+    closeDelete()
+    errors.value = {}
+    productStore.clearError()
+    setTimeout(() => {
+      router.back()
+    }, 500)
+  } else {
+    const message =
+      Object.values(productStore.error.errors)[0] ||
+      productStore.error.general ||
+      'Lỗi xóa dữ liệu sản phẩm!!!'
+
+    toastStore.showToast(message, 'error')
+  }
 }
 
 const cancelDelete = () => {
@@ -288,6 +232,7 @@ const sellingPrice = computed(() => {
 </script>
 
 <template>
+  <pre>{{ product.value }}</pre>
   <div v-if="!loading" class="container-detail">
     <HeaderDetail
       title-delete="Xóa sản phẩm"
@@ -317,7 +262,9 @@ const sellingPrice = computed(() => {
                   rows="5"
                   class="description"
                   placeholder="Thêm mô tả cho sản phẩm..."
+                  maxlength="500"
                 ></textarea>
+                <div class="char-count">{{ product.description.length }}/500</div>
 
                 <p v-if="errors.description" class="p-0 m-0 error">
                   {{ errors.description }}
@@ -344,9 +291,7 @@ const sellingPrice = computed(() => {
                   <label for="variant" class="mr-3"> Biến thể (Variants) </label>
                   <div class="select-box">
                     <select id="variant" v-model="product.defaultVariant">
-                      <option :value="null" :disabled="productVariantOptions.length > 0">
-                        Không tồn tại
-                      </option>
+                      <option :value="null">Không có</option>
 
                       <option
                         v-for="productVariant in productVariantOptions"
@@ -392,6 +337,9 @@ const sellingPrice = computed(() => {
                     <strong class="value">{{ product.variantCount }}</strong>
                   </div>
                 </div>
+                <div class="list-product-variant">
+                  <p>Chú ý: Chổ để hiện danh sách các biến thể sản phẩm</p>
+                </div>
               </div>
             </div>
           </DetailLayout>
@@ -404,7 +352,14 @@ const sellingPrice = computed(() => {
                 <div class="form-group">
                   <label for="cost">Giá nhập</label>
                   <div class="input-icon">
-                    <input type="number" name="cost" id="cost" v-model="product.costPrice" />
+                    <input
+                      type="number"
+                      name="cost"
+                      id="cost"
+                      v-model="product.costPrice"
+                      min="0"
+                      step="1"
+                    />
                     <span class="suffix">{{ systemConfig.currency }}</span>
                   </div>
                 </div>
@@ -433,6 +388,9 @@ const sellingPrice = computed(() => {
                       name="discount"
                       id="discount"
                       v-model="product.discountPercent"
+                      min="0"
+                      max="100"
+                      step="0.1"
                     />
                     <span class="suffix">%</span>
                   </div>
@@ -458,7 +416,7 @@ const sellingPrice = computed(() => {
                   </div>
                   <div>
                     <p>Giá sau khi giảm</p>
-                    <span>
+                    <span class="font-weight-bold">
                       {{ formatCurrency(sellingPrice, systemConfig.currency) }}
                     </span>
                   </div>
@@ -476,9 +434,6 @@ const sellingPrice = computed(() => {
                   <label for="type" class="mr-3"> Loại sản phẩm </label>
                   <div class="select-box">
                     <select id="type" v-model="product.productType">
-                      <option value="">
-                        {{ selectedProductType?.name }}
-                      </option>
                       <option v-for="type in productTypeOptions" :key="type._id" :value="type._id">
                         {{ type.name }}
                       </option>
@@ -496,8 +451,6 @@ const sellingPrice = computed(() => {
                   <label for="lines" class="mr-3"> Dòng sản phẩm </label>
                   <div class="select-box">
                     <select id="lines" v-model="product.productLine">
-                      <option value="">{{ selectedProductLine?.name }}</option>
-
                       <option v-for="line in productLineOptions" :key="line._id" :value="line._id">
                         {{ line.name }}
                       </option>
@@ -514,8 +467,6 @@ const sellingPrice = computed(() => {
                   <label for="collection" class="mr-3"> Bộ sưu tập </label>
                   <div class="select-box">
                     <select id="collection" name="collection" v-model="product.productCollection">
-                      <option value="">{{ selectedCollection?.name }}</option>
-
                       <option
                         v-for="collection in collectionOptions"
                         :key="collection._id"
@@ -552,8 +503,6 @@ const sellingPrice = computed(() => {
                   <label for="style" class="mr-3">Kiểu dáng sản phẩm </label>
                   <div class="select-box">
                     <select id="style" v-model="product.style">
-                      <option value="">{{ selectedStyle?.name }}</option>
-
                       <option v-for="style in styleOptions" :key="style._id" :value="style._id">
                         {{ style.name }}
                       </option>
@@ -645,10 +594,32 @@ const sellingPrice = computed(() => {
               </div>
             </div>
           </DetailLayout>
-
+          <br />
+          <DetailLayout
+            title="Trạng thái của sản phẩm"
+            icon-type="fa"
+            icon="fa-solid fa-check-double"
+          >
+            <div class="select-box">
+              <label for="status">Trạng thái của sản phẩm</label>
+              <div class="select-box">
+                <select id="status" v-model="product.status">
+                  <option value="active">Đang bán</option>
+                  <option value="inactive">Ẩn</option>
+                  <option value="discontinued">Ngừng kinh doanh</option>
+                </select>
+                <i class="fa-solid fa-chevron-down"></i>
+              </div>
+            </div>
+          </DetailLayout>
           <br />
 
-          <DetailLayout title="Thống kê Review" icon="fa-solid fa-star" iconType="fa">
+          <DetailLayout
+            title="Thống kê Review"
+            icon="fa-solid fa-star"
+            iconType="fa"
+            icon-color="var(--color-20)"
+          >
             <div class="top-info">
               <div class="info-card form start-box">
                 <div class="start">
@@ -683,18 +654,12 @@ const sellingPrice = computed(() => {
       />
     </div>
   </div>
-
-  <DialogForm
-    title="Thêm sản phẩm"
-    :fields="fields"
+  <ProductVariantForm
+    :show-product-options="false"
     :show="showForm"
-    @submit="addProductVariant"
     @close="cancelDialogForm"
-    :errors="error.errors"
-    :general-error="error.general"
-    @clear-error="clearError"
+    @submit="addProductVariant"
   />
-
   <ConfirmDialog
     :show="showConfirm"
     title="Xóa sản phẩm"
@@ -708,13 +673,18 @@ const sellingPrice = computed(() => {
 <style scoped>
 @import '../../../assets/css/detail-form.css';
 @import '../../../assets/css/swtich.css';
+.select-box label {
+  color: var(--color-4);
+  font-weight: 500;
+  margin: 0 0 6px 0;
+}
+
 .detail-row {
   display: grid;
   grid-template-columns: 6fr 4fr;
   gap: 20px;
   align-items: start;
 }
-
 .content-card {
   background: #fff;
   border-radius: 12px;
@@ -799,7 +769,7 @@ const sellingPrice = computed(() => {
 .divider {
   border: none;
   border-top: 2px solid var(--border-gray-2);
-  margin: 20px 0 2px 0;
+  margin: 0 0 2px 0;
 }
 
 .start {
@@ -1024,6 +994,10 @@ const sellingPrice = computed(() => {
   .original-price > div:last-child span {
     font-size: 18px;
     font-weight: 600;
+  }
+
+  .variant-header {
+    gap: 10px;
   }
 }
 
