@@ -43,9 +43,9 @@ watch(
 )
 onMounted(async () => {
   const slug = route.params.slug
-  if (styleStore.style?.slug === slug) {
-    Object.assign(style.value, styleStore.style)
-  }
+  // if (styleStore.style?.slug === slug) {
+  //   Object.assign(style.value, styleStore.style)
+  // }
 
   const data = await styleStore.getBySlug(slug)
 
@@ -64,6 +64,7 @@ const confirmDelete = async () => {
   const res = await styleStore.delete(deleteItem.value._id)
 
   if (res) {
+    styleStore.clearError()
     toastStore.showToast(res.message, 'success')
     closeDelete()
     setTimeout(() => {
@@ -149,7 +150,10 @@ const cancelDelete = () => {
                 class="description"
                 placeholder="Thêm mô tả tả kiểu dáng sản phẩm..."
                 v-model="style.description"
+                maxlength="500"
               ></textarea>
+              <div class="char-count">{{ style.description.length }}/500</div>
+
               <p v-if="errors.description" class="error">{{ errors.description }}</p>
             </div>
           </div>
