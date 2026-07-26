@@ -10,9 +10,18 @@ module.exports = (schema) => {
         req.body.hoverImage = req.files.hoverImage[0].filename;
       }
 
-      if (req.files.images?.length) {
-        req.body.images = req.files.images.map((file) => file.filename);
+      let oldImages = [];
+      if (req.body.images) {
+        oldImages = Array.isArray(req.body.images)
+          ? req.body.images
+          : [req.body.images];
       }
+
+      const newImages = req.files?.images
+        ? req.files.images.map((file) => file.path.replaceAll("\\", "/"))
+        : [];
+
+      req.body.images = [...oldImages, ...newImages];
     }
 
     const { error } = schema.validate(req.body, {
