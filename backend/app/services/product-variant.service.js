@@ -104,18 +104,25 @@ class ProductVariantService {
 
     // update images
     if (files?.mainImage) {
-      proVari.mainImage = files.mainImage[0].path.replace(/\\/g, "/");
+      proVari.mainImage = files.mainImage[0].path.replaceAll("\\", "/");
     }
 
     if (files?.hoverImage) {
-      proVari.hoverImage = files.hoverImage[0].path.replace(/\\/g, "/");
+      proVari.hoverImage = files.hoverImage[0].path.replaceAll("\\", "/");
+    }
+    // payload.images đã chứa cả ảnh cũ và ảnh mới
+    let images = [];
+    if (payload.images) {
+      images = Array.isArray(payload.images)
+        ? payload.images
+        : [payload.images];
     }
 
-    if (files?.images) {
-      if (files.images.length > 10) throw ErrorCode.MAX_IMAGES();
-
-      proVari.images = files.images.map((f) => f.path.replace(/\\/g, "/"));
+    if (images.length > 10) {
+      throw ErrorCode.MAX_IMAGES();
     }
+
+    proVari.images = images;
 
     updateFields(proVari, payload, [
       "product",
@@ -129,7 +136,11 @@ class ProductVariantService {
     // DELETE OLD FILES AFTER SUCCESS
     if (files?.mainImage) deleteImage(oldFiles.mainImage);
     if (files?.hoverImage) deleteImage(oldFiles.hoverImage);
-    if (files?.images) oldFiles.images.forEach(deleteImage);
+    const deletedImages = oldFiles.images.filter(
+      (img) => !proVari.images.includes(img),
+    );
+
+    deletedImages.forEach(deleteImage);
 
     return await this.getById(proVari._id);
   }
@@ -151,7 +162,7 @@ class ProductVariantService {
     return await ProductVariant.aggregate([
       {
         $match: {
-          status: { $ne: "inactive" },
+          status: { $ne: "discontinued" },
         },
       },
 
