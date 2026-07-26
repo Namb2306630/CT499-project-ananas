@@ -37,9 +37,9 @@ onMounted(async () => {
   try {
     const slug = route.params.slug
 
-    if (productTypeStore.productType?.slug === slug) {
-      Object.assign(productType.value, productTypeStore.productType)
-    }
+    // if (productTypeStore.productType?.slug === slug) {
+    //   Object.assign(productType.value, productTypeStore.productType)
+    // }
     const data = await productTypeStore.getBySlug(slug)
 
     //thêm dữ liệu và productLine
@@ -57,7 +57,8 @@ const confirmDelete = async () => {
 
   const res = await productTypeStore.delete(deleteItem.value._id)
 
-  if (res) {
+  if (res?.code === 200) {
+    productTypeStore.clearError()
     toastStore.showToast(res.message, 'success')
     closeDelete()
     setTimeout(() => {
@@ -86,6 +87,7 @@ const saveProductType = async () => {
   const res = await productTypeStore.update(productType.value._id, productType.value)
 
   if (res?.code === 200) {
+    errors.value = {}
     productTypeStore.clearError()
     toastStore.showToast(res.message, 'success')
     setTimeout(() => {
@@ -147,9 +149,12 @@ const cancelDelete = () => {
                 id="description"
                 v-model="productType.description"
                 rows="5"
+                maxlength="500"
                 class="description"
                 placeholder="Thêm mô tả cho loại sản phẩm..."
               ></textarea>
+              <div class="char-count">{{ productType.description.length }}/500</div>
+
               <p v-if="errors.description" class="p-0 m-0 error">
                 {{ errors.description }}
               </p>

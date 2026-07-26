@@ -35,9 +35,9 @@ const collection = ref({
 onMounted(async () => {
   try {
     const slug = route.params.slug
-    if (collectionStore.collection?.slug == slug) {
-      Object.assign(collection.value, collectionStore.collection)
-    }
+    // if (collectionStore.collection?.slug == slug) {
+    //   Object.assign(collection.value, collectionStore.collection)
+    // }
     const data = await collectionStore.getBySlug(slug)
 
     Object.assign(collection.value, data)
@@ -62,6 +62,8 @@ const confirmDelete = async () => {
   const res = await collectionStore.delete(deleteItem.value._id)
 
   if (res?.code === 200) {
+    error.value = {}
+    collectionStore.clearError()
     toastStore.showToast(res.message, 'success')
     closeDelete()
     setTimeout(() => {
@@ -81,6 +83,7 @@ const saveCollection = async () => {
   const res = await collectionStore.update(collection.value._id, collection.value)
 
   if (res?.code === 200) {
+    errors.value = {}
     collectionStore.clearError()
     toastStore.showToast(res.message, 'success')
     setTimeout(() => {
@@ -142,9 +145,12 @@ const cancelDelete = () => {
                 id="description"
                 v-model="collection.description"
                 rows="5"
+                maxlength="500"
                 class="description"
                 placeholder="Thêm mô tả cho bộ sưu tập..."
               ></textarea>
+              <div class="char-count">{{ collection.description.length }}/500</div>
+
               <p v-if="errors.description" class="error">
                 {{ errors.description }}
               </p>

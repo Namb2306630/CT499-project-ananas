@@ -30,7 +30,8 @@ const confirmDelete = async () => {
 
   const res = await productLineStore.delete(deleteItem.value._id)
 
-  if (res) {
+  if (res?.code === 200) {
+    productLineStore.clearError()
     toastStore.showToast(res.message, 'success')
     closeDelete()
     setTimeout(() => {
@@ -63,9 +64,9 @@ onMounted(async () => {
     await brandStore.fetchAdminBrands()
     const slug = route.params.slug
 
-    if (productLineStore.productLine?.slug === slug) {
-      Object.assign(productLine.value, productLineStore.productLine)
-    }
+    // if (productLineStore.productLine?.slug === slug) {
+    //   Object.assign(productLine.value, productLineStore.productLine)
+    // }
     const data = await productLineStore.getBySlug(slug)
 
     //thêm dữ liệu và productLine
@@ -92,6 +93,7 @@ const saveProductLine = async () => {
   const res = await productLineStore.update(productLine.value._id, productLine.value)
 
   if (res?.code === 200) {
+    errors.value = {}
     productLineStore.clearError()
     toastStore.showToast(res.message, 'success')
     setTimeout(() => {
@@ -169,9 +171,12 @@ const cancelDelete = () => {
                 id="description"
                 v-model="productLine.description"
                 rows="5"
+                maxlength="500"
                 class="description"
                 placeholder="Thêm mô tả cho dòng sản phẩm..."
               ></textarea>
+              <div class="char-count">{{ productLine.description.length }}/500</div>
+
               <p v-if="errors.description" class="p-0 m-0 error">
                 {{ errors.description }}
               </p>
