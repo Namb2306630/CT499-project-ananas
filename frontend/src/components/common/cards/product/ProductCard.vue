@@ -50,7 +50,7 @@ const calculateOriginalPrice = (sellingPrice, discountPercent) => {
       </div>
 
       <div class="product-info">
-        <span>{{ item.productType?.name }}</span>
+        <span class="product-type">{{ item.productType?.name }}</span>
         <span class="gender-box">{{ PRODUCT_GENDER[item.gender]?.label }}</span>
       </div>
 
@@ -74,7 +74,9 @@ const calculateOriginalPrice = (sellingPrice, discountPercent) => {
         </div>
         <div class="price cost-price">
           <p>Giá vốn</p>
-          <span>{{ formatCurrency(item.costPrice, systemConfig.currency) }}</span>
+          <span class="font-weight-bold">{{
+            formatCurrency(item.costPrice, systemConfig.currency)
+          }}</span>
         </div>
       </div>
 
@@ -138,7 +140,6 @@ const calculateOriginalPrice = (sellingPrice, discountPercent) => {
   padding: 4px 10px;
   border-radius: 20px;
   font-size: 12px;
-  font-weight: 600;
 }
 
 .product-info {
@@ -146,6 +147,13 @@ const calculateOriginalPrice = (sellingPrice, discountPercent) => {
   justify-content: start;
   align-items: center;
   gap: 10px;
+}
+
+.product-type {
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .product-info span {
@@ -162,7 +170,7 @@ const calculateOriginalPrice = (sellingPrice, discountPercent) => {
 
 .product-status {
   padding: 5px 12px;
-  border-radius: 20px;
+  border-radius: 10px 0 0 0;
   color: #fff;
   font-size: 12px;
   font-weight: 600;
@@ -182,9 +190,8 @@ const calculateOriginalPrice = (sellingPrice, discountPercent) => {
 
 .product-badges {
   position: absolute;
-  top: 20px;
-  right: 10px;
-
+  top: 15px;
+  right: -10px;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -193,9 +200,12 @@ const calculateOriginalPrice = (sellingPrice, discountPercent) => {
 .price-box {
   display: flex;
   justify-content: space-between;
-  align-items: center;
 }
-.selling-price span {
+.selling-price {
+  display: flex;
+  flex-direction: column;
+}
+.selling-price .current-price {
   color: var(--color-bule);
   font-weight: bold;
   font-size: 20px;
