@@ -47,7 +47,7 @@ const emit = defineEmits(['delete'])
 
 .header-container {
   border-bottom: 1px solid var(--border-gray-3);
-  padding: 20px 0;
+  padding: 0 0 10px 0;
 }
 
 .delete-btn {
@@ -102,6 +102,10 @@ const emit = defineEmits(['delete'])
 @media (max-width: 767px) {
   .header-detail {
     padding: 0;
+    gap: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
 
   .header-container {
