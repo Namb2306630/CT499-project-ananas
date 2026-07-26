@@ -13,9 +13,9 @@ export const useCategoryStore = defineStore('category', {
     },
   }),
 
-  persist: {
-    paths: ['categories', 'category'], // những biến nào trong state được lưu lại thay vì lưu toàn bộ
-  },
+  // persist: {
+  //   paths: ['categories'], // những biến nào trong state được lưu lại thay vì lưu toàn bộ
+  // },
 
   actions: {
     clearError() {

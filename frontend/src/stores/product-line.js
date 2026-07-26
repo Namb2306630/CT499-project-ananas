@@ -13,9 +13,9 @@ export const useProductLineStore = defineStore('product-line', {
       errors: {},
     },
   }),
-  persist: {
-    paths: ['productLines', 'productLine'], // những biến nào trong state được lưu lại thay vì lưu toàn bộ
-  },
+  // persist: {
+  //   paths: ['productLines'], // những biến nào trong state được lưu lại thay vì lưu toàn bộ
+  // },
 
   actions: {
     clearError() {

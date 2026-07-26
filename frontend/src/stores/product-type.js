@@ -13,9 +13,9 @@ export const useProductType = defineStore('product-types', {
       errors: {},
     },
   }),
-  persist: {
-    paths: ['productTypes', 'productType'], // những biến nào trong state được lưu lại thay vì lưu toàn bộ
-  },
+  // persist: {
+  //   paths: ['productTypes'], // những biến nào trong state được lưu lại thay vì lưu toàn bộ
+  // },
   actions: {
     clearError() {
       this.error = {

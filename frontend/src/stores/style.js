@@ -13,9 +13,9 @@ export const useStyleStore = defineStore('style', {
       general: '',
     },
   }),
-  persist: {
-    paths: ['styles', 'style'], // những biến nào trong state được lưu lại thay vì lưu toàn bộ
-  },
+  // persist: {
+  //   paths: ['styles'], // những biến nào trong state được lưu lại thay vì lưu toàn bộ
+  // },
   actions: {
     clearError() {
       this.error = {

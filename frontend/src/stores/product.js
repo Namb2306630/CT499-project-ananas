@@ -20,9 +20,9 @@ export const useProductStore = defineStore('product', {
       errors: {},
     },
   }),
-  persist: {
-    paths: ['products', 'product'],
-  },
+  // persist: {
+  //   paths: ['products', 'pagination'],
+  // },
   actions: {
     clearError() {
       this.error = {
@@ -52,7 +52,7 @@ export const useProductStore = defineStore('product', {
       try {
         this.clearError()
         const res = await ProductService.update(id, data)
-
+        console.log(res.data.result)
         const index = this.products.findIndex((item) => item._id === id)
 
         this.products[index] = res.data.result
@@ -160,5 +160,32 @@ export const useProductStore = defineStore('product', {
         }
       }
     },
+
+    // async fetchForAdminSWR(page = 1) {
+    //   try {
+    //     this.clearError()
+
+    //     // 1. Nếu đã có cache thì không cần clear
+    //     // giữ nguyên products để render trước
+
+    //     // 2. gọi BE lấy data mới
+    //     const res = await ProductService.fetchForAdmin(page)
+
+    //     const products = res.data.result.products
+
+    //     // 3. cập nhật data mới
+    //     this.products = Array.isArray(products) ? products : []
+
+    //     this.pagination = res.data.result.pagination
+    //   } catch (error) {
+    //     const data = error.response?.data
+
+    //     this.error = {
+    //       code: data?.code || 500,
+    //       general: data?.message || 'Lỗi lấy danh sách sản phẩm!',
+    //       errors: data?.errors || {},
+    //     }
+    //   }
+    // },
   },
 })

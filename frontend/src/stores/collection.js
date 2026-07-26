@@ -14,9 +14,9 @@ export const useCollectionStore = defineStore('collecions', {
     },
   }),
 
-  persist: {
-    paths: ['collections', 'collection'],
-  },
+  // persist: {
+  //   paths: ['collections'],
+  // },
   actions: {
     clearError() {
       this.error = {

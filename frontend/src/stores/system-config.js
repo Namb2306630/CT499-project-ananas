@@ -11,9 +11,6 @@ export const useSystemConfigStore = defineStore('system-config', {
       general: '',
     },
   }),
-  persist: {
-    paths: ['systemConfig'],
-  },
   actions: {
     clearError() {
       this.error = {

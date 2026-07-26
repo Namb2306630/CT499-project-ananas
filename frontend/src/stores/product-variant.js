@@ -13,9 +13,9 @@ export const useProductVariant = defineStore('product-variants', {
       errors: {},
     },
   }),
-  persist: {
-    paths: ['productVariants', 'productVariant'], // những biến nào trong state được lưu lại thay vì lưu toàn bộ
-  },
+  // persist: {
+  //   paths: ['productVariants'], // những biến nào trong state được lưu lại thay vì lưu toàn bộ
+  // },
 
   actions: {
     clearError() {

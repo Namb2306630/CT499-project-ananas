@@ -14,9 +14,9 @@ export const useBrandStore = defineStore('brand', {
     },
   }),
 
-  persist: {
-    paths: ['brands', 'brand'], // những biến nào trong state được lưu lại thay vì lưu toàn bộ
-  },
+  // persist: {
+  //   paths: ['brands'], // những biến nào trong state được lưu lại thay vì lưu toàn bộ
+  // },
 
   actions: {
     clearError() {
