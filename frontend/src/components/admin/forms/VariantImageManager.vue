@@ -24,6 +24,14 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
+  titleMainImage: {
+    type: String,
+    default: '',
+  },
+  titleHoverImage: {
+    type: String,
+    default: '',
+  },
 })
 const emit = defineEmits(['update:modelValue'])
 const images = ref([])
@@ -41,9 +49,11 @@ watch(
   () => variant.value.images,
   (value = []) => {
     images.value = value.map((item) => {
+      //file user gửi lên
       if (item instanceof File) {
         return {
           file: item,
+          // dùng để tạo url ảo đẻ hiện ảnh lên
           url: URL.createObjectURL(item),
         }
       }
@@ -55,6 +65,7 @@ watch(
     })
   },
   {
+    //sẽ chạy ngay khi component được tạo.
     immediate: true,
   },
 )
@@ -82,6 +93,7 @@ const uploadImages = (e) => {
     valid.push({
       file,
       url: URL.createObjectURL(file),
+      //Browser tạo ra một URL tạm để hiệ ra ở giao diện
     })
   })
 
@@ -113,6 +125,7 @@ const removeImage = (index) => {
     <div class="upload-box">
       <div class="image-upload-row">
         <div class="image-upload-item">
+          <p v-if="titleMainImage !== ''" class="ml-1 title-image">{{ titleMainImage }}</p>
           <UploadImage
             :model-value="variant.mainImage"
             :show-content-in-image="showContentInImage"
@@ -124,12 +137,15 @@ const removeImage = (index) => {
             :showBGImage="false"
             :show-icon-bg="false"
             :height="height"
+            :width="'100%'"
           />
+
           <p v-if="errors.mainImage" class="error ml-1">
             {{ errors.mainImage }}
           </p>
         </div>
         <div class="image-upload-item">
+          <p v-if="titleHoverImage !== ''" class="ml-1 title-image">{{ titleHoverImage }}</p>
           <UploadImage
             :model-value="variant.hoverImage"
             :show-content-in-image="showContentInImage"
@@ -141,7 +157,9 @@ const removeImage = (index) => {
             :showBGImage="false"
             :show-icon-bg="false"
             :height="height"
+            :width="'100%'"
           />
+
           <p v-if="errors.hoverImage" class="error ml-1">
             {{ errors.hoverImage }}
           </p>
@@ -219,7 +237,8 @@ form {
   display: flex;
   justify-content: center;
   padding: 0;
-  margin: 0;
+  margin: 15px 0 0 0;
+  font-weight: 500;
 }
 
 input {
@@ -256,7 +275,8 @@ label {
   color: var(--text-gray-3);
 }
 .title-images > p:first-child {
-  color: var(--text-gray-3);
+  color: var(--color-4);
+  font-weight: 500;
 }
 
 /* ẢNH CHÍNH */
@@ -334,11 +354,17 @@ label {
   font-size: 10px;
 }
 
+.title-image {
+  padding: 0;
+  margin: 0 0 5px 0;
+  font-weight: 500;
+  color: var(--color-4);
+}
+
 @media (max-width: 767px) {
   .image-upload-row {
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    align-items: stretch;
   }
 }
 </style>
