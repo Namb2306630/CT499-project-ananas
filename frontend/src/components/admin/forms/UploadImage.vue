@@ -217,7 +217,7 @@ const upload = (e) => {
   pointer-events: none;
 }
 
-.upload-box:hover .preview-image {
+.upload-box:hover > .preview-image {
   transform: scale(1.08);
 }
 
