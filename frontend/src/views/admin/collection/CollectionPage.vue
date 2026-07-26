@@ -15,14 +15,14 @@ import CollectionListItem from '@/components/common/lists/collection/CollectionL
 const { showConfirm, deleteItem, openDelete, closeDelete } = useDelete()
 const toastStore = useToastStore()
 const showForm = ref(false)
-const collecionStore = useCollectionStore()
-const { collections, loading, error } = storeToRefs(collecionStore)
+const collectionStore = useCollectionStore()
+const { collections, loading, error } = storeToRefs(collectionStore)
 
 onMounted(async () => {
-  if (collecionStore.collections.length > 0) {
+  if (collectionStore.collections.length > 0) {
     // Không làm gì vì UI đang lấy từ Pinia
   }
-  await collecionStore.fetchForAdmin()
+  await collectionStore.fetchForAdmin()
 })
 defineProps({
   showSidebar: Boolean,
@@ -30,7 +30,7 @@ defineProps({
 
 const openAddForm = () => {
   showForm.value = true
-  collecionStore.clearError()
+  collectionStore.clearError()
 }
 
 const fields = [
@@ -58,15 +58,16 @@ const openEdit = (collecion) => {
 }
 
 const confirmDelete = async () => {
-  const res = await collecionStore.delete(deleteItem.value._id)
+  const res = await collectionStore.delete(deleteItem.value._id)
 
   if (res?.code === 200) {
+    collectionStore.clearError()
     toastStore.showToast(res.message, 'success')
     closeDelete()
   } else {
     const message =
-      Object.values(collecionStore.error.errors)[0] ||
-      collecionStore.error.general ||
+      Object.values(collectionStore.error.errors)[0] ||
+      collectionStore.error.general ||
       'Xóa bộ sưu tập sản phẩm thất bại!'
 
     toastStore.showToast(message, 'error')
@@ -75,15 +76,17 @@ const confirmDelete = async () => {
 }
 
 const addCollection = async (data) => {
-  const res = await collecionStore.create(data)
+  if (!deleteItem.value) return
+  const res = await collectionStore.create(data)
 
   if (res?.code === 200) {
+    collectionStore.clearError()
     showForm.value = false
     toastStore.showToast(res.message, 'success')
   } else {
     const message =
-      Object.values(collecionStore.error.errors)[0] ||
-      collecionStore.error.general ||
+      Object.values(collectionStore.error.errors)[0] ||
+      collectionStore.error.general ||
       'Lỗi thêm dữ liệu bộ sưu tập sản phẩm'
 
     toastStore.showToast(message, 'error')
@@ -149,7 +152,7 @@ const cancelDelete = () => {
     @close="cancelDialogForm"
     :errors="error.errors"
     :general-error="error.general"
-    @clear-error="collecionStore.clearError"
+    @clear-error="collectionStore.clearError"
   />
 
   <ConfirmDialog
