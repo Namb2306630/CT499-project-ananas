@@ -1,5 +1,9 @@
 <script setup>
 defineProps({
+  title: {
+    type: String,
+    default: 'Thống kê',
+  },
   count: {
     type: Number,
     default: 0,
@@ -14,10 +18,26 @@ defineProps({
     type: String,
     default: '',
   },
-
+  titleLists: {
+    type: String,
+    default: '',
+  },
   lists: {
     type: Array,
     default: () => [],
+  },
+  icon: {
+    type: String,
+    default: 'fa-solid fa-diagram-project',
+  },
+
+  iconType: {
+    type: String,
+    default: 'fa', // material | fa
+  },
+  iconColor: {
+    type: String,
+    default: 'var(--color-bule)',
   },
 })
 
@@ -30,49 +50,74 @@ const formatDate = (date) => {
 
 <template>
   <div class="card stats">
-    <div class="count">
-      <p class="p-0 m-0 label">
-        {{ countLabel }}
-      </p>
+    <div class="card-header">
+      <!-- Material -->
+      <span
+        v-if="iconType === 'material'"
+        class="material-symbols-outlined"
+        :style="{ color: iconColor }"
+      >
+        {{ icon }}
+      </span>
 
-      <b>
-        {{ count }}
-      </b>
+      <!-- FontAwesome -->
+      <i
+        v-else-if="iconType === 'fa'"
+        :class="icon"
+        class="iconI"
+        :style="{ color: iconColor }"
+      ></i>
+      <p>{{ title }}</p>
     </div>
-    <template v-if="lists.length">
-      <div class="product-lines">
-        <p class="label p-0 m-0">Dòng sản phẩm</p>
+    <div class="content-box">
+      <div class="count">
+        <p class="p-0 m-0 label">
+          {{ countLabel }}
+        </p>
 
-        <div class="tags">
-          <span v-for="list in lists" :key="list._id" class="tag">
-            {{ list.name }}
-          </span>
-        </div>
+        <b>
+          {{ count }}
+        </b>
       </div>
-    </template>
+      <template v-if="lists.length">
+        <div class="product-lines">
+          <p class="label p-0 m-0">{{ titleLists }}</p>
 
-    <div class="time">
-      <p class="p-0 m-0 label">Tạo lúc</p>
+          <div class="tags">
+            <span v-for="list in lists" :key="list._id" class="tag">
+              {{ list.name }}
+            </span>
+          </div>
+        </div>
+      </template>
 
-      <b>
-        {{ formatDate(createdAt) }}
-      </b>
+      <div class="time">
+        <p class="p-0 m-0 label">Tạo lúc</p>
+
+        <b>
+          {{ formatDate(createdAt) }}
+        </b>
+      </div>
     </div>
   </div>
 </template>
 
 <style scoped>
+@import '../../../assets/css/detail-card.css';
 .card {
-  padding: 20px;
   border-radius: 12px;
   box-shadow: var(--shadow-gray);
   background: white;
 }
 
+.product-lines {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border-gray-2);
+}
+
 .stats {
   display: flex;
   flex-direction: column;
-  gap: 20px;
 }
 
 .tags {
@@ -99,6 +144,8 @@ const formatDate = (date) => {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border-gray-2);
 }
 
 .count b {
@@ -113,7 +160,6 @@ const formatDate = (date) => {
   justify-content: space-between;
   align-items: center;
   padding-top: 16px;
-  border-top: 1px solid var(--border-gray-2);
 }
 .label {
   color: var(--text-gray-3);
