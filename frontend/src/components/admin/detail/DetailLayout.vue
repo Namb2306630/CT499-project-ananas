@@ -4,6 +4,10 @@ defineProps({
     type: String,
     default: 'Thông tin cơ bản',
   },
+  sizeTitle: {
+    type: String,
+    default: '24px',
+  },
   icon: {
     type: String,
     default: 'info',
@@ -13,6 +17,10 @@ defineProps({
     type: String,
     default: 'material', // material | fa
   },
+  iconColor: {
+    type: String,
+    default: 'var(--color-bule)',
+  },
 })
 </script>
 
@@ -20,14 +28,23 @@ defineProps({
   <div class="basic-info-card">
     <div class="card-header">
       <!-- Material -->
-      <span v-if="iconType === 'material'" class="material-symbols-outlined">
+      <span
+        v-if="iconType === 'material'"
+        class="material-symbols-outlined"
+        :style="{ color: iconColor }"
+      >
         {{ icon }}
       </span>
 
       <!-- FontAwesome -->
-      <i v-else-if="iconType === 'fa'" :class="icon" class="iconI"></i>
+      <i
+        v-else-if="iconType === 'fa'"
+        :class="icon"
+        class="iconI"
+        :style="{ color: iconColor }"
+      ></i>
 
-      <h3>{{ title }}</h3>
+      <p :style="{ fontSize: sizeTitle }">{{ title }}</p>
     </div>
 
     <div class="info-card-1">
@@ -53,35 +70,24 @@ defineProps({
   gap: 10px;
 }
 
+.card-header p {
+  margin: 0;
+  font-weight: 700;
+  color: var(--text-gray-4);
+}
+
 .card-header span {
-  color: var(--color-bule);
   font-size: 25px;
-  /* border-left: 4px solid var(--color-bule);
-  padding-left: 12px; */
 }
 
 .card-header .fa-solid {
   font-size: 20px;
   padding-left: 12px;
-  color: rgb(230, 230, 20);
   margin-right: 13px;
-}
-
-.card-header h3 {
-  margin: 0;
-  font-size: 24px;
-  font-weight: 700;
-  color: var(--text-gray-4);
 }
 
 .info-card-1 {
   padding: 10px 30px 30px 30px;
-}
-
-.iconI {
-  padding: 0;
-  margin: 0;
-  display: flex;
-  justify-content: start;
+  margin-top: 0;
 }
 </style>
