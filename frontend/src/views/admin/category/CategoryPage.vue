@@ -76,6 +76,7 @@ const saveCategory = async (data) => {
   result = await categoryStore.createCategories(data)
 
   if (result?.code === 200) {
+    categoryStore.clearError()
     showForm.value = false
 
     toastStore.showToast(result.message, 'success')
@@ -92,8 +93,10 @@ const saveCategory = async (data) => {
 }
 
 const confirmDelete = async () => {
+  if (!deleteItem.value) return
   const result = await categoryStore.deleteCategory(deleteItem.value._id)
-  if (result) {
+  if (result?.code === 200) {
+    categoryStore.clearError()
     toastStore.showToast(result.message, 'success')
     closeDelete()
   } else {
