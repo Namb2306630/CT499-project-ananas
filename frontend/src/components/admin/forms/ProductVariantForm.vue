@@ -19,6 +19,11 @@ const props = defineProps({
     type: String,
     default: '',
   },
+
+  showProductOptions: {
+    type: Boolean,
+    default: true,
+  },
 })
 
 const productStore = useProductStore()
@@ -106,11 +111,12 @@ const closeDialog = () => {
             v-model="formData._id"
             type="text"
             placeholder="Nhập mã sản phẩm"
+            maxlength="7"
           />
           <p v-if="errors._id" class="error">{{ errors._id }}</p>
         </div>
 
-        <div class="form-group">
+        <div v-if="props.showProductOptions" class="form-group">
           <label for="product">Chọn sản phẩm</label>
           <div class="select-box">
             <select id="product" v-model="formData.product">
@@ -133,6 +139,7 @@ const closeDialog = () => {
             type="text"
             name=""
             id="colorName"
+            maxlength="50"
             placeholder="Màu của sản phẩm"
           />
           <p v-if="errors.colorName" class="error">{{ errors.colorName }}</p>
@@ -151,6 +158,7 @@ const closeDialog = () => {
               v-model="formData.colorCode"
               @input="updateColor"
               placeholder="#000000"
+              maxlength="7"
             />
             <p v-if="errors.colorCode" class="error">{{ errors.colorCode }}</p>
           </div>
@@ -191,7 +199,6 @@ form {
 
 .form-group {
   flex: 1;
-  margin: 0;
 }
 
 .form-group > .hint {
