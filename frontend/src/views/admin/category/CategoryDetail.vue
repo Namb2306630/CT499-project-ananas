@@ -39,10 +39,10 @@ onMounted(async () => {
   try {
     const slug = route.params.slug
     await categoryStore.fetchCategories()
-    if (categoryStore.category?.slug === slug) {
-      Object.assign(category.value, categoryStore.category)
-    }
-    const data = await categoryStore.getCategoryBySlug(route.params.slug)
+    // if (categoryStore.category?.slug === slug) {
+    //   Object.assign(category.value, categoryStore.category)
+    // }
+    const data = await categoryStore.getCategoryBySlug(slug)
 
     Object.assign(category.value, data)
 
@@ -72,6 +72,7 @@ const handleUpload = (image) => {
 const saveCategory = async () => {
   const result = await categoryStore.updateCategory(category.value._id, category.value)
   if (result?.code === 200) {
+    categoryStore.clearError()
     errors.value = {}
     toastStore.showToast(result.message, 'success')
     setTimeout(() => {
@@ -94,7 +95,8 @@ const parentCategories = computed(() => {
 const confirmDelete = async () => {
   if (!deleteItem.value) return
   const result = await categoryStore.deleteCategory(deleteItem.value._id)
-  if (result) {
+  if (result?.code === 200) {
+    categoryStore.clearError()
     toastStore.showToast('Xóa danh mục thành công', 'success')
     closeDelete()
     setTimeout(() => {
