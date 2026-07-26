@@ -78,6 +78,7 @@ main {
   width: 100%;
   max-width: 1200px;
   min-width: 0;
+  position: relative;
 }
 
 .main-wrapper.full {
