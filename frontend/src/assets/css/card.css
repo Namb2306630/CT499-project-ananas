@@ -87,24 +87,28 @@
 .success {
   background: var(--bg-color-green-2);
   color: var(--text-green);
+  font-weight: bold;
 }
 
-/* ngừng hoạt động */
+/* ngừng hoạt động (ẩn với người dùng) */
 .inactive {
-  background: var(--bg-color-gray-2);
+  background: var(--color-21);
   color: var(--text-gray-2);
+  font-weight: bold;
 }
 
 /* hết hàngf */
 .warning {
   background: var(--color-16);
   color: var(--color-17);
+  font-weight: bold;
 }
 
 /* ngừng kinh doanh */
 .danger {
   background: var(--color-18);
   color: var(--color-19);
+  font-weight: bold;
 }
 
 .discontinued {
