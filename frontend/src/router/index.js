@@ -33,7 +33,7 @@ import ProductVariantDetail from '@/views/admin/product-variant/ProductVariantDe
 import CollectionDetail from '@/views/admin/collection/CollectionDetail.vue'
 
 //notfound
-import NotFoundPage from '@/views/NotFoundPage.vue'
+import NotFoundPage from '@/components/common/NotFoundPage.vue'
 
 //
 import { useAuthStore } from '@/stores/auth'
