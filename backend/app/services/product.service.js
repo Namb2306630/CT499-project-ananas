@@ -139,7 +139,6 @@ class ProductService {
 
       const basePrice = calculateBasePrice({
         costPrice: payload.costPrice,
-        // vatPercent: system.vatPercent,
         operatingCostPercent: system.operatingCostPercent,
         profitPercent: system.profitPercent,
       });
@@ -157,7 +156,6 @@ class ProductService {
         ...validated,
         name,
         slug,
-        basePrice,
         originalPrice,
         sellingPrice,
         isSale,
@@ -229,7 +227,6 @@ class ProductService {
       "defaultVariant",
       "status",
     ]);
-
     // Nếu thay đổi thông tin tạo tên thì sinh lại name + slug
     if (
       payload.productLine !== undefined ||
@@ -265,14 +262,14 @@ class ProductService {
     let newBasePrice = product.basePrice;
 
     if (costPrice !== undefined) {
+      product.costPrice = costPrice;
       newBasePrice = calculateBasePrice({
         costPrice,
-        vatPercent: system.vatPercent,
         operatingCostPercent: system.operatingCostPercent,
         profitPercent: system.profitPercent,
       });
 
-      product.basePrice = newBasePrice;
+      //giá sau khi giảm
       product.originalPrice = newBasePrice;
     }
 
@@ -319,6 +316,11 @@ class ProductService {
 
     const [products, total] = await Promise.all([
       Product.aggregate([
+        {
+          $match: {
+            status: { $ne: "discontinued" },
+          },
+        },
         {
           $lookup: {
             from: "productvariants",
@@ -487,7 +489,7 @@ class ProductService {
       {
         $match: {
           slug,
-          status: "active",
+          status: { $ne: "discontinued" },
         },
       },
 
@@ -581,7 +583,6 @@ class ProductService {
           preserveNullAndEmptyArrays: true,
         },
       },
-
       // Product Collection
       {
         $lookup: {
@@ -711,8 +712,12 @@ class ProductService {
               0,
             ],
           },
+          defaultVariant: {
+            $ifNull: ["$defaultVariant", null],
+          },
         },
       },
+
       {
         $project: {
           _id: 1,
