@@ -52,9 +52,9 @@ onMounted(async () => {
     const slug = route.params.slug
 
     //kt dữ liệu có trong pinia chưa
-    if (brandStore.brand?.slug === slug) {
-      Object.assign(brand.value, brandStore.brand)
-    }
+    // if (brandStore.brand?.slug === slug) {
+    //   Object.assign(brand.value, brandStore.brand)
+    // }
 
     const data = await brandStore.getBySlug(slug)
 
@@ -73,6 +73,7 @@ const saveBrand = async () => {
   const res = await brandStore.updateBrand(brand.value._id, brand.value)
 
   if (res?.code === 200) {
+    brandStore.clearError()
     errors.value = {}
     toastStore.showToast(res.message, 'success')
     setTimeout(() => {
@@ -92,7 +93,8 @@ const confirmDelete = async () => {
   if (!deleteItem.value) return
   const res = await brandStore.delete(deleteItem.value._id)
 
-  if (res) {
+  if (res?.code === 200) {
+    brandStore.clearError()
     toastStore.showToast('Xóa thương hiệu sản phẩm thành công', 'success')
     closeDelete()
     setTimeout(() => {
@@ -162,9 +164,10 @@ const cancelDelete = () => {
                 v-model="brand.description"
                 rows="5"
                 class="description"
+                maxlength="500"
                 placeholder="Thêm mô tả cho thương hiệu..."
               ></textarea>
-
+              <div class="char-count">{{ brand.description.length }}/500</div>
               <p v-if="errors.description" class="p-0 m-0 error">
                 {{ errors.description }}
               </p>
@@ -179,6 +182,7 @@ const cancelDelete = () => {
           :created-at="brand.createdAt"
           count-label="Dòng sản phẩm hiện có"
           :lists="brand.productLines"
+          title-lists="Dòng sản phẩm"
         />
 
         <DetailStatus
