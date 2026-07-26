@@ -64,8 +64,10 @@ const fields = [
 ]
 
 const confirmDelete = async () => {
+  if(!deleteItem.value) return
   const res = await productLineStore.delete(deleteItem.value._id)
-  if (res) {
+  if (res?.code === 200) {
+    clearError()
     toastStore.showToast(res.message, 'success')
     closeDelete()
   } else {
@@ -96,6 +98,7 @@ const save = async (data) => {
   const result = await productLineStore.create(data)
 
   if (result?.code === 200) {
+    clearError()
     showForm.value = false
     toastStore.showToast(result.message, 'success')
   } else {
