@@ -107,9 +107,9 @@ const closeDialog = () => {
           </div>
 
           <div class="form-group remove-group">
-            <label>&nbsp;</label>
+            <label for="remove-btn">Xóa</label>
 
-            <button type="button" class="remove-btn" @click="removeSize(index)">
+            <button id="remove-btn" type="button" class="remove-btn" @click="removeSize(index)">
               <i class="fa-solid fa-trash"></i>
             </button>
           </div>
