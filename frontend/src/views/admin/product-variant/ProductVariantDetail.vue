@@ -11,6 +11,9 @@ import { useDelete } from '@/composables/useDelete'
 import ConfirmDialog from '@/components/common/ConfirmDialog.vue'
 import DetailLayout from '@/components/admin/detail/DetailLayout.vue'
 import VariantImageManager from '@/components/admin/forms/VariantImageManager.vue'
+import DetailActions from '@/components/admin/detail/DetailActions.vue'
+import DetailStats from '@/components/admin/detail/DetailStats.vue'
+import DetailStatus from '@/components/admin/detail/DetailStatus.vue'
 const productVariantStore = useProductVariant()
 const productStore = useProductStore()
 const toastStore = useToastStore()
@@ -22,6 +25,7 @@ const route = useRoute()
 const router = useRouter()
 const productVariant = ref({
   _id: '',
+  product: '',
   colorName: '',
   colorCode: '',
   mainImage: '',
@@ -37,13 +41,16 @@ onMounted(async () => {
   try {
     const id = route.params.id
 
-    if (productVariantStore.productVariant?.id === id) {
-      Object.assign(productVariant.value, productVariantStore.productVariant)
-    }
+    // if (productVariantStore.productVariant?.id === id) {
+    //   Object.assign(productVariant.value, productVariantStore.productVariant)
+    // }
 
     const data = await productVariantStore.getById(id)
     await productStore.fetchOptions()
-    Object.assign(productVariant.value, data)
+    Object.assign(productVariant.value, {
+      ...data,
+      product: data.product?._id || '',
+    })
   } catch (error) {
     toastStore.showToast(error.general, 'error')
     router.replace({ name: ROUTE_NAMES.PRODUCT_VARIANTS })
@@ -56,12 +63,54 @@ const cancelDelete = () => {
   closeDelete()
   toastStore.showToast('Đã hủy thay đổi', 'warning')
 }
+const confirmDelete = async () => {
+  if (!deleteItem.value) return
+
+  const res = await productVariantStore.delete(deleteItem.value._id)
+
+  if (res?.code === 200) {
+    productVariantStore.clearError()
+    toastStore.showToast(res.message, 'success')
+    closeDelete()
+    setTimeout(() => {
+      router.back()
+    }, 500)
+  } else {
+    const message =
+      Object.values(productVariantStore.error.errors)[0] ||
+      productVariantStore.error.general ||
+      'Xóa biến thể sản phẩm thất bại!'
+
+    toastStore.showToast(message, 'error')
+    closeDelete()
+  }
+}
+
 const cancelEdit = () => {
   toastStore.showToast('Đã hủy thay đổi', 'warning')
 
   setTimeout(() => {
     router.back()
   }, 300)
+}
+
+const saveProductVariant = async () => {
+  const res = await productVariantStore.update(productVariant.value._id, productVariant.value)
+  if (res?.code === 200) {
+    errors.value = {}
+    productVariantStore.clearError()
+    toastStore.showToast(res.message, 'success')
+    setTimeout(() => {
+      router.back()
+    }, 500)
+  } else {
+    const message =
+      Object.values(productVariantStore.error.errors)[0] ||
+      productVariantStore.error.general ||
+      'Lỗi, không thể câp nhật dữ liệu biến thể sản phẩm!!!'
+
+    toastStore.showToast(message, 'error')
+  }
 }
 
 const colorCodeRef = ref('#000000')
@@ -77,7 +126,11 @@ const updateColor = (e) => {
 </script>
 <template>
   <div v-if="!loading" class="container-detail">
-    <HeaderDetail title-go-back="Chi tiết biến thể sản phẩm" title-delete="Xóa biến thể sản phẩm" />
+    <HeaderDetail
+      title-go-back="Chi tiết biến thể sản phẩm"
+      title-delete="Xóa biến thể sản phẩm"
+      @delete="openDelete(productVariant)"
+    />
     <div class="detail-grid">
       <DetailLayout title="Thông tin cơ bản của biến thể sản phẩm">
         <div class="top-info">
@@ -95,7 +148,7 @@ const updateColor = (e) => {
             <!-- màu -->
             <div class="color-box">
               <div>
-                <label for="colorName" class="mt-0">Màu sản phẩm</label>
+                <label for="colorName">Màu sản phẩm</label>
                 <input
                   type="text"
                   name="colorName"
@@ -122,6 +175,19 @@ const updateColor = (e) => {
                 <p v-if="errors.colorName" class="p-0 m-0 error">{{ errors.colorName }}</p>
               </div>
             </div>
+
+            <!-- select -->
+            <div class="select-box">
+              <label for="product">Sản phẩm</label>
+              <div class="select-box">
+                <select name="product" id="product" v-model="productVariant.product">
+                  <option v-for="item in productOptions" :value="item._id" :key="item._id">
+                    {{ item.name }}
+                  </option>
+                </select>
+                <i class="fa-solid fa-chevron-down"></i>
+              </div>
+            </div>
           </div>
         </div>
       </DetailLayout>
@@ -133,18 +199,49 @@ const updateColor = (e) => {
           :errors="errors"
           height="250px"
           :show-content-in-image="false"
+          title-main-image="Ảnh chính sản phẩm"
+          title-hover-image="Ảnh hover sản phẩm"
         />
       </DetailLayout>
+      <div class="row info-card-2">
+        <DetailStats
+          count-label="Tổng số size:"
+          :count="productVariant.variantItemCount"
+          :created-at="productVariant.createdAt"
+          icon-type="fa"
+          icon="fa-solid fa-diagram-project"
+        />
+        <DetailLayout
+          title="Trạng thái của sản phẩm"
+          icon-type="fa"
+          icon="fa-solid fa-check-double"
+          size-title="20px"
+        >
+          <div class="select-box">
+            <label for="status">Trạng thái của sản phẩm</label>
+            <div class="select-box">
+              <select id="status" v-model="productVariant.status">
+                <option value="active">Đang bán</option>
+                <option value="inactive">Ẩn</option>
+                <option value="out_of_stock">Hết hàng</option>
+                <option value="discontinued">Ngừng kinh doanh</option>
+              </select>
+              <i class="fa-solid fa-chevron-down"></i>
+            </div>
+          </div>
+        </DetailLayout>
+      </div>
     </div>
+    <DetailActions @cancel="cancelEdit" @save="saveProductVariant" />
   </div>
 
   <ConfirmDialog
-    title="Xóa loại sản phẩm"
-    message="Bạn có chắc muốn xóa loại sản phẩm này?"
+    title="Xóa biến thể sản phẩm"
+    message="Bạn có chắc muốn xóa biến thể sản phẩm này?"
     :show="showConfirm"
     @confirm="confirmDelete"
     @cancel="cancelDelete"
-    :name="deleteItem?.name"
+    :name="deleteItem?.displayName"
   />
 </template>
 <style scoped>
@@ -155,6 +252,12 @@ const updateColor = (e) => {
   align-items: center;
   gap: 12px;
   margin-bottom: 15px;
+}
+
+.select-box label {
+  color: var(--color-4);
+  font-weight: 500;
+  margin: 0 0 6px 0;
 }
 
 .color-picker input[type='color'] {
@@ -187,5 +290,23 @@ const updateColor = (e) => {
 
 .color-box > div:last-child {
   flex: 1;
+}
+
+@media (max-width: 767px) {
+  .color-box {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 0px;
+  }
+  .color-box div {
+    width: 100%;
+  }
+
+  .color-box label {
+    padding: 0;
+    margin: 10px 0 0 0;
+  }
 }
 </style>

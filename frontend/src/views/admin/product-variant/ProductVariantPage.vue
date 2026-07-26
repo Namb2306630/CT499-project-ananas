@@ -12,6 +12,7 @@ import router from '@/router'
 import { useProductVariant } from '@/stores/product-variant'
 import { useProductStore } from '@/stores/product'
 import ProductVariantCard from '@/components/common/cards/product-variant/ProductVariantCard.vue'
+import AppLoading from '../../../components/common/LoadingState.vue'
 
 const { showConfirm, deleteItem, openDelete, closeDelete } = useDelete()
 const toastStore = useToastStore()
@@ -19,18 +20,35 @@ const productVariStore = useProductVariant()
 const productStore = useProductStore()
 const { productVariants, error, loading } = storeToRefs(productVariStore)
 const { productOptions } = storeToRefs(productStore)
-
+const pageLoading = ref(true)
 const showForm = ref(false)
 
 const clearError = () => {
   productVariStore.clearError()
 }
+//dùng loading dữ liệu từ local
+// onMounted(async () => {
+//   pageLoading.value = true
+//   try {
+//     const tasks = []
+//     if (productVariStore.productVariants.length === 0) {
+//       tasks.push(productVariStore.fetchForAdmin())
+//     }
+//     tasks.push(productStore.fetchOptions())
+
+//     await Promise.all(tasks)
+//   } finally {
+//     pageLoading.value = false
+//   }
+// })
+
 onMounted(async () => {
-  if ((productVariStore, productVariants.length > 0)) {
-    //
+  pageLoading.value = true
+  try {
+    await Promise.all(productVariStore.fetchForAdmin(), productStore.fetchOptions())
+  } finally {
+    pageLoading.value = false
   }
-  await productVariStore.fetchForAdmin()
-  await productStore.fetchOptions()
 })
 
 const openAddForm = () => {
@@ -42,6 +60,7 @@ const addVariant = async (data) => {
   const res = await productVariStore.create(data)
 
   if (res?.code === 200) {
+    clearError()
     toastStore.showToast(res.message, 'success')
     showForm.value = false
   } else {
@@ -55,11 +74,21 @@ const addVariant = async (data) => {
 }
 
 const confirmDelete = async () => {
+  if (!deleteItem.value) return
   const res = await productVariStore.delete(deleteItem.value._id)
 
-  if (res) {
+  if (res?.code === 200) {
+    clearError()
     toastStore.showToast(res.message, 'success')
     closeDelete()
+  } else {
+    const message =
+      Object.values(productVariStore.error.errors)[0] ||
+      productVariStore.error.general ||
+      'Lỗi không thể xóa biến thể sản phẩm'
+
+    toastStore.showToast(message, 'error')
+    cancelDelete()
   }
 }
 
@@ -83,6 +112,8 @@ const opentEdit = (productVariant) => {
 </script>
 
 <template>
+  <!-- <AppLoading v-if="pageLoading" :loading="pageLoading" :error="productVariStore.error.general" />
+  <div v-else class="admin-container"> -->
   <div class="admin-container">
     <AppAdminPageHeader
       title="Quản Lý Biến Thể Sản Phẩm"
@@ -114,7 +145,7 @@ const opentEdit = (productVariant) => {
     :show="showConfirm"
     title="Xóa biến thể sản phẩm"
     message="Bạn có chắc muốn xóa biến thể sản phẩm này?"
-    :name="deleteItem?.name"
+    :name="deleteItem?.displayName"
     @confirm="confirmDelete"
     @cancel="cancelDelete"
   />
