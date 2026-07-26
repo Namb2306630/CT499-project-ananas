@@ -23,42 +23,68 @@ defineProps({
     type: Array,
     default: () => [],
   },
+  icon: {
+    type: String,
+    default: 'fa-solid fa-check-double',
+  },
+
+  iconType: {
+    type: String,
+    default: 'fa', // material | fa
+  },
+  iconColor: {
+    type: String,
+    default: 'var(--color-bule)',
+  },
 })
 </script>
 
 <template>
   <div class="card status">
-    <h4>{{ title }}</h4>
+    <div class="card-header">
+      <!-- Material -->
+      <span
+        v-if="iconType === 'material'"
+        class="material-symbols-outlined"
+        :style="{ color: iconColor }"
+      >
+        {{ icon }}
+      </span>
 
-    <label class="switch-container">
-      <div class="content">
-        <h5 class="p-0 m-0">
-          {{ label }}
-        </h5>
+      <!-- FontAwesome -->
+      <i
+        v-else-if="iconType === 'fa'"
+        :class="icon"
+        class="iconI"
+        :style="{ color: iconColor }"
+      ></i>
+      <p>{{ title }}</p>
+    </div>
+    <div class="content-box">
+      <label class="switch-container">
+        <div class="content">
+          <h5 class="p-0 m-0">
+            {{ label }}
+          </h5>
 
-        <p class="p-0 m-0 description">
-          {{ description }}
-        </p>
-      </div>
+          <p class="p-0 m-0 description">
+            {{ description }}
+          </p>
+        </div>
 
-      <div class="switch">
-        <input type="checkbox" v-model="model" />
+        <div class="switch">
+          <input type="checkbox" v-model="model" />
 
-        <span class="slider"></span>
-      </div>
-    </label>
+          <span class="slider"></span>
+        </div>
+      </label>
+    </div>
   </div>
 </template>
 
 <style scoped>
 @import '../../../assets/css/swtich.css';
-
-h4 {
-  margin-bottom: 18px;
-  padding-left: 12px;
-  border-left: 4px solid var(--primary-color);
-  font-size: 18px;
-}
+@import '../../../assets/css/detail-card.css';
 
 .switch-container {
   padding: 16px;
@@ -70,7 +96,6 @@ h4 {
   align-items: center;
 }
 .card {
-  padding: 20px;
   border-radius: 12px;
   box-shadow: var(--shadow-gray);
   background: white;
