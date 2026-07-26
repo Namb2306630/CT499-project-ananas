@@ -2,7 +2,9 @@ const Joi = require("joi");
 const REGEX = require("../utils/regex.util");
 
 exports.createProductSchema = Joi.object({
-  description: Joi.string().allow("").optional(),
+  description: Joi.string().allow("").max(500).optional().messages({
+    "string.max": "Mô tả không được vượt quá 500 ký tự",
+  }),
 
   categories: Joi.array()
     .items(Joi.string().pattern(REGEX._ID))
@@ -69,7 +71,9 @@ exports.createProductSchema = Joi.object({
 });
 
 exports.updateProductSchema = Joi.object({
-  description: Joi.string().allow(""),
+  description: Joi.string().allow("").max(500).optional().messages({
+    "string.max": "Mô tả không được vượt quá 500 ký tự",
+  }),
 
   categories: Joi.array().items(Joi.string().pattern(REGEX._ID)).messages({
     "array.base": "Danh mục phải là mảng",

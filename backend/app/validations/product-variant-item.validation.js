@@ -9,10 +9,11 @@ exports.createProductVItem = Joi.object({
     "any.required": "Size sản phẩm là bắt buộc",
     "string.pattern.base": "Size sản phẩm không hợp lệ",
   }),
-  stock: Joi.number().integer().min(0).required().messages({
+  stock: Joi.number().integer().min(0).max(99999).required().messages({
     "any.required": "Stock là bắt buộc",
     "number.base": "Stock phải là số",
     "number.min": "Stock không được âm",
+    "number.max": "Stock quá lớn",
     "number.integer": "Stock phải là số nguyên",
   }),
 });
