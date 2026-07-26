@@ -52,10 +52,14 @@ const fields = [
     placeholder: 'Nhập mô loại sản phẩm',
   },
 ]
-
+const clearError = () => {
+  productTypeStore.clearError()
+}
 const confirmDelete = async () => {
+  if (!deleteItem.value) return
   const res = await productTypeStore.delete(deleteItem.value._id)
-  if (res) {
+  if (res?.code === 200) {
+    clearError()
     toastStore.showToast(res.message, 'success')
     closeDelete()
   } else {
@@ -67,10 +71,6 @@ const confirmDelete = async () => {
     toastStore.showToast(message, 'error')
   }
   closeDelete()
-}
-
-const clearError = () => {
-  productTypeStore.clearError()
 }
 
 const openEdit = (productType) => {
@@ -86,6 +86,7 @@ const save = async (data) => {
   const result = await productTypeStore.create(data)
 
   if (result?.code === 200) {
+    clearError()
     showForm.value = false
     toastStore.showToast(result.message, 'success')
   } else {
