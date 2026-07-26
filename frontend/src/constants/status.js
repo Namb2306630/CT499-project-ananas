@@ -4,8 +4,8 @@ export const PRODUCT_VARIANT_STATUS = {
     class: 'success',
   },
   inactive: {
-    label: 'Ngừng hoạt động',
-    class: 'secondary',
+    label: 'Tạm ngừng',
+    class: 'inactive',
   },
   out_of_stock: {
     label: 'Hết hàng',
@@ -19,7 +19,7 @@ export const PRODUCT_VARIANT_STATUS = {
 
 export const PRODUCT_STATUS = {
   active: { label: 'Đang bán', class: 'active' },
-  inactive: { label: 'Ẩn', class: 'inactive' },
+  inactive: { label: 'Tạm ngừng', class: 'inactive' },
   discontinued: { label: 'Ngừng kinh doanh', class: 'discontinued' },
 }
 
