@@ -19,9 +19,6 @@ export default {
     data.images.forEach((image) => {
       formData.append('images', image)
     })
-    data.images.forEach((image) => {
-      formData.append('images', image)
-    })
 
     return api.post('/admin/product-variants', formData)
   },
@@ -32,6 +29,8 @@ export default {
     formData.append('product', data.product)
     formData.append('colorName', data.colorName)
     formData.append('colorCode', data.colorCode)
+    formData.append('status', data.status)
+
     if (data.mainImage instanceof File) {
       formData.append('mainImage', data.mainImage)
     }
@@ -43,12 +42,9 @@ export default {
     data.images.forEach((image) => {
       formData.append('images', image)
     })
-    formData.append('images', data.images)
-    formData.append('status', data.status)
 
-    return api.put('/admin/product-variants', formData)
+    return api.put(`/admin/product-variants/${id}`, formData)
   },
-
   delete(id) {
     return api.delete(`/admin/product-variants/${id}`)
   },
