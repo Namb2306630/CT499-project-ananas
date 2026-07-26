@@ -83,6 +83,7 @@ watch(
     }
   },
 )
+
 //from dl
 watch(
   () => props.fields,
@@ -185,21 +186,17 @@ const closeDialog = () => {
             :placeholder="field.placeholder"
           />
 
-          <!-- chyển thành
-           MultiSelect
-                :modelValue="categories"
-               @update:modelValue="categories = $event"
-          -->
-
           <!-- input -->
           <input
             :id="formData[field.name]"
             v-if="field.type === 'text'"
             v-model="formData[field.name]"
+            maxlength="100"
             type="text"
             :placeholder="field.placeholder"
           />
 
+          <!-- number -->
           <input
             :id="formData[field.name]"
             v-if="field.type === 'number'"
@@ -216,6 +213,7 @@ const closeDialog = () => {
               v-model="formData[field.name]"
               :type="showPassword[field.name] ? 'text' : 'password'"
               :placeholder="field.placeholder"
+              maxlength="100"
             />
 
             <i
@@ -225,6 +223,7 @@ const closeDialog = () => {
             ></i>
           </div>
 
+          <!-- radio -->
           <div v-if="field.type === 'radio'" class="radio-box">
             <label v-for="item in field.options" :key="item.value">
               <input
@@ -266,15 +265,17 @@ const closeDialog = () => {
             v-if="field.type === 'textarea'"
             v-model="formData[field.name]"
             :placeholder="field.placeholder"
+            maxlength="500"
           ></textarea>
+          <div v-if="field.type === 'textarea'" class="char-count">
+            {{ (formData[field.name] || '').length }}/500
+          </div>
 
           <p v-if="errors?.[field.name]" class="error p-0 m-0">
             {{ errors[field.name] }}
           </p>
         </div>
-        <!-- <p v-if="generalError && Object.keys(errors).length === 0" class="error p-0 m-0">
-          {{ generalError }}
-        </p> -->
+
         <p v-if="generalError" class="error p-0 mt-3 m-0 d-flex justify-content-center">
           {{ generalError }}
         </p>
@@ -291,7 +292,13 @@ const closeDialog = () => {
 
 <style scoped>
 @import '../../../assets/css/dialog.css';
-
+/* số lượng ký tự */
+.char-count {
+  text-align: right;
+  font-size: 13px;
+  color: #888;
+  margin-top: 4px;
+}
 dialog label {
   padding: 0;
   margin: 0;
