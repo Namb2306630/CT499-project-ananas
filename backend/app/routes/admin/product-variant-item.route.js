@@ -14,20 +14,9 @@ const {
 const router = express.Router();
 // router.use(authMiddleware);
 // router.use(roleMiddleware(Role.SUPER_ADMIN));
-router.post(
-  "/",
-  validate(createProductVItem),
-  controller.create,
-);
-router.put(
-  "/:id",
-  validate(updateProductVItem),
-  controller.update,
-);
-router.delete(
-  "/:id",
-  controller.remove,
-);
+router.post("/", validate(createProductVItem), controller.create);
+router.put("/:id", validate(updateProductVItem), controller.update);
+router.delete("/:id", controller.remove);
 router.get("/", controller.getAll);
-router.get("/:id", controller.getById);
+router.get("/:sku", controller.getBySku);
 module.exports = router;

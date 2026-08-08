@@ -41,11 +41,11 @@ exports.update = async (req, res, next) => {
 exports.remove = async (req, res, next) => {
   try {
     const id = req.params.id;
-    await service.remove(id);
+    const data = await service.remove(id);
 
     return ApiResponse.success({
       res,
-      data: true,
+      data,
       message: "Ngừng kinh doanh biến thể sản phẩm thành công",
     });
   } catch (err) {

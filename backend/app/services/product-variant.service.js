@@ -26,7 +26,7 @@ class ProductVariantService {
   }
 
   async create(payload, files) {
-    const { product, colorCode, _id } = payload;
+    const { product, colorCode, colorName, _id } = payload;
 
     const existID = await ProductVariant.findById(_id);
 
@@ -39,15 +39,15 @@ class ProductVariantService {
 
     const exist = await ProductVariant.findOne({
       product,
-      colorCode,
+      $or: [{ colorCode }, { colorName }],
     });
 
     if (!exist) {
       const created = await ProductVariant.create({
         ...payload,
-        mainImage: files.mainImage[0].path.replace(/\\/g, "/"),
-        hoverImage: files.hoverImage[0].path.replace(/\\/g, "/"),
-        images: files.images.map((f) => f.path.replace(/\\/g, "/")),
+        mainImage: files.mainImage[0].path.replaceAll("\\", "/"),
+        hoverImage: files.hoverImage[0].path.replaceAll("\\", "/"),
+        images: files.images.map((f) => f.path.replaceAll("\\", "/")),
       });
       const result = await this.getById(created._id);
       return {
@@ -62,9 +62,9 @@ class ProductVariantService {
       exist.colorName = payload.colorName;
       exist.colorCode = colorCode;
 
-      exist.mainImage = files.mainImage[0].path.replace(/\\/g, "/");
-      exist.hoverImage = files.hoverImage[0].path.replace(/\\/g, "/");
-      exist.images = files.images.map((f) => f.path.replace(/\\/g, "/"));
+      exist.mainImage = files.mainImage[0].path.replaceAll("\\", "/");
+      exist.hoverImage = files.hoverImage[0].path.replaceAll("\\", "/");
+      exist.images = files.images.map((f) => f.path.replaceAll("\\", "/"));
 
       await exist.save();
 
@@ -92,14 +92,18 @@ class ProductVariantService {
     }
 
     // validate color
-    if (payload.colorCode) {
-      const exist = await ProductVariant.findOne({
-        product: payload.product || proVari.product,
-        colorCode: payload.colorCode,
-        _id: { $ne: id },
-      });
+    const product = payload.product ?? proVari.product;
+    const colorCode = payload.colorCode ?? proVari.colorCode;
+    const colorName = payload.colorName ?? proVari.colorName;
 
-      if (exist) throw ErrorCode.PRODUCT_VARI_ALREADY_EXISTS();
+    const exist = await ProductVariant.findOne({
+      product,
+      _id: { $ne: id },
+      $or: [{ colorCode }, { colorName }],
+    });
+
+    if (exist) {
+      throw ErrorCode.PRODUCT_VARI_ALREADY_EXISTS();
     }
 
     // update images
@@ -157,14 +161,15 @@ class ProductVariantService {
 
     proVari.status = "discontinued";
     await proVari.save();
+    return proVari;
   }
   async getAll() {
     return await ProductVariant.aggregate([
-      {
-        $match: {
-          status: { $ne: "discontinued" },
-        },
-      },
+      // {
+      //   $match: {
+      //     status: { $ne: "discontinued" },
+      //   },
+      // },
 
       // join Product
       {
@@ -407,17 +412,24 @@ class ProductVariantService {
   }
 
   async getOptions(productId) {
-    return await ProductVariant.find(
-      {
-        product: productId,
-        status: { $ne: "inactive" },
+    const filter = {
+      status: {
+        $nin: ["inactive", "discontinued"],
       },
-      {
-        colorName: 1,
-        colorCode: 1,
-        mainImage: 1,
-      },
-    ).sort({ name: 1 });
+    };
+
+    if (productId) {
+      filter.product = productId;
+    }
+
+    return await ProductVariant.find(filter, {
+      colorName: 1,
+      colorCode: 1,
+      mainImage: 1,
+      product: 1,
+    })
+      .populate("product", "name")
+      .sort({ colorName: 1 });
   }
 }
 

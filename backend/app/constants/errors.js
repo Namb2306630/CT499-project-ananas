@@ -118,8 +118,8 @@ const ErrorCode = {
   PROVARI_ITEM_NOT_EXISTS: () =>
     new AppError(1038, "Biến thể theo kích cỡ không tồn tại."),
 
-  PROVARI_ITEM_SIZE_ALREADY_EXISTS: () =>
-    new AppError(1039, "Kích cỡ này đã tồn tại trong biến thể sản phẩm."),
+  // PROVARI_ITEM_SIZE_ALREADY_EXISTS: () =>
+  //   new AppError(1039, "Kích cỡ này đã tồn tại trong biến thể sản phẩm."),
 
   PRODUCT_OUT_OF_STOCK: () =>
     new AppError(1040, "Số lượng sản phẩm vượt quá số lượng tồn kho."),
@@ -208,6 +208,11 @@ const ErrorCode = {
     code: 1049,
     message:
       "Không thể xóa biến thể sản phẩm vì vẫn còn kích cỡ thuộc biến thể này.",
+  }),
+
+  PROVARI_ITEM_SIZE_ALREADY_EXISTS: (sizes = []) => ({
+    code: 1050,
+    message: `Size ${sizes} đã tồn tại trong biến thể này!!!`,
   }),
   BAD_REQUEST: (message = "Lỗi") => new AppError(9998, message),
 };

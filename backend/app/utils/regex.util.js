@@ -6,7 +6,7 @@ const REGEX = {
 
   _ID: /^[0-9a-fA-F]{24}$/,
 
-  SIZE: /^(XS|S|M|L|XL|XXL|3[5-9]|4[0-6])$/,
+  SIZE: /^(XS|S|M|L|XL|XXL|3[1-9]|4[0-6])$/,
 
 };
 

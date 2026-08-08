@@ -307,6 +307,7 @@ class ProductService {
     product.status = "discontinued";
 
     await product.save();
+    return product;
   }
 
   async getAllForAdmin(page = 1) {
@@ -316,11 +317,11 @@ class ProductService {
 
     const [products, total] = await Promise.all([
       Product.aggregate([
-        {
-          $match: {
-            status: { $ne: "discontinued" },
-          },
-        },
+        // {
+        //   $match: {
+        //     status: { $ne: "discontinued" },
+        //   },
+        // },
         {
           $lookup: {
             from: "productvariants",
@@ -486,12 +487,12 @@ class ProductService {
 
   async getBySlug(slug) {
     const [product] = await Product.aggregate([
-      {
-        $match: {
-          slug,
-          status: { $ne: "discontinued" },
-        },
-      },
+      // {
+      //   $match: {
+      //     slug,
+      //     status: { $ne: "discontinued" },
+      //   },
+      // },
 
       // Categories (array)
       {

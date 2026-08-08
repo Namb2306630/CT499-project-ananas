@@ -28,14 +28,28 @@ const productVariantItemSchema = new mongoose.Schema(
       min: 0,
     },
 
-    isInStock: {
-      type: Boolean,
-      default: true,
+    // isInStock: {
+    //   type: Boolean,
+    //   default: true,
+    // },
+    status: {
+      type: String,
+      enum: ["active", "inactive", "discontinued"],
+      default: "active",
     },
   },
   {
     timestamps: true,
   },
 );
-
+//đảm bảo ko trùng dl
+productVariantItemSchema.index(
+  {
+    variant: 1,
+    size: 1,
+  },
+  {
+    unique: true,
+  },
+);
 module.exports = mongoose.model("ProductVariantItem", productVariantItemSchema);

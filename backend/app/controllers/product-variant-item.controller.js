@@ -8,6 +8,7 @@ exports.create = async (req, res, next) => {
     return ApiResponse.success({
       res,
       data,
+      message: "Tạo SKU sản phẩm thành công",
     });
   } catch (err) {
     next(err);
@@ -29,11 +30,12 @@ exports.update = async (req, res, next) => {
 
 exports.remove = async (req, res, next) => {
   try {
-    await service.remove(req.params.id);
+    const data = await service.remove(req.params.id);
 
     return ApiResponse.success({
       res,
-      data: true,
+      data,
+      message: "Xóa SKU sản phẩm thành công",
     });
   } catch (err) {
     next(err);
@@ -53,9 +55,9 @@ exports.getAll = async (req, res, next) => {
   }
 };
 
-exports.getById = async (req, res, next) => {
+exports.getBySku = async (req, res, next) => {
   try {
-    const data = await service.getById(req.params.id);
+    const data = await service.getBySku(req.params.sku);
 
     return ApiResponse.success({
       res,

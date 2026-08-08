@@ -68,4 +68,5 @@ const productVariantSchema = new mongoose.Schema(
 //   localField: "_id", //lấy _id của Product
 //   foreignField: "variant", //tìm trong ProductVariant field product
 // });
+productVariantSchema.index({ product: 1, colorCode: 1 }, { unique: true });
 module.exports = mongoose.model("ProductVariant", productVariantSchema);

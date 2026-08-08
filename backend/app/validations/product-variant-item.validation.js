@@ -4,18 +4,26 @@ const REGEX = require("../utils/regex.util");
 exports.createProductVItem = Joi.object({
   variant: Joi.string().required().messages({
     "any.required": "Biến thể sản phẩm là bắt buộc",
+    "string.empty": "Biến thể sản phẩm là bắt buộc",
   }),
-  size: Joi.string().regex(REGEX.SIZE).required().messages({
-    "any.required": "Size sản phẩm là bắt buộc",
-    "string.pattern.base": "Size sản phẩm không hợp lệ",
-  }),
-  stock: Joi.number().integer().min(0).max(99999).required().messages({
-    "any.required": "Stock là bắt buộc",
-    "number.base": "Stock phải là số",
-    "number.min": "Stock không được âm",
-    "number.max": "Stock quá lớn",
-    "number.integer": "Stock phải là số nguyên",
-  }),
+
+  sizes: Joi.array().items(
+    Joi.object({
+      size: Joi.string().required().pattern(REGEX.SIZE).messages({
+        "any.required": "Size sản phẩm là bắt buộc",
+        "string.empty": "Size sản phẩm là bắt buộc",
+        "string.pattern.base": "Size sản phẩm không hợp lệ",
+      }),
+
+      stock: Joi.number().required().integer().min(0).max(99999).messages({
+        "any.required": "Stock là bắt buộc",
+        "number.base": "Stock phải là số",
+        "number.min": "Stock không được âm",
+        "number.max": "Stock quá lớn",
+        "number.integer": "Stock phải là số nguyên",
+      }),
+    }),
+  ),
 });
 
 exports.updateProductVItem = Joi.object({
