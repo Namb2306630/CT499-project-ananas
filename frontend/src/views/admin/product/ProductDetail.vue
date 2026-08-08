@@ -179,7 +179,7 @@ const confirmDelete = async () => {
 
   if (res?.code === 200) {
     toastStore.showToast(res.message, 'success')
-    closeDelete()
+
     errors.value = {}
     productStore.clearError()
     setTimeout(() => {
@@ -193,6 +193,7 @@ const confirmDelete = async () => {
 
     toastStore.showToast(message, 'error')
   }
+  closeDelete()
 }
 
 const cancelDelete = () => {
@@ -606,7 +607,7 @@ const sellingPrice = computed(() => {
                 <select id="status" v-model="product.status">
                   <option value="active">Đang bán</option>
                   <option value="inactive">Ẩn</option>
-                  <option value="discontinued">Ngừng kinh doanh</option>
+                  <!-- <option value="discontinued">Ngừng kinh doanh</option> -->
                 </select>
                 <i class="fa-solid fa-chevron-down"></i>
               </div>

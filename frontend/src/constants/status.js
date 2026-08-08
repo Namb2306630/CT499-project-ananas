@@ -28,3 +28,18 @@ export const PRODUCT_GENDER = {
   male: { label: 'Nam' },
   female: { label: 'Nữ' },
 }
+
+export const STATUS = {
+  active: {
+    label: 'Đang bán',
+    class: 'active',
+  },
+  inactive: {
+    label: 'Ẩn',
+    class: 'inactive',
+  },
+  discontinued: {
+    label: 'Ngừng kinh doanh',
+    class: 'discontinued',
+  },
+}

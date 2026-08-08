@@ -11,6 +11,7 @@ import { useRouter } from 'vue-router'
 import { useDelete } from '@/composables/useDelete'
 import { ROUTE_NAMES } from '@/constants/routes'
 import BrandCard from '@/components/common/cards/brand/BrandCard.vue'
+import AppLoading from '@/components/common/LoadingState.vue'
 const router = useRouter()
 
 const { showConfirm, deleteItem, openDelete, closeDelete } = useDelete()
@@ -19,15 +20,23 @@ const brandStore = useBrandStore()
 const { brands, loading, error } = storeToRefs(brandStore)
 const showForm = ref(false)
 const title = ref('Thêm thương hiệu mới mới')
+const pageLoading = ref(true)
 
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 onMounted(async () => {
-  // Hiển thị cache ngay
-  if (brandStore.brands.length > 0) {
-    // Không làm gì vì UI đang lấy từ Pinia
-  }
+  // // Hiển thị cache ngay
+  // if (brandStore.brands.length > 0) {
+  //   // Không làm gì vì UI đang lấy từ Pinia
+  // }
 
-  // Luôn gọi API ở nền để cập nhật
-  await brandStore.fetchAdminBrands()
+  // // Luôn gọi API ở nền để cập nhật
+  // await brandStore.fetchAdminBrands()
+  pageLoading.value = true
+  try {
+    await Promise.all([brandStore.fetchAdminBrands(), delay(200)])
+  } finally {
+    pageLoading.value = false
+  }
 })
 
 defineProps({
@@ -90,7 +99,6 @@ const confirmDelete = async () => {
   if (res?.code === 200) {
     brandStore.clearError()
     toastStore.showToast(res.message, 'success')
-    closeDelete()
   } else {
     const message =
       Object.values(brandStore.error.errors)[0] ||
@@ -112,13 +120,14 @@ const cancelDialogForm = () => {
 }
 
 const cancelDelete = () => {
-  closeDelete()
-  toastStore.showToast('Đã hủy thay đổi', 'warning')
+  // closeDelete()
+  // toastStore.showToast('Đã hủy thay đổi', 'warning')
 }
 </script>
 
 <template>
-  <div class="admin-container">
+  <AppLoading v-if="pageLoading" :loading="pageLoading" :error="error.general" />
+  <div v-else class="admin-container">
     <AppAdminPageHeader
       title="Quản Lý Thương Hiệu"
       description="Quản lý các thương hiệu sản phẩm của bạn"

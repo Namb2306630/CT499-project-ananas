@@ -12,6 +12,7 @@ import { storeToRefs } from 'pinia'
 import { ref, onMounted } from 'vue'
 import { ROUTE_NAMES } from '@/constants/routes'
 import ProductLineListItem from '@/components/common/lists/product-line/ProductLineListItem.vue'
+import AppLoading from '@/components/common/LoadingState.vue'
 
 const { showConfirm, deleteItem, openDelete, closeDelete } = useDelete()
 const toastStore = useToastStore()
@@ -20,16 +21,20 @@ const productLineStore = useProductLineStore()
 const { brands } = storeToRefs(brandStore)
 const { productLines, loading, error } = storeToRefs(productLineStore)
 const showForm = ref(false)
-
-const loadData = async () => {
-  await productLineStore.fetchForAdmin()
-}
+const pageLoading = ref(true)
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
 onMounted(async () => {
-  if (productLineStore.productLines.length > 0) {
-    // Không làm gì vì UI đang lấy từ Pinia
+  // if (productLineStore.productLines.length > 0) {
+  //   // Không làm gì vì UI đang lấy từ Pinia
+  // }
+  // await loadData()
+  pageLoading.value = true
+  try {
+    await Promise.all([productLineStore.fetchForAdmin(), delay(200)])
+  } finally {
+    pageLoading.value = false
   }
-  await loadData()
 })
 defineProps({
   showSidebar: Boolean,
@@ -64,12 +69,11 @@ const fields = [
 ]
 
 const confirmDelete = async () => {
-  if(!deleteItem.value) return
+  if (!deleteItem.value) return
   const res = await productLineStore.delete(deleteItem.value._id)
   if (res?.code === 200) {
     clearError()
     toastStore.showToast(res.message, 'success')
-    closeDelete()
   } else {
     const message =
       Object.values(productLineStore.error.errors)[0] ||
@@ -118,12 +122,13 @@ const cancelDialogForm = () => {
 
 const cancelDelete = () => {
   closeDelete()
-  toastStore.showToast('Đã hủy thay đổi', 'warning')
+  // toastStore.showToast('Đã hủy thay đổi', 'warning')
 }
 </script>
 
 <template>
-  <div class="admin-container">
+  <AppLoading v-if="pageLoading" :loading="pageLoading" :error="error.general" />
+  <div v-else class="admin-container">
     <AppAdminPageHeader
       title="Quản Lý Dòng Sản Phẩm"
       description="Quản lý và sắp xếp cấu trúc dòng sản phẩm của bạn"

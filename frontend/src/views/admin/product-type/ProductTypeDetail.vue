@@ -60,7 +60,7 @@ const confirmDelete = async () => {
   if (res?.code === 200) {
     productTypeStore.clearError()
     toastStore.showToast(res.message, 'success')
-    closeDelete()
+
     setTimeout(() => {
       router.back()
     }, 500)
@@ -71,8 +71,8 @@ const confirmDelete = async () => {
       'Xóa loại sản phẩm thất bại!'
 
     toastStore.showToast(message, 'error')
-    closeDelete()
   }
+  closeDelete()
 }
 
 watch(
@@ -113,7 +113,7 @@ const cancelEdit = () => {
 
 const cancelDelete = () => {
   closeDelete()
-  toastStore.showToast('Đã hủy thay đổi', 'warning')
+  // toastStore.showToast('Đã hủy thay đổi', 'warning')
 }
 </script>
 

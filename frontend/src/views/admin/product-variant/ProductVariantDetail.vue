@@ -61,7 +61,7 @@ const errors = computed(() => error.value.errors)
 
 const cancelDelete = () => {
   closeDelete()
-  toastStore.showToast('Đã hủy thay đổi', 'warning')
+  // toastStore.showToast('Đã hủy thay đổi', 'warning')
 }
 const confirmDelete = async () => {
   if (!deleteItem.value) return
@@ -71,7 +71,7 @@ const confirmDelete = async () => {
   if (res?.code === 200) {
     productVariantStore.clearError()
     toastStore.showToast(res.message, 'success')
-    closeDelete()
+
     setTimeout(() => {
       router.back()
     }, 500)
@@ -82,8 +82,8 @@ const confirmDelete = async () => {
       'Xóa biến thể sản phẩm thất bại!'
 
     toastStore.showToast(message, 'error')
-    closeDelete()
   }
+  closeDelete()
 }
 
 const cancelEdit = () => {
@@ -224,7 +224,7 @@ const updateColor = (e) => {
                 <option value="active">Đang bán</option>
                 <option value="inactive">Ẩn</option>
                 <option value="out_of_stock">Hết hàng</option>
-                <option value="discontinued">Ngừng kinh doanh</option>
+                <!-- <option value="discontinued">Ngừng kinh doanh</option> -->
               </select>
               <i class="fa-solid fa-chevron-down"></i>
             </div>

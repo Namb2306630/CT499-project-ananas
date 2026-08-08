@@ -52,10 +52,11 @@ export const useProductStore = defineStore('product', {
       try {
         this.clearError()
         const res = await ProductService.update(id, data)
-        console.log(res.data.result)
         const index = this.products.findIndex((item) => item._id === id)
 
-        this.products[index] = res.data.result
+        if (index !== -1) {
+          this.products[index] = res.data.result
+        }
 
         return res.data
       } catch (error) {
@@ -73,7 +74,12 @@ export const useProductStore = defineStore('product', {
         this.clearError()
         const res = await ProductService.delete(id)
 
-        this.products = this.products.filter((item) => item._id !== id)
+        // this.products = this.products.filter((item) => item._id !== id)
+        const index = this.products.findIndex((item) => item._id === id)
+
+        if (index !== -1) {
+          this.products[index] = res.data.result
+        }
 
         return res.data
       } catch (error) {

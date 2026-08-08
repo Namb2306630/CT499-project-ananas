@@ -4,7 +4,6 @@ import BaseCard from '@/components/common/cards/CardBase.vue'
 import { PRODUCT_VARIANT_STATUS } from '@/constants/status'
 const BASE_URL = import.meta.env.VITE_BACKEND
 
-
 const props = defineProps({
   item: {
     type: Object,
@@ -16,7 +15,7 @@ const props = defineProps({
 defineEmits(['edit', 'delete'])
 </script>
 <template>
-  <BaseCard :item="item" @edit="$emit('edit', $event)" , @delete="$emit('delete', $event)">
+  <BaseCard :item="item" @edit="$emit('edit', $event)" @delete="$emit('delete', $event)">
     <!-- slot hình ảnh -->
     <template #image>
       <div class="image-wrapper">

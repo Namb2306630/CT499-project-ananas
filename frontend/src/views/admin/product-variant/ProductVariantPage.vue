@@ -41,11 +41,11 @@ const clearError = () => {
 //     pageLoading.value = false
 //   }
 // })
-
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 onMounted(async () => {
   pageLoading.value = true
   try {
-    await Promise.all(productVariStore.fetchForAdmin(), productStore.fetchOptions())
+    await Promise.all([productVariStore.fetchForAdmin(), productStore.fetchOptions(), delay(200)])
   } finally {
     pageLoading.value = false
   }
@@ -80,16 +80,14 @@ const confirmDelete = async () => {
   if (res?.code === 200) {
     clearError()
     toastStore.showToast(res.message, 'success')
-    closeDelete()
   } else {
     const message =
       Object.values(productVariStore.error.errors)[0] ||
       productVariStore.error.general ||
       'Lỗi không thể xóa biến thể sản phẩm'
-
     toastStore.showToast(message, 'error')
-    cancelDelete()
   }
+  closeDelete()
 }
 
 const cancelDialogForm = () => {
@@ -99,7 +97,7 @@ const cancelDialogForm = () => {
 
 const cancelDelete = () => {
   closeDelete()
-  toastStore.showToast('Đã hủy thay đổi', 'warning')
+  // toastStore.showToast('Đã hủy thay đổi', 'warning')
 }
 const opentEdit = (productVariant) => {
   router.push({
@@ -112,9 +110,8 @@ const opentEdit = (productVariant) => {
 </script>
 
 <template>
-  <!-- <AppLoading v-if="pageLoading" :loading="pageLoading" :error="productVariStore.error.general" />
-  <div v-else class="admin-container"> -->
-  <div class="admin-container">
+  <AppLoading v-if="pageLoading" :loading="pageLoading" :error="error.general" />
+  <div v-else class="admin-container">
     <AppAdminPageHeader
       title="Quản Lý Biến Thể Sản Phẩm"
       description="Quản lý và sắp xếp cấu trúc biến thể sản phẩm của bạn"

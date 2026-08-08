@@ -5,12 +5,14 @@ import { useToastStore } from '@/stores/toast'
 import { useSystemConfigStore } from '@/stores/system-config'
 import { ref, onMounted, computed, toRaw } from 'vue'
 import { storeToRefs } from 'pinia'
+import AppLoading from '@/components/common/LoadingState.vue'
 
 const toastStore = useToastStore()
 const systemConfigStore = useSystemConfigStore()
 const { error } = storeToRefs(systemConfigStore)
 const originalForm = ref(null)
 const errors = computed(() => error.value.errors)
+const pageLoading = ref(true)
 
 const form = ref({
   taxCode: '',
@@ -26,8 +28,14 @@ const form = ref({
   taxDisplayStrategy: 'included',
 })
 
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 onMounted(async () => {
-  await systemConfigStore.get()
+  pageLoading.value = true
+  try {
+    await Promise.all([systemConfigStore.get(), delay(200)])
+  } finally {
+    pageLoading.value = false
+  }
 
   if (systemConfigStore.systemConfig) {
     //toRaw() lấy ra object gốc vì systemConfigStore.systemConfig kiểu ref là kiểu phản ứng Proxy(Object)
@@ -64,7 +72,8 @@ const cancel = () => {
 </script>
 
 <template>
-  <div class="admin-container">
+  <AppLoading v-if="pageLoading" :loading="pageLoading" :error="errors.general" />
+  <div v-else class="admin-container">
     <AppAdminPageHeader
       title="Cài Đặt Hệ Thống"
       description="Cấu hình hành vi cốt lõi của hệ thống, quy tắc tính thuế và các tùy chọn khác."

@@ -112,8 +112,17 @@
 }
 
 .discontinued {
+  display: inline-block;
+  max-width: 100%;
+
+  padding: 6px 12px;
+  border-radius: 20px;
   background: var(--bg-color-red-2);
   color: var(--text-color-red);
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 p {

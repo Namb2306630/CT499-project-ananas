@@ -88,6 +88,7 @@ const columns = computed(() => {
                 :item="item"
                 @edit="emit('edit', $event)"
                 @delete="emit('delete', $event)"
+                :headers="headers"
               />
             </template>
 

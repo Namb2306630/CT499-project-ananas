@@ -276,7 +276,7 @@ const closeDialog = () => {
           </p>
         </div>
 
-        <p v-if="generalError" class="error p-0 mt-3 m-0 d-flex justify-content-center">
+        <p v-if="generalError" class="error mt-3 m-0 error-general">
           {{ generalError }}
         </p>
       </div>

@@ -113,7 +113,7 @@ const closeDialog = () => {
             placeholder="Nhập mã sản phẩm"
             maxlength="7"
           />
-          <p v-if="errors._id" class="error">{{ errors._id }}</p>
+          <p v-if="errors._id" class="error m-0">{{ errors._id }}</p>
         </div>
 
         <div v-if="props.showProductOptions" class="form-group">
@@ -129,7 +129,7 @@ const closeDialog = () => {
             <i class="fa-solid fa-chevron-down"></i>
           </div>
 
-          <p v-if="errors.product" class="error">{{ errors.product }}</p>
+          <p v-if="errors.product" class="error m-0">{{ errors.product }}</p>
         </div>
 
         <div class="form-group">
@@ -142,7 +142,7 @@ const closeDialog = () => {
             maxlength="50"
             placeholder="Màu của sản phẩm"
           />
-          <p v-if="errors.colorName" class="error">{{ errors.colorName }}</p>
+          <p v-if="errors.colorName" class="error m-0">{{ errors.colorName }}</p>
         </div>
 
         <div class="form-group">
@@ -160,12 +160,12 @@ const closeDialog = () => {
               placeholder="#000000"
               maxlength="7"
             />
-            <p v-if="errors.colorCode" class="error">{{ errors.colorCode }}</p>
+            <p v-if="errors.colorCode" class="error m-0">{{ errors.colorCode }}</p>
           </div>
         </div>
 
         <VariantImageManager v-model="formData" :readonly="false" :errors="errors" />
-        <p v-if="generalError" class="error mt-3 d-flex justify-content-center">
+        <p v-if="generalError" class="error mt-2 d-flex justify-content-center error-general">
           {{ generalError }}
         </p>
       </div>

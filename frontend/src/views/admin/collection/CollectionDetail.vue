@@ -65,7 +65,7 @@ const confirmDelete = async () => {
     error.value = {}
     collectionStore.clearError()
     toastStore.showToast(res.message, 'success')
-    closeDelete()
+   
     setTimeout(() => {
       router.back()
     }, 500)
@@ -76,8 +76,9 @@ const confirmDelete = async () => {
       'Xóa bộ sưu tập sản phẩm thất bại!'
 
     toastStore.showToast(message, 'error')
-    closeDelete()
+   
   }
+  closeDelete()
 }
 const saveCollection = async () => {
   const res = await collectionStore.update(collection.value._id, collection.value)
@@ -109,7 +110,7 @@ const cancelEdit = () => {
 
 const cancelDelete = () => {
   closeDelete()
-  toastStore.showToast('Đã hủy thay đổi', 'warning')
+  // toastStore.showToast('Đã hủy thay đổi', 'warning')
 }
 </script>
 

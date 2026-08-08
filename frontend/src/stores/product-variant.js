@@ -67,7 +67,11 @@ export const useProductVariant = defineStore('product-variants', {
       try {
         this.clearError()
         const res = await service.delete(id)
-        this.productVariants = this.productVariants.filter((item) => item._id !== id)
+        // this.productVariants = this.productVariants.filter((item) => item._id !== id)
+        const index = this.productVariants.findIndex((item) => item._id === id)
+        if (index !== -1) {
+          this.productVariants[index] = res.data.result
+        }
         return res.data
       } catch (error) {
         const data = error.response?.data

@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, watch, computed } from 'vue'
 
 const props = defineProps({
   show: Boolean,
@@ -12,6 +12,10 @@ const props = defineProps({
   errors: {
     type: Object,
     default: () => ({}),
+  },
+  generalError: {
+    type: String,
+    default: '',
   },
 })
 
@@ -26,9 +30,39 @@ watch(
       dialog.value.showModal()
     } else {
       dialog.value.close()
+      resetForm()
     }
   },
 )
+
+const resetForm = () => {
+  formData.value = {
+    variant: '',
+    sizes: [
+      {
+        size: '',
+        stock: 0,
+      },
+    ],
+  }
+}
+
+const groupedVariants = computed(() => {
+  const groups = {}
+  for (const item of props.variants) {
+    const productId = item.product._id
+
+    if (!groups[productId]) {
+      groups[productId] = {
+        productName: item.product.name,
+        variants: [],
+      }
+    }
+
+    groups[productId].variants.push(item)
+  }
+  return Object.values(groups)
+})
 
 const formData = ref({
   variant: '',
@@ -48,7 +82,6 @@ const addSize = () => {
     stock: 0,
   })
 }
-
 // xóa size
 const removeSize = (index) => {
   formData.value.sizes.splice(index, 1)
@@ -59,6 +92,7 @@ const submitForm = () => {
 }
 
 const closeDialog = () => {
+  resetForm()
   emit('close')
 }
 </script>
@@ -79,13 +113,23 @@ const closeDialog = () => {
         <div class="form-group">
           <label for="variant">Thuộc biến thể</label>
 
-          <select id="variant" v-model="formData.variant">
-            <option value="" disabled>-- Chọn biến thể --</option>
+          <div class="select-box">
+            <select id="variant" v-model="formData.variant">
+              <option value="" disabled>-- Chọn biến thể --</option>
 
-            <option v-for="item in variants" :key="item._id" :value="item._id">
-              {{ item.colorName }}
-            </option>
-          </select>
+              <optgroup
+                v-for="group in groupedVariants"
+                :key="group.productName"
+                :label="group.productName"
+              >
+                <option v-for="item in group.variants" :key="item._id" :value="item._id">
+                  {{ item.colorName }}
+                </option>
+              </optgroup>
+            </select>
+            <i class="fa-solid fa-chevron-down"></i>
+          </div>
+          <p v-if="errors.variant" class="error m-0 p-0">{{ errors.variant }}</p>
         </div>
 
         <!-- Size -->
@@ -96,14 +140,13 @@ const closeDialog = () => {
         <div class="size-card" v-for="(item, index) in formData.sizes" :key="index">
           <div class="form-group">
             <label for="size">Size</label>
-
-            <input id="size" v-model="item.size" placeholder="VD: 40" />
+            <input id="size" v-model="item.size" min="31" max="46" placeholder="VD: 40" />
           </div>
 
           <div class="form-group">
             <label for="stock">Số lượng</label>
 
-            <input id="stock" type="number" min="0" v-model="item.stock" />
+            <input id="stock" type="number" min="1" v-model="item.stock" />
           </div>
 
           <div class="form-group remove-group">
@@ -114,11 +157,15 @@ const closeDialog = () => {
             </button>
           </div>
         </div>
-
+        <p v-if="errors.sizes" class="error p-0 m-0 mb-2">{{ errors.sizes }}</p>
         <button type="button" class="add-size" @click="addSize">
           <i class="fa-solid fa-plus"></i>
           Thêm size
         </button>
+
+        <div><p v-if="generalError" class="error m-0 mt-3 error-general">
+          {{ generalError }}
+        </p></div>
       </div>
 
       <div class="dialog-footer">

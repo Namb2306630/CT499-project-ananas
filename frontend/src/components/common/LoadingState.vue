@@ -38,11 +38,10 @@ defineProps({
   position: absolute;
   inset: 0;
   z-index: 100;
-
   display: flex;
   justify-content: center;
-  align-items: center;
 
+  top: 20%;
   background: rgba(255, 255, 255, 0.7);
 }
 
@@ -57,10 +56,8 @@ defineProps({
 .spinner {
   width: 36px;
   height: 36px;
-
   border: 4px solid #ddd;
   border-top-color: var(--color-bule-2);
-
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }

@@ -11,18 +11,27 @@ import { ref, onMounted } from 'vue'
 import { ROUTE_NAMES } from '@/constants/routes'
 import { useCollectionStore } from '@/stores/collection'
 import CollectionListItem from '@/components/common/lists/collection/CollectionListItem.vue'
+import AppLoading from '@/components/common/LoadingState.vue'
 
 const { showConfirm, deleteItem, openDelete, closeDelete } = useDelete()
 const toastStore = useToastStore()
 const showForm = ref(false)
 const collectionStore = useCollectionStore()
 const { collections, loading, error } = storeToRefs(collectionStore)
+const pageLoading = ref(true)
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
 onMounted(async () => {
-  if (collectionStore.collections.length > 0) {
-    // Không làm gì vì UI đang lấy từ Pinia
+  // if (collectionStore.collections.length > 0) {
+  //   // Không làm gì vì UI đang lấy từ Pinia
+  // }
+  // await collectionStore.fetchForAdmin()
+  pageLoading.value = true
+  try {
+    await Promise.all([collectionStore.fetchForAdmin(), delay(200)])
+  } finally {
+    pageLoading.value = false
   }
-  await collectionStore.fetchForAdmin()
 })
 defineProps({
   showSidebar: Boolean,
@@ -63,7 +72,6 @@ const confirmDelete = async () => {
   if (res?.code === 200) {
     collectionStore.clearError()
     toastStore.showToast(res.message, 'success')
-    closeDelete()
   } else {
     const message =
       Object.values(collectionStore.error.errors)[0] ||
@@ -76,7 +84,6 @@ const confirmDelete = async () => {
 }
 
 const addCollection = async (data) => {
-  if (!deleteItem.value) return
   const res = await collectionStore.create(data)
 
   if (res?.code === 200) {
@@ -100,12 +107,13 @@ const cancelDialogForm = () => {
 
 const cancelDelete = () => {
   closeDelete()
-  toastStore.showToast('Đã hủy thay đổi', 'warning')
+  // toastStore.showToast('Đã hủy thay đổi', 'warning')
 }
 </script>
 
 <template>
-  <div class="admin-container">
+  <AppLoading v-if="pageLoading" :loading="pageLoading" :error="error.general" />
+  <div v-else class="admin-container">
     <AppAdminPageHeader
       title="Quản Lý Bộ Sưu Tập"
       description="Quản lý và sắp xếp cấu trúc bộ sưu tập sản phẩm của bạn"

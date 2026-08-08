@@ -45,18 +45,19 @@ const changePage = async (page) => {
 const { showConfirm, deleteItem, openDelete, closeDelete } = useDelete()
 
 const showForm = ref(false)
-// const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 onMounted(async () => {
   pageLoading.value = true
   try {
-    await Promise.all(
+    await Promise.all([
       productStore.fetchForAdmin(),
       categoryStore.fetchCategories(),
       productLineStore.fetchOptions(),
       collectionStore.fetchOptions(),
       productTypeStore.fetchOptions(),
       styleStore.fetchOptions(),
-    )
+      delay(200),
+    ])
   } finally {
     pageLoading.value = false
   }
@@ -82,7 +83,6 @@ const confirmDelete = async () => {
   if (res?.code === 200) {
     clearError()
     toastStore.showToast(res.message, 'success')
-    closeDelete()
   } else {
     const message =
       Object.values(productStore.error.errors)[0] ||
@@ -213,10 +213,9 @@ const cancelDelete = () => {
 </script>
 
 <template>
-  <!-- <AppLoading v-if="pageLoading" :loading="pageLoading" :error="productStore.error.general" />
+  <AppLoading v-if="pageLoading" :loading="pageLoading" :error="error.general" />
 
-  <div v-else class="admin-container"> -->
-  <div class="admin-container">
+  <div v-else class="admin-container">
     <AppAdminPageHeader
       title="Quản Lý Sản Phẩm"
       description="Quản lý và sắp xếp cấu trúc sản phẩm của bạn"

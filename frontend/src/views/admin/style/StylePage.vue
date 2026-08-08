@@ -11,18 +11,27 @@ import router from '@/router'
 import { useDelete } from '@/composables/useDelete'
 import ConfirmDialog from '@/components/common/ConfirmDialog.vue'
 import StyleListItem from '@/components/common/lists/style/StyleListItem.vue'
+import AppLoading from '@/components/common/LoadingState.vue'
 
 const { showConfirm, deleteItem, openDelete, closeDelete } = useDelete()
 const styleStore = useStyleStore()
 const toastStore = useToastStore()
 const { styles, loading, error } = storeToRefs(styleStore)
 const showForm = ref(false)
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
+const pageLoading = ref(true)
 
 onMounted(async () => {
-  if (styleStore.styles.length > 0) {
-    //
+  // if (styleStore.styles.length > 0) {
+  //   //
+  // }
+  // await styleStore.fetchForAdmin()
+  pageLoading.value = true
+  try {
+    await Promise.all([styleStore.fetchForAdmin(), delay(200)])
+  } finally {
+    pageLoading.value = false
   }
-  await styleStore.fetchForAdmin()
 })
 
 const openAddForm = () => {
@@ -102,7 +111,8 @@ const cancelDelete = () => {
 </script>
 
 <template>
-  <div class="admin-container">
+  <AppLoading v-if="loading" :loading="loading" :error="error.general" />
+  <div v-else class="admin-container">
     <AppAdminPageHeader
       title="Quản Lý Kiểu Dáng Sản Phẩm"
       description="Quản lý và sắp xếp cấu trúc kiểu dáng sản phẩm của bạn"

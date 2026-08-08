@@ -96,7 +96,7 @@ const confirmDelete = async () => {
   if (res?.code === 200) {
     brandStore.clearError()
     toastStore.showToast('Xóa thương hiệu sản phẩm thành công', 'success')
-    closeDelete()
+
     setTimeout(() => {
       router.back()
     }, 500)
@@ -106,8 +106,8 @@ const confirmDelete = async () => {
       brandStore.error.general ||
       'Xóa thương hiệu sản phẩm thất bại!'
     toastStore.showToast(message, 'error')
-    closeDelete()
   }
+  closeDelete()
 }
 
 const cancelEdit = () => {
@@ -120,7 +120,7 @@ const cancelEdit = () => {
 
 const cancelDelete = () => {
   closeDelete()
-  toastStore.showToast('Đã hủy xóa thương hiệu sản phẩm', 'warning')
+  //  toastStore.showToast('Đã hủy thay đổi', 'warning')
 }
 </script>
 

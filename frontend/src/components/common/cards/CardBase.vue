@@ -5,12 +5,19 @@ const props = defineProps({
 
 const emit = defineEmits(['edit', 'delete'])
 
-const handleEdit = () => emit('edit', props.item)
+const handleEdit = () => {
+  if (props.item.status === 'discontinued') return
+  emit('edit', props.item)
+}
 const handleDelete = () => emit('delete', props.item)
 </script>
 
 <template>
-  <div class="card-item" @click.stop="handleEdit">
+  <div
+    class="card-item"
+    :class="{ 'discontinued-card': item.status === 'discontinued' }"
+    @click.stop="handleEdit"
+  >
     <!-- Slot cho phần Hình ảnh -->
     <div class="card-image">
       <slot name="image" />
@@ -22,7 +29,7 @@ const handleDelete = () => emit('delete', props.item)
     </div>
 
     <!-- Các nút thao tác cố định -->
-    <div class="card-actions">
+    <div v-if="item.status !== 'discontinued'" class="card-actions">
       <button class="edit" title="Sửa" @click.stop="handleEdit">
         <i class="fa-solid fa-pen"></i>
       </button>
@@ -34,6 +41,19 @@ const handleDelete = () => emit('delete', props.item)
 </template>
 
 <style scoped>
+.card-item.discontinued-card {
+  opacity: 0.75;
+  filter: grayscale(100%);
+  background: var(--color-22);
+  border: 2px dashed var(--color-7);
+}
+
+.card-item.discondiscontinued-cardtinued:hover {
+  transform: none;
+  box-shadow: none;
+  cursor: default;
+}
+
 .card-content > * {
   padding: 0 10px;
   margin-bottom: 10px;

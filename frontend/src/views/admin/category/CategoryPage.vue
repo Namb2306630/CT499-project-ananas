@@ -13,6 +13,7 @@ import ConfirmDialog from '@/components/common/ConfirmDialog.vue'
 import { useRouter } from 'vue-router'
 import { useDelete } from '@/composables/useDelete'
 import CategoryCard from '@/components/common/cards/category/CategoryCard.vue'
+import AppLoading from '@/components/common/LoadingState.vue'
 
 const { showConfirm, deleteItem, openDelete, closeDelete } = useDelete()
 
@@ -21,14 +22,22 @@ const toastStore = useToastStore()
 const categoryStore = useCategoryStore()
 const { categories, loading, error } = storeToRefs(categoryStore)
 const showForm = ref(false)
+const pageLoading = ref(true)
 
 const title = ref('Thêm danh mục mới')
 const loadData = async () => {
   await categoryStore.fetchCategories()
 }
 
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 onMounted(async () => {
-  await loadData()
+  // await loadData()
+  pageLoading.value = true
+  try {
+    await Promise.all([categoryStore.fetchCategories(), delay(200)])
+  } finally {
+    pageLoading.value = false
+  }
 })
 
 defineProps({
@@ -98,7 +107,6 @@ const confirmDelete = async () => {
   if (result?.code === 200) {
     categoryStore.clearError()
     toastStore.showToast(result.message, 'success')
-    closeDelete()
   } else {
     const message =
       Object.values(categoryStore.error.errors)[0] ||
@@ -120,12 +128,13 @@ const cancelDialogForm = () => {
 
 const cancelDelete = () => {
   closeDelete()
-  toastStore.showToast('Đã hủy thay đổi', 'warning')
+  // toastStore.showToast('Đã hủy thay đổi', 'warning')
 }
 </script>
 
 <template>
-  <div class="admin-container">
+  <AppLoading v-if="pageLoading" :loading="pageLoading" :error="error.general" />
+  <div v-else class="admin-container">
     <AppAdminPageHeader
       title="Quản Lý Danh Mục"
       description="Quản lý và sắp xếp cấu trúc danh mục sản phẩm của bạn"

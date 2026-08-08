@@ -140,12 +140,12 @@ const removeImage = (index) => {
             :width="'100%'"
           />
 
-          <p v-if="errors.mainImage" class="error ml-1">
+          <p v-if="errors.mainImage" class="error ml-1 m-0">
             {{ errors.mainImage }}
           </p>
         </div>
         <div class="image-upload-item">
-          <p v-if="titleHoverImage !== ''" class="ml-1 title-image">{{ titleHoverImage }}</p>
+          <p v-if="titleHoverImage !== ''" class="ml-1 title-image m-0">{{ titleHoverImage }}</p>
           <UploadImage
             :model-value="variant.hoverImage"
             :show-content-in-image="showContentInImage"
@@ -167,7 +167,7 @@ const removeImage = (index) => {
       </div>
     </div>
 
-    <div class="images-box mt-3">
+    <div class="images-box">
       <div class="title-images">
         <p class="p-0 m-0">Ảnh phụ (Bộ sưu tập)</p>
 

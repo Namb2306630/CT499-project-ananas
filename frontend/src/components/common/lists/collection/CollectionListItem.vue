@@ -1,13 +1,20 @@
 <script setup>
 import ListBase from '../ListBase.vue'
-
-defineProps({
-  item: { type: Object, required: true },
+import { computed } from 'vue'
+const props = defineProps({
+  item: {
+    type: Object,
+    required: true,
+  },
+  headers: Array,
 })
 
 defineEmits(['edit', 'delete'])
 
-const columns = '1.5fr 2.5fr 80px 120px 120px 80px'
+// Định nghĩa độ rộng các cột (khớp với header)
+const columns = computed(() =>
+  [...props.headers.map((h) => h.width || '1fr'), '120px', '80px'].join(' '),
+)
 </script>
 
 <template>
