@@ -111,7 +111,7 @@ const cancelDelete = () => {
 </script>
 
 <template>
-  <AppLoading v-if="loading" :loading="loading" :error="error.general" />
+  <AppLoading v-if="pageLoading" :loading="pageLoading" :error="error.general" />
   <div v-else class="admin-container">
     <AppAdminPageHeader
       title="Quản Lý Kiểu Dáng Sản Phẩm"

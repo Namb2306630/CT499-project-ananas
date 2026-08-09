@@ -47,9 +47,16 @@ defineProps({
 
 /* Loading */
 .loading-box {
+  position: fixed;
+  top: 0;
+  left: var(--sidebar-width);
+  right: 0;
+  bottom: 0;
+
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 12px;
 }
 
@@ -96,6 +103,11 @@ defineProps({
 
   to {
     transform: rotate(360deg);
+  }
+}
+@media (max-width: 768px) {
+  .loading-box {
+    left: 0;
   }
 }
 </style>

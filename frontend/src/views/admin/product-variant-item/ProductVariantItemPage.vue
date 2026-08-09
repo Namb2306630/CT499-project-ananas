@@ -100,7 +100,7 @@ const opentEdit = (productVariItem) => {
 
 <template>
   <AppLoading v-if="loadingPage" :loading="loadingPage" :error="error.general" />
-  <div class="admin-container">
+  <div v-else class="admin-container">
     <AppAdminPageHeader
       title="Quản Lý SKU"
       description="Quản lý tồn sản phẩm"

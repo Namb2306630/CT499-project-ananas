@@ -51,8 +51,8 @@ main {
 /* SIDEBAR */
 
 .sidebar-wrapper {
-  width: 300px;
-  min-width: 300px;
+  width: var(--sidebar-width);
+  min-width: var(--sidebar-width);
   display: flex;
   transition:
     transform 1s ease,
@@ -61,7 +61,7 @@ main {
 
 .sidebar-wrapper.hide {
   transform: translateX(-100%);
-  margin-left: -300px;
+  margin-left: var(--margin-sidebar-width);
 }
 
 /* MAIN */

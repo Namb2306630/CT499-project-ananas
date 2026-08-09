@@ -103,6 +103,9 @@
   --shadow-gray: 0 2px 3px rgba(0, 0, 0, 0.2);
   --shadow-black-2: 0 10px 25px rgba(0, 0, 0, 0.15);
   --shadow-black-3: 0 5px 15px rgba(122, 121, 121, 0.15);
+
+  --sidebar-width: 300px;
+  --margin-sidebar-width: -300px;
 }
 /*
 solid    liền 
