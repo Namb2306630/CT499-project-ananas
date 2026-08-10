@@ -46,13 +46,13 @@ defineProps({
 const fields = [
   {
     name: 'name',
-    label: 'Tên thương hiệu *',
+    label: 'Tên thương hiệu',
     type: 'text',
     placeholder: 'Nhập tên thương hiệu',
   },
   {
     name: 'description',
-    label: 'Mô tả danh mục',
+    label: 'Mô tả thương hiệu',
     type: 'textarea',
     placeholder: 'Thêm mô tả',
   },

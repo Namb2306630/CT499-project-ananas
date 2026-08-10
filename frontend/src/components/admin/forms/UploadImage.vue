@@ -132,33 +132,23 @@ const upload = (e) => {
 </script>
 
 <template>
-  <div :class="{ 'container-img': containerBox }">
+  <div :class="{ 'container-img': containerBox }" class="mb-2">
     <p class="titleImg p-0 m-0">{{ titleImg }}</p>
 
-    <div
-      class="upload-box"
-      :class="{ uploaded: image }"
-      :style="{
-        height: height,
-        width: width,
-        marginTop: containerBox ? '8px' : '0px',
-      }"
-      @click="clickUpload"
-    >
-      <img
-        v-if="image"
-        class="preview-image"
-        :src="image"
-        alt="Ảnh đã tải lên"
-        :style="{ objectFit: objectFit }"
-      />
+    <div class="upload-box" :class="{ uploaded: image }" :style="{
+      height: height,
+      width: width,
+      marginTop: containerBox ? '8px' : '0px',
+    }" @click="clickUpload">
+      <img v-if="image" class="preview-image" :src="image" alt="Ảnh đã tải lên" :style="{ objectFit: objectFit }" />
 
-      <img
-        v-else-if="showBGImage"
-        class="preview-image default-bg"
-        :src="UploadBg"
-        alt="Ảnh nền tải lên"
-      />
+      <img v-else-if="showBGImage" class="preview-image default-bg" :src="UploadBg" alt="Ảnh nền tải lên" />
+
+      <div v-else class="empty-image">
+        <span class="material-symbols-outlined">
+          hide_image
+        </span>
+      </div>
 
       <div v-if="showContentInImage" class="title-upload">
         <div :class="[image ? 'icon-tick' : 'icon-camera', { 'no-icon-bg': !showIconBG }]">
@@ -180,13 +170,7 @@ const upload = (e) => {
         </div>
       </div>
 
-      <input
-        id=""
-        ref="fileInput"
-        type="file"
-        accept="image/jpeg,image/png,image/webp"
-        @change="upload"
-      />
+      <input id="" ref="fileInput" type="file" accept="image/jpeg,image/png,image/webp" @change="upload" />
     </div>
 
     <p class="upload-error p-0 m-0">
@@ -196,6 +180,20 @@ const upload = (e) => {
 </template>
 
 <style scoped>
+.empty-image {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #9ca3af;
+  background-color: #f5f5f5;
+}
+
+.empty-image .material-symbols-outlined {
+  font-size: 48px;
+}
+
 .upload-box {
   display: flex;
   justify-content: center;
@@ -217,7 +215,7 @@ const upload = (e) => {
   pointer-events: none;
 }
 
-.upload-box:hover > .preview-image {
+.upload-box:hover>.preview-image {
   transform: scale(1.08);
 }
 
@@ -239,6 +237,7 @@ const upload = (e) => {
 .title-upload:hover {
   cursor: pointer;
 }
+
 .upload-box:hover {
   border: 1px solid var(--color-bule);
 }
@@ -260,7 +259,7 @@ const upload = (e) => {
 }
 
 .uploadedContent {
-  color: var(--text-white) !important ;
+  color: var(--text-white) !important;
 }
 
 .container-field input {
@@ -308,6 +307,7 @@ const upload = (e) => {
   padding: 10px 10px 5px 10px;
   color: var(--text-white);
 }
+
 .icon-tick {
   background-color: var(--bg-green);
   border-radius: 10px;
@@ -335,6 +335,7 @@ input {
   font-weight: var(--font-width-md);
   transition: 0.3s ease;
 }
+
 .cancel {
   height: 40px;
   border: none;
@@ -355,7 +356,8 @@ input {
 }
 
 dialog::-webkit-scrollbar {
-  display: none; /* Chrome, Edge, Safari */
+  display: none;
+  /* Chrome, Edge, Safari */
 }
 
 .no-icon-bg {
@@ -363,6 +365,7 @@ dialog::-webkit-scrollbar {
   padding: 0;
   color: var(--text-gray-3);
 }
+
 .check_circle {
   color: var(--text-green) !important;
 }

@@ -172,7 +172,7 @@ const router = createRouter({
         {
           path: 'categories/:slug',
           name: ROUTE_NAMES.CATEGORY_DETAIL,
-          component: () => CategoryDetail,
+          component: CategoryDetail,
           meta: {
             activeMenu: ROUTE_NAMES.CATEGORIES,
           },
@@ -181,7 +181,7 @@ const router = createRouter({
         {
           path: 'brands/:slug',
           name: ROUTE_NAMES.BRAND_DETAIL,
-          component: () => BrandDetail,
+          component: BrandDetail,
           meta: {
             activeMenu: ROUTE_NAMES.BRANDS,
           },
@@ -190,7 +190,7 @@ const router = createRouter({
         {
           path: 'product-lines/:slug',
           name: ROUTE_NAMES.PRODUCT_LINE_DETAIL,
-          component: () => ProductLineDetail,
+          component: ProductLineDetail,
           meta: {
             activeMenu: ROUTE_NAMES.PRODUCT_LINES,
           },
@@ -199,7 +199,7 @@ const router = createRouter({
         {
           path: 'styles/:slug',
           name: ROUTE_NAMES.STYLE_DETAIL,
-          component: () => StyleDetail,
+          component: StyleDetail,
           meta: {
             activeMenu: ROUTE_NAMES.STYLES,
           },
@@ -208,7 +208,7 @@ const router = createRouter({
         {
           path: 'collections/:slug',
           name: ROUTE_NAMES.COLLECTION_DETAIL,
-          component: () => CollectionDetail,
+          component: CollectionDetail,
           meta: {
             activeMenu: ROUTE_NAMES.COLLECTIONS,
           },
@@ -216,7 +216,7 @@ const router = createRouter({
         {
           path: 'product-types/:slug',
           name: ROUTE_NAMES.PRODUCT_TYPE_DEAIL,
-          component: () => ProductTypeDetail,
+          component: ProductTypeDetail,
           meta: {
             activeMenu: ROUTE_NAMES.PRODUCT_TYPES,
           },
@@ -224,7 +224,7 @@ const router = createRouter({
         {
           path: 'products/:slug',
           name: ROUTE_NAMES.PRODUCT_DETAIL,
-          component: () => ProductDetail,
+          component: ProductDetail,
           meta: {
             activeMenu: ROUTE_NAMES.PRODUCTS,
           },
@@ -233,7 +233,7 @@ const router = createRouter({
         {
           path: 'product-variants/:id',
           name: ROUTE_NAMES.PRODUCT_VARIANT_DETAIL,
-          component: () => ProductVariantDetail,
+          component: ProductVariantDetail,
           meta: {
             activeMenu: ROUTE_NAMES.PRODUCT_VARIANTS,
           },
@@ -242,7 +242,7 @@ const router = createRouter({
         {
           path: 'product-variant-items/:sku',
           name: ROUTE_NAMES.PRODUCT_VARIANT_ITEM_DETAIL,
-          component: () => ProductVariantItemDetail,
+          component: ProductVariantItemDetail,
           meta: {
             activeMenu: ROUTE_NAMES.PRODUCT_VARIANT_ITEMS,
           },

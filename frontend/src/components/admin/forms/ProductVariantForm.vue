@@ -112,6 +112,7 @@ const closeDialog = () => {
             type="text"
             placeholder="Nhập mã sản phẩm"
             maxlength="7"
+            @input="formData._id = formData._id.toUpperCase()"
           />
           <p v-if="errors._id" class="error m-0">{{ errors._id }}</p>
         </div>

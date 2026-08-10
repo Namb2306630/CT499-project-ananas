@@ -61,7 +61,7 @@ const errors = computed(() => error.value.errors)
 
 const cancelDelete = () => {
   closeDelete()
-  // toastStore.showToast('Đã hủy thay đổi', 'warning')
+  toastStore.showToast('Đã hủy thay đổi', 'warning')
 }
 const confirmDelete = async () => {
   if (!deleteItem.value) return

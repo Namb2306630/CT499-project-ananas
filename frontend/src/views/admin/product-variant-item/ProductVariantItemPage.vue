@@ -92,7 +92,7 @@ const opentEdit = (productVariItem) => {
   router.push({
     name: ROUTE_NAMES.PRODUCT_VARIANT_ITEM_DETAIL,
     params: {
-      sku: productVariItem._id,
+      sku: productVariItem.sku,
     },
   })
 }
