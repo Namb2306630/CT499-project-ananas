@@ -1,13 +1,18 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/user/HomeView.vue'
-//user
-import UserLayout from '@/layouts/UserLayout.vue'
-import AboutView from '@/views/user/AboutView.vue'
-
 import { ROUTE_NAMES } from '@/constants/routes.js'
 
-//admin
+//layout
+import AuthLayout from '@/layouts/AuthLayout.vue'
+import UserLayout from '@/layouts/UserLayout.vue'
 import AdminLayout from '@/layouts/AdminLayout.vue'
+
+//user
+import AboutView from '@/views/user/AboutView.vue'
+import HomeView from '../views/user/HomeView.vue'
+import HelpView from '@/views/user/HelpView.vue'
+
+//admin
+
 // import DashBoardPage from '@/views/admin/DashBoardPage.vue'
 // import CategoryPage from '@/views/admin/category/CategoryPage.vue'
 // import CollectionPage from '@/views/admin/collection/CollectionPage.vue'
@@ -61,6 +66,35 @@ const router = createRouter({
           component: () => NotFoundPage,
         },
       ],
+    },
+    //auth
+    {
+      path: '/auth',
+      component: () => AuthLayout,
+      children: [
+        {
+          path: '/login',
+          name: ROUTE_NAMES.LOGIN,
+          component: () => import('@/views/auth/LoginView.vue'),
+        },
+        {
+          path: '/register',
+          name: ROUTE_NAMES.REGISTER,
+          component: () => import('@/views/auth/RegisterView.vue'),
+        },
+        {
+          path: '/forgot-password',
+          name: ROUTE_NAMES.FORGOT_PASSWORD,
+          component: () => import('@/views/auth/ForgotPasswordView.vue'),
+        },
+      ],
+    },
+
+    //order
+    {
+      path: '/help',
+      name: ROUTE_NAMES.HELP,
+      component: () => import('@/views/user/HelpView.vue'),
     },
     //admin
     {
@@ -142,7 +176,7 @@ const router = createRouter({
         {
           path: 'orders',
           name: ROUTE_NAMES.ORDERS,
-          component: () => import('@/views/order/OrderPage.vue'),
+          component: () => import('@/views/order/OrderView.vue'),
         },
 
         {
@@ -236,7 +270,7 @@ const router = createRouter({
             activeMenu: ROUTE_NAMES.PRODUCT_VARIANT_ITEMS,
           },
         },
-                // Not Found
+        // Not Found
         {
           path: '404',
           name: ROUTE_NAMES.NOT_FOUND,

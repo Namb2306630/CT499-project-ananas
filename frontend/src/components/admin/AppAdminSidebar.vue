@@ -1,11 +1,20 @@
 <script setup>
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import avatar from '@/assets/images/hinh-anh-avatar-ngau-nu-1.jpg'
 import { ROUTE_NAMES } from '@/constants/routes'
 import { useUiStore } from '@/stores/ui'
 import { storeToRefs } from 'pinia'
+import { useAuthStore } from '@/stores/auth'
+import { useToastStore } from '@/stores/toast'
+
+
+
 const route = useRoute()
+const router = useRouter()
 const uiStore = useUiStore()
+const authStore = useAuthStore()
+const { error, loading } = storeToRefs(authStore)
+const toastStore = useToastStore()
 const props = defineProps({
   isShow: Boolean,
   handle: Function,
@@ -24,6 +33,20 @@ const handleLinkClick = (e) => {
     if (e.target.closest('a')) {
       closeMenu()
     }
+  }
+}
+
+const handleLogout = async () => {
+  try {
+    await authStore.logout()
+    await router.push({ name: ROUTE_NAMES.LOGIN })
+  } catch {
+    const message =
+      Object.values(authStore.error.errors)[0] ||
+      authStore.error.general ||
+      'Lỗi logout'
+
+    toastStore.showToast(message, 'error')
   }
 }
 
@@ -65,10 +88,7 @@ const isActiveMenu = (menuName) => {
 
     <div class="title">
       <div>
-        <RouterLink
-          :to="{ name: ROUTE_NAMES.DASHBOARD }"
-          :class="{ active: route.name === ROUTE_NAMES.DASHBOARD }"
-        >
+        <RouterLink :to="{ name: ROUTE_NAMES.DASHBOARD }" :class="{ active: route.name === ROUTE_NAMES.DASHBOARD }">
           <span class="material-symbols-outlined"> dashboard </span>
           <p>Trang Chủ</p>
         </RouterLink>
@@ -88,60 +108,32 @@ const isActiveMenu = (menuName) => {
         <!--  :class="{ active: route.name === ROUTE_NAMES.PRODUCT_LINES }" -->
         <Transition name="slide">
           <div v-if="showProductMenu" class="submenu">
-            <RouterLink
-              :to="{ name: ROUTE_NAMES.CATEGORIES }"
-              :class="{ active: isActiveMenu(ROUTE_NAMES.CATEGORIES) }"
-            >
+            <RouterLink :to="{ name: ROUTE_NAMES.CATEGORIES }"
+              :class="{ active: isActiveMenu(ROUTE_NAMES.CATEGORIES) }">
               Danh Mục
             </RouterLink>
-            <RouterLink
-              :to="{ name: ROUTE_NAMES.BRANDS }"
-              :class="{ active: isActiveMenu(ROUTE_NAMES.BRANDS) }"
-            >
+            <RouterLink :to="{ name: ROUTE_NAMES.BRANDS }" :class="{ active: isActiveMenu(ROUTE_NAMES.BRANDS) }">
               Thương Hiệu
             </RouterLink>
-            <RouterLink
-              :to="{ name: ROUTE_NAMES.PRODUCT_LINES }"
-              :class="{ active: isActiveMenu(ROUTE_NAMES.PRODUCT_LINES) }"
-            >
-              Dòng Sản Phẩm</RouterLink
-            >
-            <RouterLink
-              :to="{ name: ROUTE_NAMES.PRODUCT_TYPES }"
-              :class="{ active: isActiveMenu(ROUTE_NAMES.PRODUCT_TYPES) }"
-            >
-              Loại Sản Phẩm</RouterLink
-            >
-            <RouterLink
-              :to="{ name: ROUTE_NAMES.STYLES }"
-              :class="{ active: isActiveMenu(ROUTE_NAMES.STYLES) }"
-            >
-              Kiểu Dáng</RouterLink
-            >
-            <RouterLink
-              :to="{ name: ROUTE_NAMES.COLLECTIONS }"
-              :class="{ active: isActiveMenu(ROUTE_NAMES.COLLECTIONS) }"
-            >
-              Bộ Sưu Tập</RouterLink
-            >
-            <RouterLink
-              :to="{ name: ROUTE_NAMES.PRODUCTS }"
-              :class="{ active: isActiveMenu(ROUTE_NAMES.PRODUCTS) }"
-            >
-              Sản Phẩm</RouterLink
-            >
-            <RouterLink
-              :to="{ name: ROUTE_NAMES.PRODUCT_VARIANTS }"
-              :class="{ active: isActiveMenu(ROUTE_NAMES.PRODUCT_VARIANTS) }"
-            >
-              Biến Thể Sản Phẩm</RouterLink
-            >
-            <RouterLink
-              :to="{ name: ROUTE_NAMES.PRODUCT_VARIANT_ITEMS }"
-              :class="{ active: isActiveMenu(ROUTE_NAMES.PRODUCT_VARIANT_ITEMS) }"
-            >
-              SKU</RouterLink
-            >
+            <RouterLink :to="{ name: ROUTE_NAMES.PRODUCT_LINES }"
+              :class="{ active: isActiveMenu(ROUTE_NAMES.PRODUCT_LINES) }">
+              Dòng Sản Phẩm</RouterLink>
+            <RouterLink :to="{ name: ROUTE_NAMES.PRODUCT_TYPES }"
+              :class="{ active: isActiveMenu(ROUTE_NAMES.PRODUCT_TYPES) }">
+              Loại Sản Phẩm</RouterLink>
+            <RouterLink :to="{ name: ROUTE_NAMES.STYLES }" :class="{ active: isActiveMenu(ROUTE_NAMES.STYLES) }">
+              Kiểu Dáng</RouterLink>
+            <RouterLink :to="{ name: ROUTE_NAMES.COLLECTIONS }"
+              :class="{ active: isActiveMenu(ROUTE_NAMES.COLLECTIONS) }">
+              Bộ Sưu Tập</RouterLink>
+            <RouterLink :to="{ name: ROUTE_NAMES.PRODUCTS }" :class="{ active: isActiveMenu(ROUTE_NAMES.PRODUCTS) }">
+              Sản Phẩm</RouterLink>
+            <RouterLink :to="{ name: ROUTE_NAMES.PRODUCT_VARIANTS }"
+              :class="{ active: isActiveMenu(ROUTE_NAMES.PRODUCT_VARIANTS) }">
+              Biến Thể Sản Phẩm</RouterLink>
+            <RouterLink :to="{ name: ROUTE_NAMES.PRODUCT_VARIANT_ITEMS }"
+              :class="{ active: isActiveMenu(ROUTE_NAMES.PRODUCT_VARIANT_ITEMS) }">
+              SKU</RouterLink>
           </div>
         </Transition>
       </div>
@@ -201,7 +193,7 @@ const isActiveMenu = (menuName) => {
         </Transition>
       </div>
     </div>
-    <div class="logout" @click="">
+    <div class="logout" @click="handleLogout">
       <i class="fa-solid fa-right-from-bracket"></i>
       <p>Đăng xuất</p>
     </div>
@@ -220,11 +212,13 @@ const isActiveMenu = (menuName) => {
   display: flex;
   flex-direction: column;
   overflow-y: auto;
-  scrollbar-width: none; /* Firefox */
+  scrollbar-width: none;
+  /* Firefox */
 }
 
 .sidebar::-webkit-scrollbar {
-  display: none; /* Chrome */
+  display: none;
+  /* Chrome */
 }
 
 .title {
@@ -251,14 +245,14 @@ const isActiveMenu = (menuName) => {
   transition: transform 0.3s ease;
 }
 
-.title > div:not(.menu-item) {
+.title>div:not(.menu-item) {
   margin-top: 4px;
   border-radius: 10px;
   overflow: hidden;
   transition: all 0.3s ease;
 }
 
-.title > div:not(.menu-item):hover {
+.title>div:not(.menu-item):hover {
   background-color: var(--bg-hover);
   transform: translateX(6px);
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
@@ -269,8 +263,8 @@ const isActiveMenu = (menuName) => {
   transition: transform 0.3s ease;
 }
 
-.title > div:not(.menu-item):hover .material-symbols-outlined,
-.title > div:not(.menu-item):hover .fa-solid {
+.title>div:not(.menu-item):hover .material-symbols-outlined,
+.title>div:not(.menu-item):hover .fa-solid {
   transform: translateX(5px);
 }
 
@@ -282,7 +276,7 @@ const isActiveMenu = (menuName) => {
   font-weight: 600;
 }
 
-.title > div:not(.menu-item):hover p {
+.title>div:not(.menu-item):hover p {
   transform: translateX(3px);
 }
 
@@ -308,11 +302,13 @@ const isActiveMenu = (menuName) => {
   border-radius: 18px;
   transition: all 0.25s ease;
 }
+
 .profile:hover {
   background: var(--bg-hover);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   transform: translateY(-2px);
 }
+
 .profile img {
   width: 50px;
   height: 50px;
@@ -322,10 +318,14 @@ const isActiveMenu = (menuName) => {
 .profile p {
   margin: 0;
   padding: 0;
-  max-width: 200px; /* giới hạn chiều ngang */
-  white-space: nowrap; /* không xuống dòng */
-  overflow: hidden; /* ẩn phần dư */
-  text-overflow: ellipsis; /* ... */
+  max-width: 200px;
+  /* giới hạn chiều ngang */
+  white-space: nowrap;
+  /* không xuống dòng */
+  overflow: hidden;
+  /* ẩn phần dư */
+  text-overflow: ellipsis;
+  /* ... */
   color: var(--text-white);
 }
 
@@ -484,6 +484,7 @@ const isActiveMenu = (menuName) => {
   transform: translateY(0);
   max-height: auto;
 }
+
 @media (max-width: 768px) {
   .sidebar-overlay {
     position: fixed;

@@ -90,12 +90,29 @@ exports.refreshToken = async (req, res, next) => {
   }
 };
 
-exports.logout = (req, res) => {
-  res.clearCookie(config.jwt.accessToken);
+exports.logout = async (req, res, next) => {
+  try {
+    // await authService.logout(req.user._id);
 
-  res.clearCookie(config.jwt.refreshToken);
+    res.clearCookie(config.jwt.accessToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "strict",
+    });
 
-  res.send({ message: "Đăng xuất thành công" });
+    res.clearCookie(config.jwt.refreshToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "strict",
+      path: "/api/auth/refresh-token",
+    });
+
+    return res.status(200).json({
+      message: "Đăng xuất thành công",
+    });
+  } catch (err) {
+    next(err);
+  }
 };
 
 exports.forgotPassword = (req, res) => {

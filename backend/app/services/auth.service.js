@@ -132,6 +132,19 @@ class AuthService {
       throw ErrorCode.UNAUTHORIZED();
     }
   }
+  async logout(userId) {
+    const user = await User.findById(userId);
+
+    if (!user) {
+      throw ErrorCode.UNAUTHORIZED();
+    }
+
+    user.jwtVersion = (user.jwtVersion || 0) + 1;
+
+    await user.save();
+
+    return true;
+  }
 }
 
 module.exports = new AuthService();

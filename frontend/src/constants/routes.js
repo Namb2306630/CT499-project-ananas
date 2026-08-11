@@ -40,5 +40,11 @@ export const ROUTE_NAMES = {
 
   USERS: 'users',
 
+  FORGOT_PASSWORD: 'forgot-password',
+  REGISTER: 'register',
+  LOGIN: 'login',
+
+  HELP: 'help',
+
   // user
 }
