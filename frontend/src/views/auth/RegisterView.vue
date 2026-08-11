@@ -1,122 +1,118 @@
 <script setup>
-import { ROUTE_NAMES } from '@/constants/routes'
-import Logo from '@/assets/images/ananas_logo.svg'
+import AuthFormLayout from '@/components/auth/AuthFormLayout.vue'
+import { ROUTE_NAMES } from '@/constants/routes';
+import { ref } from 'vue';
+import { storeToRefs } from 'pinia';
+import { useAuthStore } from '@/stores/auth';
+import { useToastStore } from '@/stores/toast';
+import { useRouter } from 'vue-router';
+
+const router = useRouter()
+const authStore = useAuthStore()
+const toastStore = useToastStore()
+const { error, loading } = storeToRefs(authStore)
+
+const showPassword = ref(false)
+const showConfirmPassword = ref(false)
+const handleTogglePassword = () => {
+    showPassword.value = !showPassword.value
+}
+const handleToggleConfirmPassword = () => {
+    showConfirmPassword.value = !showConfirmPassword.value
+}
+
+const authUser = ref({
+    phone: '',
+    password: '',
+    confirmPassword: '',
+})
+
+const register = async () => {
+    const res = await authStore.register(authUser.value)
+    if(res?.code === 200) {
+        toastStore.showToast(res.message)
+         router.push({ name: ROUTE_NAMES.LOGIN })
+    }
+}
 </script>
 
 <template>
-    <div class="auth-layout">
-        <div class="auth-header">
-            <div class="auth-logo">
-                <Logo />
-                <P>Đăng ký</P>
+    <AuthFormLayout title="Đăng ký">
+
+        <form class="login-form" @submit.prevent="authUser">
+            <h4 class="p-0 m-0">Đăng ký</h4>
+
+            <div class="phone">
+                <input type="tel" placeholder="Số điện thoại" id="phone" v-model="authUser.phone" />
             </div>
 
-            <div class="auth-help">
-                <RouterLink :to="{ name: ROUTE_NAMES.HELP }">
-                    Bạn cần giúp đỡ?
-                </RouterLink>
+            <div class="password">
+                <input :type="showPassword ? 'text' : 'password'" placeholder="Mật khẩu" id="password" v-model="authUser.password" />
+                <i class="fa-regular" :class="showPassword ? 'fa-eye' : 'fa-eye-slash'"
+                    @click="handleTogglePassword"></i>
             </div>
-        </div>
-        <div class="auth-body">
-            <div class="auth-body-inner">
 
-                <div class="body-left">
-                    <Logo />
-                    <p>
-                        Nền tảng thương mại bán giày dép và phụ kiện thời trang
-                    </p>
+            <div class="confirm-password">
+                <input :type="showConfirmPassword ? 'text' : 'password'" placeholder="Xác nhận mật khẩu"
+                    id="confirm-password" v-model="authUser.confirmPassword" />
+                <i class="fa-regular" :class="showConfirmPassword ? 'fa-eye' : 'fa-eye-slash'"
+                    @click="handleToggleConfirmPassword"></i>
+
+            </div>
+
+
+            <button type="submit" :class="{ 'is-disabled': !canSubmit }" :disabled="!canSubmit">
+                Đăng ký
+            </button>
+
+            <div class="register-agreement">
+                <p class="p-0 m-0">Bằng việc đăng ký, bạn đã đồng ý với Ananas về <RouterLink>
+                        Điều khoảng dịch vụ
+                    </RouterLink> & <RouterLink>Chính sách bảo mật</RouterLink>
+                </p>
+            </div>
+            <div class="or-divider">
+                <span>HOẶC</span>
+            </div>
+            <div class="auth-2">
+                <div class="google">
+                    <i class="fa-brands fa-google"></i> Google
                 </div>
+            </div>
 
-                <div class="body-right">
-                    hell
-                </div>
+            <div class="login">
+                <p class="p-0 m-0">Bạn đã có tài khoản?<RouterLink :to="{ name: ROUTE_NAMES.LOGIN }"> Đăng nhập
+                    </RouterLink>
+                </p>
 
             </div>
-        </div>
-    </div>
+        </form>
+
+    </AuthFormLayout>
 </template>
 <style scoped>
-.auth-header {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    padding: 30px 0;
-    max-width: var(--max-width);
-    margin: auto;
-}
+@import '../../assets/css/auth.css';
 
-.auth-logo :deep(svg) {
-    width: 120px
-}
-
-.auth-logo {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    gap: 15px;
-}
-
-.auth-logo p {
-    color: black;
-    font-weight: 500;
-    font-size: 24px;
-    padding: 0 0 0 10px;
-    margin: 0;
-    border-left: 5px solid var(--color-23);
-}
-
-.auth-header a {
-    color: var(--color-23)
-}
-
-
-
-.auth-body {
-    background-color: var(--color-23);
-}
-
-.auth-body-inner {
-    max-width: var(--max-width);
-    margin: 0 auto;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    padding: 60px 0;
-}
-
-.body-right {
-    width: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.body-left :deep(svg) {
-    width: 200px;
-    height: auto;
-
-}
-
-.body-left {
-    width: 50%;
+.login-form {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    background-color: white;
+    padding: 30px;
+    gap: 20px;
+    width: 70%;
+}
+
+.register-agreement a,
+.login a {
+    color: var(--color-23);
+}
+
+.register-agreement {
+    color: black;
+    font-size: 14px;
+}
+
+.login {
     text-align: center;
-}
-
-.body-logo {
-    width: 120px;
-    margin-bottom: 20px;
-}
-
-.body-left p {
-    max-width: 350px;
-    font-size: 24px;
-    line-height: 1.5;
-    color: white;
-    font-weight: bolder;
-    margin-top: 45px;
 }
 </style>

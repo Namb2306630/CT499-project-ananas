@@ -1,0 +1,96 @@
+.password,
+.confirm-password,
+.phone {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    border: 1px solid var(--color-7);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.password input,
+.confirm-password input,
+.phone input {
+    flex: 1;
+    border: none;
+    outline: none;
+    padding: 10px;
+}
+
+.password i,
+.confirm-password i {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 45px;
+    height: 100%;
+    cursor: pointer;
+    color: var(--text-gray-3);
+}
+
+.password:hover,
+.confirm-password:hover,
+.phone:hover {
+    border-color: var(--color-bule);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.password:focus-within,
+.confirm-password:focus-within,
+.phone:focus-within {
+    border-color: var(--color-bule);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+button {
+    cursor: pointer;
+    border: none;
+    background-color: var(--color-23);
+    padding: 10px;
+    text-transform: uppercase;
+    font-weight: 500;
+    color:white
+}
+
+button.is-disabled {
+    opacity: 0.8;
+    cursor: not-allowed;
+    padding: 10px;
+}
+
+.google {
+    border: 1px solid var(--color-7);
+    text-align: center;
+    padding: 5px;
+    color:black
+}
+.google .fa-google {
+   color:var(--color-bule-2)
+}
+
+.google:hover {
+    background-color: var(--color-24);
+    color: white;
+}
+
+.google:hover .fa-google{
+    
+    color: var(--color-red-1);
+}
+
+.or-divider {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    color: #666;
+    font-size: 14px;
+}
+
+.or-divider::before,
+.or-divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background-color: var(--color-7);
+}

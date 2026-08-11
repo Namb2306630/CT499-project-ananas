@@ -1,13 +1,22 @@
 <script setup>
-import AppFooter from '@/components/user/AppUserFooter.vue'
+import AuthFormLayout from '@/components/auth/AuthFormLayout.vue'
 </script>
 
 <template>
-  <div class="app-layout">
-    <main class="content">
-      <RouterView />
-    </main>
+    <AuthFormLayout title="Đăng nhập">
 
-    <AppFooter />
-  </div>
+        <form class="login-form">
+            <h2>Đăng nhập</h2>
+
+            <input type="email" placeholder="Email" id="email" />
+
+            <input type="password" placeholder="Mật khẩu" id="password" />
+
+            <button type="submit">
+                Đăng nhập
+            </button>
+        </form>
+
+    </AuthFormLayout>
 </template>
+<style scoped></style>

@@ -214,7 +214,6 @@ const scrollTop = () => {
 .footer {
   background-color: var(--bg-footer-color);
   padding-bottom: 5px;
-  margin-top: 300px;
 }
 .footer .container-fluid {
   max-width: var(--container-width);

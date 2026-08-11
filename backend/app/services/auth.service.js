@@ -56,9 +56,9 @@ class AuthService {
     const { phone, password, confirmPassword } = payload;
 
     //check confirm password
-    // if (password !== confirmPassword) {
-    //   throw ErrorCode.PASSWORD_NOT_MATCH();
-    // }
+    if (password !== confirmPassword) {
+      throw ErrorCode.PASSWORD_NOT_MATCH();
+    }
 
     //check DB
     const existedUser = await User.findOne({
