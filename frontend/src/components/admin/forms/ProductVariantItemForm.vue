@@ -123,7 +123,7 @@ const closeDialog = () => {
                 :label="group.productName"
               >
                 <option v-for="item in group.variants" :key="item._id" :value="item._id">
-                  {{ item.colorName }}
+                 {{ item.colorName }} - {{ item._id }}
                 </option>
               </optgroup>
             </select>
@@ -140,7 +140,7 @@ const closeDialog = () => {
         <div class="size-card" v-for="(item, index) in formData.sizes" :key="index">
           <div class="form-group">
             <label for="size">Size</label>
-            <input id="size" v-model="item.size" min="31" max="46" placeholder="VD: 40" />
+            <input id="size" v-model="item.size"  placeholder="VD: 40 hoặc M" />
           </div>
 
           <div class="form-group">

@@ -142,7 +142,7 @@ const cancelDelete = () => {
       place-holder="Tìm danh mục..."
       :filters="[
         {
-          label: 'Chọn trạng thái',
+          label: 'Lọc theo',
           options: ['Hoạt động', 'Đã ẩn'],
         },
       ]"

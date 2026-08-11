@@ -118,6 +118,13 @@ const opentEdit = (productVariant) => {
       button-text="THÊM SẢN PHẨM"
       place-holder="Tìm tên biến thể sản phẩm"
       @click="openAddForm"
+      :filters="[
+        {
+          label: 'Lọc theo',
+          options: ['Đang bán', 'Đã ẩn', 'Hết hàng', 'Ngừng kinh doanh'],
+        },
+        
+      ]"
     />
     <AdminToolbar
       content="Thêm biến thể sản phẩm"

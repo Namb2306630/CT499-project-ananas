@@ -84,7 +84,6 @@ const saveCollection = async () => {
   const res = await collectionStore.update(collection.value._id, collection.value)
 
   if (res?.code === 200) {
-    errors.value = {}
     collectionStore.clearError()
     toastStore.showToast(res.message, 'success')
     setTimeout(() => {

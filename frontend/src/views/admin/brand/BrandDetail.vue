@@ -74,7 +74,6 @@ const saveBrand = async () => {
 
   if (res?.code === 200) {
     brandStore.clearError()
-    errors.value = {}
     toastStore.showToast(res.message, 'success')
     setTimeout(() => {
       router.back()

@@ -47,6 +47,13 @@ const addUser = (data) => {
       button-text="THÊM NHÂN VIÊN"
       place-holder="Tìm nhân viên..."
       @click="openAddForm"
+      :filters="[
+        {
+          label: 'Lọc theo',
+          options: ['Hoạt động', 'Bị khóa'],
+        },
+        
+      ]"
     />
     <AdminToolbar content="Thêm tài khoản nhân viên" :items="users" @add="openAddForm" />
   </div>

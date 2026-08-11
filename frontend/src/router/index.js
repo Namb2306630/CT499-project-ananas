@@ -157,17 +157,6 @@ const router = createRouter({
           component: () => import('@/views/admin/product-variant-item/ProductVariantItemPage.vue'),
         },
 
-        // Not Found
-        {
-          path: '404',
-          name: ROUTE_NAMES.NOT_FOUND,
-          component: import('@/views/admin/system/NotFoundPage.vue'),
-        },
-        {
-          path: ':pathMatch(.*)*',
-          component: () => NotFoundPage,
-        },
-
         // detail
         {
           path: 'categories/:slug',
@@ -246,6 +235,16 @@ const router = createRouter({
           meta: {
             activeMenu: ROUTE_NAMES.PRODUCT_VARIANT_ITEMS,
           },
+        },
+                // Not Found
+        {
+          path: '404',
+          name: ROUTE_NAMES.NOT_FOUND,
+          component: () => import('@/views/admin/system/NotFoundPage.vue'),
+        },
+        {
+          path: ':pathMatch(.*)*',
+          component: () => NotFoundPage,
         },
       ],
     },

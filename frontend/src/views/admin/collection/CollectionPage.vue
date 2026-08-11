@@ -120,6 +120,12 @@ const cancelDelete = () => {
       button-text="THÊM BỘ SƯU TẬP"
       place-holder="Tìm bộ sưu tập sản phẩm..."
       @click="openAddForm"
+      :filters="[
+        {
+          label: 'Lọc theo',
+          options: ['Hoạt động', 'Đã ẩn'],
+        },
+      ]"
     />
     <AdminToolbar
       content="Thêm bộ sưu tập"

@@ -135,6 +135,13 @@ const cancelDelete = () => {
       button-text="THÊM DÒNG SẢN PHẨM"
       place-holder="Tìm dòng sản phẩm..."
       @click="openAddForm"
+      :filters="[
+        {
+          label: 'Lọc theo',
+          options: ['Hoạt động', 'Đã ẩn'],
+        },
+        
+      ]"
     />
     <!--  :show-sidebar="showSidebar"  để ẩn hiện cái sidebar thì số ccarrd thay đổi theo -->
     <AdminToolbar

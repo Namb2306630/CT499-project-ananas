@@ -31,7 +31,7 @@ const columns = computed(() =>
     </template>
     <template #default="{ item: variantItem }">
       <div class="cell">
-        <strong class="name">{{ variantItem.variant._id }}</strong>
+        <strong class="name">{{ variantItem.variant.colorName }} - {{ variantItem.variant._id }}</strong>
       </div>
       <div class="cell">
         <strong>{{ variantItem.sku }}</strong>

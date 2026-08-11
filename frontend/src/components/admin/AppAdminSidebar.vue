@@ -201,7 +201,7 @@ const isActiveMenu = (menuName) => {
         </Transition>
       </div>
     </div>
-    <div class="logout">
+    <div class="logout" @click="">
       <i class="fa-solid fa-right-from-bracket"></i>
       <p>Đăng xuất</p>
     </div>

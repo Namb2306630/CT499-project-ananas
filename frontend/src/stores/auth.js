@@ -2,7 +2,7 @@ import { defineStore } from 'pinia' //quản lý state
 import api from '@/api/axios'
 
 export const useAuthStore = defineStore('auth', {
-  state: () => ({ user: null }),
+  state: () => ({ user: null, loading: false, }),
   actions: {
     async getMe() {
       const res = await api.get('/auth/me')

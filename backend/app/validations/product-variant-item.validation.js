@@ -41,6 +41,11 @@ exports.updateProductVItem = Joi.object({
     "number.min": "Stock không được âm",
     "number.integer": "Stock phải là số nguyên",
   }),
+    status: Joi.string()
+    .valid("active", "inactive", "discontinued")
+    .messages({
+      "any.only": "Trạng thái không hợp lệ",
+    }),
 }).min(1);
 
 exports.purchaseSchema = Joi.object({

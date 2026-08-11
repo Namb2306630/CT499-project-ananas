@@ -48,7 +48,7 @@ const handleDelete = () => emit('delete', props.item)
   border: 2px dashed var(--color-7);
 }
 
-.card-item.discondiscontinued-cardtinued:hover {
+.card-item.discontinued-card:hover {
   transform: none;
   box-shadow: none;
   cursor: default;

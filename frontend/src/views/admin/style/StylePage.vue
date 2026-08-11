@@ -119,6 +119,13 @@ const cancelDelete = () => {
       button-text="THÊM KIỂU DÁNG SẢN PHẨM"
       place-holder="Tìm tên kiểu dáng sản phẩm..."
       @click="openAddForm"
+      :filters="[
+        {
+          label: 'Lọc theo',
+          options: ['Hoạt động', 'Đã ẩn'],
+        },
+        
+      ]"
     />
 
     <AdminToolbar

@@ -144,11 +144,11 @@ const upload = (e) => {
 
       <img v-else-if="showBGImage" class="preview-image default-bg" :src="UploadBg" alt="Ảnh nền tải lên" />
 
-      <div v-else class="empty-image">
+      <!-- <div v-else class="empty-image">
         <span class="material-symbols-outlined">
           hide_image
         </span>
-      </div>
+      </div> -->
 
       <div v-if="showContentInImage" class="title-upload">
         <div :class="[image ? 'icon-tick' : 'icon-camera', { 'no-icon-bg': !showIconBG }]">
@@ -180,7 +180,7 @@ const upload = (e) => {
 </template>
 
 <style scoped>
-.empty-image {
+/* .empty-image {
   width: 100%;
   height: 100%;
   display: flex;
@@ -192,7 +192,7 @@ const upload = (e) => {
 
 .empty-image .material-symbols-outlined {
   font-size: 48px;
-}
+} */
 
 .upload-box {
   display: flex;

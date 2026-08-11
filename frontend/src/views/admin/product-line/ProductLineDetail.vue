@@ -93,7 +93,7 @@ const saveProductLine = async () => {
   const res = await productLineStore.update(productLine.value._id, productLine.value)
 
   if (res?.code === 200) {
-    errors.value = {}
+    // errors.value = {}
     productLineStore.clearError()
     toastStore.showToast(res.message, 'success')
     setTimeout(() => {

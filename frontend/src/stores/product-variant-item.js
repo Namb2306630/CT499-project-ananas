@@ -112,7 +112,7 @@ export const useProductVariItem = defineStore('product-variant-items', {
           errors: data?.errors || {},
         }
       } finally {
-        this.loading = true
+        this.loading = false
       }
     },
   },

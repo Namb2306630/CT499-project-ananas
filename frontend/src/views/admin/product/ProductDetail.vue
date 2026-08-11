@@ -150,7 +150,7 @@ const saveProduct = async () => {
 
   if (res?.code === 200) {
     productStore.clearError()
-    errors.value = {}
+    // errors.value = {}
     toastStore.showToast(res.message, 'success')
     setTimeout(() => {
       router.back()

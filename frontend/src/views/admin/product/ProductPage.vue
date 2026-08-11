@@ -222,6 +222,13 @@ const cancelDelete = () => {
       button-text="THÊM SẢN PHẨM"
       place-holder="Tìm tên sản phẩm"
       @click="openAddForm"
+      :filters="[
+        {
+          label: 'Lọc theo',
+          options: ['Đang bán', 'Đã ẩn','Sale', 'Bán chạy', 'Mới'],
+        },
+        
+      ]"
     />
     <AdminToolbar
       content="Thêm sản phẩm"

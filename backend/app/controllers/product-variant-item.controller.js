@@ -22,6 +22,7 @@ exports.update = async (req, res, next) => {
     return ApiResponse.success({
       res,
       data,
+      message: "Cập nhật dữ liệu cho SKu thành công!"
     });
   } catch (err) {
     next(err);

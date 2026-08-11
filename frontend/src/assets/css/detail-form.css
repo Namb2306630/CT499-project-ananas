@@ -180,3 +180,39 @@ select:hover {
     grid-template-columns: 1fr;
   }
 }
+
+
+/* chia làm 2 cột ở productvariant và productvariantitem */
+.color-box,.size-stock-box {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.color-box > div:first-child,.size-stock-box > div:first-child {
+  flex: 2;
+}
+
+.color-box > div:last-child,.size-stock-box > div:last-child {
+  flex: 1;
+}
+
+@media (max-width: 767px) {
+  .color-box,.size-stock-box {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 0px;
+  }
+  .color-box div,.size-stock-box div {
+    width: 100%;
+  }
+
+  .color-box label,.size-stock-box label {
+    padding: 0;
+    margin: 10px 0 0 0;
+  }
+}

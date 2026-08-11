@@ -97,7 +97,7 @@ const cancelEdit = () => {
 const saveProductVariant = async () => {
   const res = await productVariantStore.update(productVariant.value._id, productVariant.value)
   if (res?.code === 200) {
-    errors.value = {}
+    // errors.value = {}
     productVariantStore.clearError()
     toastStore.showToast(res.message, 'success')
     setTimeout(() => {
@@ -275,38 +275,5 @@ const updateColor = (e) => {
   flex: 1;
   height: 42px;
   margin: 0;
-}
-.color-box {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-}
-
-.color-box > div:first-child {
-  flex: 2;
-}
-
-.color-box > div:last-child {
-  flex: 1;
-}
-
-@media (max-width: 767px) {
-  .color-box {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 0px;
-  }
-  .color-box div {
-    width: 100%;
-  }
-
-  .color-box label {
-    padding: 0;
-    margin: 10px 0 0 0;
-  }
 }
 </style>

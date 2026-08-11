@@ -1,5 +1,5 @@
 <script setup>
-import { useRouter, useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useProductVariItem } from '@/stores/product-variant-item';
 import { useProductVariant } from '@/stores/product-variant';
 import { storeToRefs } from 'pinia';
@@ -12,6 +12,8 @@ import DetailActions from '@/components/admin/detail/DetailActions.vue';
 import DetailStats from '@/components/admin/detail/DetailStats.vue';
 import DetailStatus from '@/components/admin/detail/DetailStatus.vue';
 import HeaderDetail from '@/components/admin/detail/HeaderDetail.vue';
+import ConfirmDialog from '@/components/common/ConfirmDialog.vue';
+
 
 const productVariantStore = useProductVariant()
 const productVariantItemStore = useProductVariItem()
@@ -28,7 +30,8 @@ const productVariantItem = ref({
     size: '',
     sku: '',
     stock: '',
-    status: ''
+    status: '',
+    createdAt: ''
 })
 
 onMounted(async () => {
@@ -82,7 +85,6 @@ const cancelEdit = () => {
 const save = async () => {
     const res = await productVariantItemStore.update(productVariantItem.value._id, productVariantItem.value)
     if (res?.code === 200) {
-        errors.value = {}
         productVariantItemStore.clearError()
         toastStore.showToast(res.message, 'success')
         setTimeout(() => {
@@ -90,13 +92,28 @@ const save = async () => {
         }, 500)
     } else {
         const message =
-            Object.values(productVariantStore.error.errors)[0] ||
-            productVariantStore.error.general ||
+            Object.values(productVariantItemStore.error.errors)[0] ||
+            productVariantItemStore.error.general ||
             'Lỗi, không thể câp nhật dữ liệu biến thể sản phẩm!!!'
 
         toastStore.showToast(message, 'error')
     }
 }
+
+const groupedVariants = computed(() => {
+    const groups = {}
+    for (const item of productVariantOptions.value) {
+        const productId = item.product._id
+        if (!groups[productId]) {
+            groups[productId] = {
+                productName: item.product.name,
+                variants: [],
+            }
+        }
+        groups[productId].variants.push(item)
+    }
+    return Object.values(groups)
+})
 </script>
 <template>
     <div v-if="!loading" class="container-detail">
@@ -108,20 +125,72 @@ const save = async () => {
                 <div class="top-info">
                     <div class="form">
 
-                        <!-- mã biến thể  -->
-                        <label for="productVariant">Mã biến thể sản phẩm</label>
-                        <select name="productVariant" id="productVariant" v-model="productVariantItem.variant">
-                            <option v-for="item in productVariantOptions" :value="item._id" :key="item._id">{{ item._id }}</option>
-                        </select>
-                        <i class="fa-solid fa-chevron-down"></i>
+                        <label for="productVariant">
+                            Mã biến thể sản phẩm
+                        </label>
+
+                        <div class="select-box">
+                            <select id="productVariant" name="productVariant" v-model="productVariantItem.variant">
+                                <optgroup v-for="group in groupedVariants" :key="group.productName"
+                                    :label="group.productName">
+                                    <option v-for="item in group.variants" :key="item._id" :value="item._id">
+                                        {{ item.colorName }} - {{ item._id }}
+                                    </option>
+                                </optgroup>
+                            </select>
+
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </div>
+                        <div>
+                            <label for="sku">SKU</label>
+                            <input type="text" id="sku" readonly v-model="productVariantItem.sku">
+                        </div>
+                        <div class="size-stock-box">
+                            <div>
+                                <label for="size">Size</label>
+                                <input type="text" id="size" v-model="productVariantItem.size">
+                            </div>
+                            <div>
+                                <label for="stock">Số lượng</label>
+                                <input type="number" id="stock" min="0" max="9999" v-model="productVariantItem.stock">
+                            </div>
+                        </div>
                     </div>
+
                 </div>
             </DetailLayout>
+            <div class="row info-card-2">
+                <DetailStats count-label="Số lượng của size:" :count="productVariantItem.stock"
+                    :created-at="productVariantItem.createdAt" icon-type="fa" icon="fa-solid fa-diagram-project" />
+                <DetailLayout title="Trạng thái của SKU" icon-type="fa" icon="fa-solid fa-check-double"
+                    size-title="20px">
+                    <div class="select-box">
+                        <label for="status">Trạng thái của SKU</label>
+                        <div class="select-box">
+                            <select id="status" v-model="productVariantItem.status">
+                                <option value="active">Đang bán</option>
+                                <option value="inactive">Ẩn</option>
+
+                            </select>
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </div>
+                    </div>
+                </DetailLayout>
+            </div>
         </div>
+        <DetailActions @cancel="cancelEdit" @save="save" />
     </div>
+    <ConfirmDialog title="Xóa SKU" message="Bạn có chắc muốn xóa SKU này?" :show="showConfirm" @confirm="confirmDelete"
+        @cancel="cancelDelete" :name="deleteItem?.sku" />
 </template>
 
 <style scoped>
 @import '../../../assets/css/detail-form.css';
 @import '../../../assets/css/swtich.css';
+
+.select-box label {
+    color: var(--color-4);
+    font-weight: 500;
+    margin: 0 0 6px 0;
+}
 </style>

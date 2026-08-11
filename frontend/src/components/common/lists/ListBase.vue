@@ -21,12 +21,8 @@ const handleDelete = () => {
 </script>
 
 <template>
-  <div
-    class="list-item"
-    :class="{ 'discontinued-card': item.status === 'discontinued' }"
-    :style="{ gridTemplateColumns: columns }"
-    @click.stop="handleEdit"
-  >
+  <div class="list-item" :class="{ 'discontinued-list': item.status === 'discontinued' }"
+    :style="{ gridTemplateColumns: columns }" @click.stop="handleEdit">
     <!-- Slot chứa toàn bộ các ô dữ liệu (Cells) bên trong -->
     <div class="list-content">
       <slot :item="item" />
@@ -51,18 +47,23 @@ const handleDelete = () => {
         <i class="fa-solid fa-trash"></i>
       </button>
     </div>
+    <div v-else class="list-actions">
+      <button class="removed" title="Đã xóa" >
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
   </div>
 </template>
 
 <style scoped>
-.card-item.discontinued-card {
+.list-item.discontinued-list {
   opacity: 0.75;
   filter: grayscale(100%);
   background: var(--color-22);
   border: 2px dashed var(--color-7);
 }
 
-.card-item.discondiscontinued-cardtinued:hover {
+.list-item.discontinued-list:hover {
   transform: none;
   box-shadow: none;
   cursor: default;
@@ -72,12 +73,15 @@ const handleDelete = () => {
 .list-item:hover {
   cursor: pointer;
 }
+
 .list-content {
   display: contents;
 }
+
 .list-status {
   text-align: start;
 }
+
 .active {
   padding: 6px 12px;
   border-radius: 20px;
@@ -91,6 +95,7 @@ const handleDelete = () => {
   border-radius: 20px;
   background: #fee2e2;
 }
+
 .list-actions {
   display: flex;
   justify-content: center;
@@ -105,11 +110,12 @@ const handleDelete = () => {
   color: white;
   cursor: pointer;
 }
+
 .edit {
   background: #2563eb;
 }
 
-.delete {
+.delete,.removed {
   background: #dc2626;
 }
 </style>

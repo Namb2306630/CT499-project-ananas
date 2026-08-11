@@ -179,6 +179,7 @@ class ProVariItemService {
       "size",
       "stock",
       // "isInStock",
+      "status",
       "sku",
     ]);
 
@@ -204,7 +205,56 @@ class ProVariItemService {
 
     // return true;
 
-    return item;
+  const result = await ProVariItem.aggregate([
+        {
+            $match: {
+                _id: item._id,
+            },
+        },
+        {
+            $lookup: {
+                from: "productvariants",
+                let: {
+                    variantId: "$variant",
+                },
+                pipeline: [
+                    {
+                        $match: {
+                            $expr: {
+                                $eq: ["$_id", "$$variantId"],
+                            },
+                        },
+                    },
+                    {
+                        $project: {
+                            _id: 1,
+                            colorName: 1,
+                        },
+                    },
+                ],
+                as: "variant",
+            },
+        },
+        {
+            $unwind: {
+                path: "$variant",
+                preserveNullAndEmptyArrays: true,
+            },
+        },
+        {
+            $project: {
+                _id: 1,
+                variant: 1,
+                size: 1,
+                sku: 1,
+                stock: 1,
+                status: 1,
+                createdAt: 1,
+            },
+        },
+    ]);
+
+    return result[0];
   }
 
   async getAll() {

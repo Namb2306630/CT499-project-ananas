@@ -107,6 +107,13 @@ const opentEdit = (productVariItem) => {
       button-text="thêm sản phẩm"
       place-holder="Tìm sản phẩm"
       @click="openAddForm"
+      :filters="[
+        {
+          label: 'Lọc theo',
+          options: ['Đang bán', 'Đã ẩn', 'Ngừng kinh doanh'],
+        },
+        
+      ]"
     />
     <AdminToolbar
       content="Thêm sản phẩm"

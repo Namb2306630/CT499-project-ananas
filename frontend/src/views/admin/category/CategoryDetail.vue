@@ -73,7 +73,6 @@ const saveCategory = async () => {
   const result = await categoryStore.updateCategory(category.value._id, category.value)
   if (result?.code === 200) {
     categoryStore.clearError()
-    errors.value = {}
     toastStore.showToast(result.message, 'success')
     setTimeout(() => {
       router.back()

@@ -134,7 +134,7 @@ const cancelDelete = () => {
       place-holder="Nhập tên thương hiệu cần tìm..."
       :filters="[
         {
-          label: 'Chọn trạng thái',
+         label: 'Lọc theo',
           options: ['Hoạt động', 'Đang ẩn'],
         },
       ]"
