@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia' //quản lý state
 import service from '@/services/auth.service'
 
-
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     user: null,
@@ -13,6 +12,13 @@ export const useAuthStore = defineStore('auth', {
     },
   }),
   actions: {
+    async clearError() {
+      this.error = {
+        code: null,
+        general: '',
+        errors: {},
+      }
+    },
     // Lấy thông tin user hiện tại
     async getMe() {
       try {
@@ -41,6 +47,39 @@ export const useAuthStore = defineStore('auth', {
         await service.logout()
       } finally {
         this.user = null
+      }
+    },
+
+    async register(payload) {
+      this.loading = true
+      this.clearError()
+
+      const startTime = Date.now()
+
+      try {
+        const res = await service.register(payload)
+
+        return res.data
+      } catch (error) {
+        const data = error.response?.data
+
+        this.error = {
+          code: data?.code || 500,
+          general: data?.message || 'Lỗi tạo tài khoản!!!',
+          errors: data?.errors || {},
+        }
+
+        return null
+      } finally {
+        const elapsed = Date.now() - startTime
+
+        if (elapsed < 500) {
+          await new Promise((resolve) => {
+            setTimeout(resolve, 500 - elapsed)
+          })
+        }
+
+        this.loading = false
       }
     },
   },

@@ -1,7 +1,7 @@
 <script setup>
 import AuthFormLayout from '@/components/auth/AuthFormLayout.vue'
 import { ROUTE_NAMES } from '@/constants/routes';
-import { ref } from 'vue';
+import { ref, computed } from 'vue'
 import { storeToRefs } from 'pinia';
 import { useAuthStore } from '@/stores/auth';
 import { useToastStore } from '@/stores/toast';
@@ -21,17 +21,33 @@ const handleToggleConfirmPassword = () => {
     showConfirmPassword.value = !showConfirmPassword.value
 }
 
+
+
 const authUser = ref({
     phone: '',
     password: '',
     confirmPassword: '',
 })
-
+const canSubmit = computed(() => {
+    return (
+        authUser.value.phone.trim() !== '' &&
+        authUser.value.password.trim() !== '' &&
+        authUser.value.confirmPassword.trim() !== ''
+    )
+})
 const register = async () => {
+
+
     const res = await authStore.register(authUser.value)
-    if(res?.code === 200) {
+
+
+    if (res?.code === 200) {
+        authStore.clearError()
         toastStore.showToast(res.message)
-         router.push({ name: ROUTE_NAMES.LOGIN })
+        router.push({ name: ROUTE_NAMES.LOGIN })
+    } else {
+        const message = Object.values(authStore.error.errors)[0] || authStore.error.general || "Lỗi tạo tài khoản!!!"
+        toastStore.showToast(message, 'error')
     }
 }
 </script>
@@ -39,30 +55,34 @@ const register = async () => {
 <template>
     <AuthFormLayout title="Đăng ký">
 
-        <form class="login-form" @submit.prevent="authUser">
+        <form class="register-form" @submit.prevent="register">
             <h4 class="p-0 m-0">Đăng ký</h4>
 
             <div class="phone">
                 <input type="tel" placeholder="Số điện thoại" id="phone" v-model="authUser.phone" />
             </div>
+            <p v-if="error.errors.phone" class="m-0 error">{{ error.errors.phone }}</p>
 
             <div class="password">
-                <input :type="showPassword ? 'text' : 'password'" placeholder="Mật khẩu" id="password" v-model="authUser.password" />
+                <input :type="showPassword ? 'text' : 'password'" placeholder="Mật khẩu" id="password"
+                    v-model="authUser.password" />
                 <i class="fa-regular" :class="showPassword ? 'fa-eye' : 'fa-eye-slash'"
                     @click="handleTogglePassword"></i>
             </div>
+            <p v-if="error.errors.password" class="m-0 error">{{ error.errors.password }}</p>
 
             <div class="confirm-password">
                 <input :type="showConfirmPassword ? 'text' : 'password'" placeholder="Xác nhận mật khẩu"
                     id="confirm-password" v-model="authUser.confirmPassword" />
                 <i class="fa-regular" :class="showConfirmPassword ? 'fa-eye' : 'fa-eye-slash'"
                     @click="handleToggleConfirmPassword"></i>
-
             </div>
+            <p v-if="error.errors.confirmPassword" class="m-0 error">{{ error.errors.confirmPassword }}</p>
 
-
-            <button type="submit" :class="{ 'is-disabled': !canSubmit }" :disabled="!canSubmit">
-                Đăng ký
+            <p v-if="error.errors.general" class="error error-genaral">{{ error.errors.general }}</p>
+            <button type="submit" :class="{ 'is-disabled': !canSubmit || loading }" :disabled="!canSubmit || loading">
+                <span v-if="loading" class="loading"></span>
+                <span v-else>Đăng ký</span>
             </button>
 
             <div class="register-agreement">
@@ -81,7 +101,8 @@ const register = async () => {
             </div>
 
             <div class="login">
-                <p class="p-0 m-0">Bạn đã có tài khoản?<RouterLink :to="{ name: ROUTE_NAMES.LOGIN }"> Đăng nhập
+                <p class="p-0 m-0">Bạn đã có tài khoản?<RouterLink :to="{ name: ROUTE_NAMES.LOGIN }"
+                        @click="authStore.clearError()"> Đăng nhập
                     </RouterLink>
                 </p>
 
@@ -92,27 +113,4 @@ const register = async () => {
 </template>
 <style scoped>
 @import '../../assets/css/auth.css';
-
-.login-form {
-    display: flex;
-    flex-direction: column;
-    background-color: white;
-    padding: 30px;
-    gap: 20px;
-    width: 70%;
-}
-
-.register-agreement a,
-.login a {
-    color: var(--color-23);
-}
-
-.register-agreement {
-    color: black;
-    font-size: 14px;
-}
-
-.login {
-    text-align: center;
-}
 </style>

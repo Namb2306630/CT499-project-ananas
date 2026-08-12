@@ -120,8 +120,8 @@ const cancelDialogForm = () => {
 }
 
 const cancelDelete = () => {
-  // closeDelete()
-  // toastStore.showToast('Đã hủy thay đổi', 'warning')
+  closeDelete()
+  toastStore.showToast('Đã hủy thay đổi', 'warning')
 }
 </script>
 

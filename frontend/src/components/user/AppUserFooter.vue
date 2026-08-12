@@ -6,6 +6,7 @@ import FacebookIcon from '@/assets/icons/icon_facebook.svg'
 import InstagramIcon from '@/assets/icons/icon_instagram.svg'
 import YoutubeIcon from '@/assets/icons/icon_youtube.svg'
 import { ref, onMounted, onUnmounted } from 'vue'
+import LogoApp from '../common/LogoApp.vue'
 
 const showGoTop = ref(false)
 const handleScroll = () => {
@@ -193,7 +194,8 @@ const scrollTop = () => {
                   </div>
                 </div>
                 <div class="col-lg-6 col-12 footer-logo d-lg-block d-none">
-                  <Logo />
+                  <!-- <Logo /> -->
+                  <LogoApp color-icon="var(--color-23)" color-text="var(--color-23)" size-text="80px" size="130px" />
                 </div>
               </div>
             </div>
@@ -215,6 +217,7 @@ const scrollTop = () => {
   background-color: var(--bg-footer-color);
   padding-bottom: 5px;
 }
+
 .footer .container-fluid {
   max-width: var(--container-width);
   width: 100%;
@@ -260,6 +263,7 @@ const scrollTop = () => {
 .mobile-dropdown {
   border-bottom: 2px dashed #666;
 }
+
 .mobile-dropdown summary {
   color: var(--text-white);
   font-size: var(--font-size-md);
@@ -302,6 +306,7 @@ const scrollTop = () => {
   background-color: var(--color-bg-orange);
   cursor: pointer;
 }
+
 .search-shop p {
   color: var(--text-white);
   font-size: var(--font-size-lg);
@@ -312,6 +317,7 @@ const scrollTop = () => {
   color: #999;
   transition: 0.3s;
 }
+
 .social {
   display: flex;
   align-items: center;
@@ -337,10 +343,12 @@ const scrollTop = () => {
   width: 80px;
   cursor: pointer;
 }
+
 .icon-arrow i {
   font-size: 40px;
   color: white;
 }
+
 .contact {
   padding: 0 16px;
 }
@@ -387,8 +395,11 @@ const scrollTop = () => {
   color: var(--text-gray);
 }
 
+
+
 /* Mobile */
-@media (max-width: 767px) {
+@media (max-width: 999px) {
+
   /* 1. Ép tất cả các cột và row trên mobile bỏ hoàn toàn padding/margin thừa */
   .footer .row,
   .footer [class*='col-'] {
@@ -397,6 +408,7 @@ const scrollTop = () => {
     margin-left: 0 !important;
     margin-right: 0 !important;
   }
+
   .footer .row {
     margin-left: 0;
     margin-right: 0;
@@ -410,17 +422,20 @@ const scrollTop = () => {
     width: 100%;
     display: block;
   }
+
   .mobile-dropdown .dropdown,
   .contact .row {
     padding-left: 20px !important;
     padding-right: 20px !important;
   }
+
   .footer-links a {
     padding-left: 20px;
     padding-top: 5px;
     padding-bottom: 5px;
     font-weight: var(--font-width-md);
   }
+
   .footer-links {
     padding: 20px;
   }
@@ -437,6 +452,7 @@ const scrollTop = () => {
     padding-top: 30px;
     padding-bottom: 30px;
   }
+
   .email .row {
     justify-content: center;
   }

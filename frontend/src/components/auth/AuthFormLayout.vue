@@ -1,6 +1,7 @@
 <script setup>
 import { ROUTE_NAMES } from '@/constants/routes'
 import Logo from '@/assets/images/ananas_logo.svg'
+import LogoApp from '../common/LogoApp.vue';
 
 defineProps({
     title: {
@@ -14,7 +15,8 @@ defineProps({
     <div class="auth-layout">
         <div class="auth-header">
             <div class="auth-logo">
-                <Logo />
+                <!-- <Logo /> -->
+                <LogoApp color-icon="var(--color-23)" color-text="var(--color-23)" size-text="25px" size="30px" />
                 <p>{{ title }}</p>
             </div>
 
@@ -28,16 +30,17 @@ defineProps({
             <div class="auth-body-inner">
 
                 <div class="body-left">
-                    <i class="fa-brands fa-shopify"></i>
-                    <Logo />
-                    <p>
+                    <!-- <i class="fa-brands fa-shopify"></i>
+                    <Logo /> -->
+                    <LogoApp direction="column" />
+                    <p class="p-0 m-0">
                         Nền tảng thương mại bán giày dép và phụ kiện thời trang
                     </p>
                 </div>
 
-                 <!-- PHẦN RIÊNG CỦA LOGIN / REGISTER -->
+                <!-- PHẦN RIÊNG CỦA LOGIN / REGISTER -->
                 <div class="body-right">
-                     <slot />
+                    <slot />
                 </div>
 
             </div>
@@ -45,20 +48,14 @@ defineProps({
     </div>
 </template>
 <style scoped>
-
-.fa-shopify {
-    color: white;
-    font-size: 250px;
-    display: inline-block;
-    margin-bottom: 20px;
-}
 .auth-header {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    padding: 30px 0;
+    padding: 30px 10px;
     max-width: var(--max-width);
     margin: auto;
+    align-items: center;
 }
 
 .auth-logo :deep(svg) {
@@ -75,7 +72,7 @@ defineProps({
 .auth-logo p {
     color: black;
     font-weight: 500;
-    font-size: 24px;
+    font-size: 25px;
     padding: 0 0 0 10px;
     margin: 0;
     border-left: 5px solid var(--color-23);
@@ -85,19 +82,18 @@ defineProps({
     color: var(--color-23)
 }
 
-
-
 .auth-body {
     background-color: var(--color-23);
 }
 
 .auth-body-inner {
     max-width: var(--max-width);
+    height: 650px;
     margin: 0 auto;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    padding: 60px 0;
+    padding: 60px 20px;
 }
 
 .body-right {
@@ -134,5 +130,24 @@ defineProps({
     color: white;
     font-weight: bolder;
     margin-top: 45px;
+}
+
+
+@media (max-width: 661px) {
+    .body-left {
+        display: none;
+    }
+
+    .body-right {
+        width: 100%;
+    }
+
+    .auth-body-inner {
+        width: 100%;
+        max-width: none;
+        margin: 0 auto;
+        padding: 40px 20px;
+        box-sizing: border-box;
+    }
 }
 </style>
