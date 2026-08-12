@@ -21,8 +21,6 @@ const handleToggleConfirmPassword = () => {
     showConfirmPassword.value = !showConfirmPassword.value
 }
 
-
-
 const authUser = ref({
     phone: '',
     password: '',
@@ -36,10 +34,8 @@ const canSubmit = computed(() => {
     )
 })
 const register = async () => {
-
-
+    authStore.clearError()
     const res = await authStore.register(authUser.value)
-
 
     if (res?.code === 200) {
         authStore.clearError()
@@ -79,7 +75,7 @@ const register = async () => {
             </div>
             <p v-if="error.errors.confirmPassword" class="m-0 error">{{ error.errors.confirmPassword }}</p>
 
-            <p v-if="error.errors.general" class="error error-genaral">{{ error.errors.general }}</p>
+            <p v-if="error.general" class="error error-general">{{ error.general }}</p>
             <button type="submit" :class="{ 'is-disabled': !canSubmit || loading }" :disabled="!canSubmit || loading">
                 <span v-if="loading" class="loading"></span>
                 <span v-else>Đăng ký</span>

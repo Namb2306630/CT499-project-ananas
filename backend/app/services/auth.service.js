@@ -49,7 +49,7 @@ const generateRefreshToke = (user) => {
     },
   );
 };
-
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 class AuthService {
   //đăng ký
   async register(payload) {
@@ -90,11 +90,13 @@ class AuthService {
     const user = await User.findOne({ phone });
 
     if (!user) {
+      
       throw ErrorCode.INVALID_CREDENTIALS();
     }
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
+      await delay(300);
       throw ErrorCode.INVALID_CREDENTIALS();
     }
 

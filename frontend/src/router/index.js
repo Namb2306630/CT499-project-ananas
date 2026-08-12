@@ -7,9 +7,9 @@ import UserLayout from '@/layouts/UserLayout.vue'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 
 //user
-import AboutView from '@/views/user/AboutView.vue'
-import HomeView from '../views/user/HomeView.vue'
-import HelpView from '@/views/user/HelpView.vue'
+// import AboutView from '@/views/user/AboutView.vue'
+// import HomeView from '../views/user/HomeView.vue'
+// import HelpView from '@/views/user/HelpView.vue'
 
 //admin
 
@@ -54,11 +54,13 @@ const router = createRouter({
       children: [
         {
           path: '',
-          component: () => HomeView,
+          name: ROUTE_NAMES.HOME,
+          component: () => import('@/views/user/HomeView.vue'),
         },
         {
           path: 'about',
-          component: () => AboutView,
+          name: ROUTE_NAMES.ABOUT,
+          component: () => import('@/views/user/AboutView.vue'),
         },
         // Not Found
         {
@@ -90,7 +92,7 @@ const router = createRouter({
       ],
     },
 
-    //order
+    //help
     {
       path: '/help',
       name: ROUTE_NAMES.HELP,

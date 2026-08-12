@@ -30,12 +30,13 @@ const canSubmit = computed(() => {
     )
 })
 const login = async () => {
+    authStore.clearError()
     const res = await authStore.login(authUser.value)
     if (res?.code === 200) {
         toastStore.showToast(res.message)
-        router.push({ name: ROUTE_NAMES.LOGIN })
+        router.push({ name: ROUTE_NAMES.HOME })
     } else {
-        const message = Object.values(authStore.error.errors)[0] || authStore.error.general || "Lỗi tạo tài khoản!!!"
+        const message = Object.values(authStore.error.errors)[0] || authStore.error.general || "Lỗi đăng nhập!!!"
         toastStore.showToast(message, 'error')
     }
 }
@@ -61,9 +62,9 @@ const login = async () => {
             <p v-if="error.errors.password" class="m-0 error">{{ error.errors.password }}</p>
 
 
-            <p v-if="error.errors.general" class="error error-genaral">{{ error.errors.general }}</p>
+            <p v-if="error.general" class="error error-general">{{ error.general }}</p>
             <button type="submit" :class="{ 'is-disabled': !canSubmit || loading }" :disabled="!canSubmit || loading">
-                <span v-if="loading"></span>
+                <span v-if="loading" class="loading"></span>
                 <span v-else>Đăng nhập</span>
             </button>
 

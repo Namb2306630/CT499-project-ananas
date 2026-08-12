@@ -73,12 +73,39 @@ export const useAuthStore = defineStore('auth', {
       } finally {
         const elapsed = Date.now() - startTime
 
-        if (elapsed < 500) {
+        if (elapsed < 300) {
           await new Promise((resolve) => {
-            setTimeout(resolve, 500 - elapsed)
+            setTimeout(resolve, 300 - elapsed)
           })
         }
 
+        this.loading = false
+      }
+    },
+
+    async login(payload) {
+      this.loading = true
+      this.clearError()
+      const startTime = Date.now()
+      try {
+        const res = await service.login(payload)
+        return res.data
+      } catch (error) {
+        const data = error.response?.data
+        this.error = {
+          code: data?.code || 500,
+          general: data?.message || 'Lỗi tạo tài khoản!!!',
+          errors: data?.errors || {},
+        }
+
+        return null
+      } finally {
+        const elapsed = Date.now() - startTime
+        if (elapsed < 300) {
+          await new Promise((resolve) => {
+            setTimeout(resolve, 300 - elapsed)
+          })
+        }
         this.loading = false
       }
     },

@@ -13,10 +13,6 @@ const authMiddleware = async (req, res, next) => {
     if (!token) {
       return next(ErrorCode.UNAUTHORIZED());
     }
-
-    if (!token) {
-      return next(ErrorCode.UNAUTHORIZED());
-    }
     //cho local
     // const token = authHeader.split(" ")[1];
 
