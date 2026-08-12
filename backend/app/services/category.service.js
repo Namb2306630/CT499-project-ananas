@@ -253,8 +253,8 @@ class CategoryService {
       .populate("parent")
       .lean();
 
-    // return buildCategoryTree(categories);
-    return categories;
+    return buildCategoryTree(categories);
+    // return categories;
   }
 
   async getBySlug(slug) {

@@ -166,7 +166,7 @@ dialog::backdrop {
 
 input:not(.checkbox-input):not(.radio):not(.checkbox-product):not(.checkbox-input):not(
     #password
-  ):not(#confirm-password):not(#phone):hover,
+  ):not(#confirm-password):not(#phone):not(.search):hover,
 textarea:hover {
   border-color: var(--color-bule);
   box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
@@ -174,7 +174,7 @@ textarea:hover {
 
 input:not(.checkbox-input):not(.radio):not(.checkbox-product):not(.checkbox-input):not(
     #password
-  ):not(#confirm-password):not(#phone):focus,
+  ):not(#confirm-password):not(#phone):not(.search):focus,
 textarea:focus {
   border-color: var(--color-bule);
   box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);

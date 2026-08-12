@@ -34,7 +34,11 @@ const login = async () => {
     const res = await authStore.login(authUser.value)
     if (res?.code === 200) {
         toastStore.showToast(res.message)
-        router.push({ name: ROUTE_NAMES.HOME })
+        if (res.data?.role === 'admin') {
+            router.push({ name: ROUTE_NAMES.ADMIN })
+        } else {
+            router.push({ name: ROUTE_NAMES.HOME })
+        }
     } else {
         const message = Object.values(authStore.error.errors)[0] || authStore.error.general || "Lỗi đăng nhập!!!"
         toastStore.showToast(message, 'error')

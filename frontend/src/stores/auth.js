@@ -65,7 +65,7 @@ export const useAuthStore = defineStore('auth', {
 
         this.error = {
           code: data?.code || 500,
-          general: data?.message || 'Lỗi tạo tài khoản!!!',
+          general: data?.message || 'Lỗi tạo tài khoản, vui lòng thử lại sau!',
           errors: data?.errors || {},
         }
 
@@ -94,7 +94,7 @@ export const useAuthStore = defineStore('auth', {
         const data = error.response?.data
         this.error = {
           code: data?.code || 500,
-          general: data?.message || 'Lỗi tạo tài khoản!!!',
+          general: data?.message || 'Lỗi đăng nhập, vui lòng thử lại sau!',
           errors: data?.errors || {},
         }
 

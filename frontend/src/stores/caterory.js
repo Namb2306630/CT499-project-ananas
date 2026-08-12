@@ -44,6 +44,24 @@ export const useCategoryStore = defineStore('category', {
       }
     },
 
+    async fetchCategoriesForUser() {
+      try {
+        this.loading = true
+        this.clearError()
+        const res = await CategoryService.getAllForUser()
+        this.categories = Array.isArray(res.data.result) ? res.data.result : []
+      } catch (error) {
+        const data = error.response?.data
+        this.error = {
+          code: data?.code || 500,
+          general: data?.message || 'Lỗi lấy dữ liệu danh mục!',
+          errors: data?.errors || {},
+        }
+      } finally {
+        this.loading = false
+      }
+    },
+
     async createCategories(form) {
       try {
         this.clearError()
