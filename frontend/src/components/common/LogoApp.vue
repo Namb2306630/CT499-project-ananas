@@ -1,4 +1,13 @@
 <script setup>
+import { useRouter } from 'vue-router';
+import { ROUTE_NAMES } from '@/constants/routes';
+
+const router = useRouter()
+
+const handleClick = () => {
+    router.push({name: ROUTE_NAMES.HOME})
+}
+
 defineProps({
     size: {
         type: String,
@@ -29,7 +38,7 @@ defineProps({
 </script>
 
 <template>
-    <div class="logo" :style="{ flexDirection: direction, gap: gap }">
+    <div class="logo" :style="{ flexDirection: direction, gap: gap }" @click="handleClick">
         <i class="fa-brands fa-shopify" :style="{ fontSize: size, color: colorIcon }"></i>
         <p class="p-0 m-0 logo-text" :style="{ color: colorText, fontSize: sizeText }">Shin</p>
     </div>
@@ -39,6 +48,9 @@ defineProps({
 .logo {
     display: flex;
     align-items: center;
+}
+.logo:hover {
+    cursor: pointer;
 }
 
 .fa-shopify {
