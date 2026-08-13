@@ -90,7 +90,6 @@ class AuthService {
     const user = await User.findOne({ phone });
 
     if (!user) {
-      
       throw ErrorCode.INVALID_CREDENTIALS();
     }
     const isMatch = await bcrypt.compare(password, user.password);
@@ -146,6 +145,16 @@ class AuthService {
     await user.save();
 
     return true;
+  }
+
+  async me(userId) {
+    const user = await User.findById(userId).select("-password");
+
+    if (!user) {
+      throw ErrorCode.UNAUTHORIZED();
+    }
+
+    return user;
   }
 }
 

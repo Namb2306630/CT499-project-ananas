@@ -1,7 +1,7 @@
 <script setup>
 import AuthFormLayout from '@/components/auth/AuthFormLayout.vue'
 import { ROUTE_NAMES } from '@/constants/routes';
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { storeToRefs } from 'pinia';
 import { useAuthStore } from '@/stores/auth';
 import { useToastStore } from '@/stores/toast';
@@ -11,7 +11,13 @@ const router = useRouter()
 const authStore = useAuthStore()
 const toastStore = useToastStore()
 const { error, loading } = storeToRefs(authStore)
+onMounted(() => {
+    authStore.clearError()
+})
 
+onUnmounted(() => {
+    authStore.clearError()
+})
 const showPassword = ref(false)
 const showConfirmPassword = ref(false)
 const handleTogglePassword = () => {

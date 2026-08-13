@@ -6,7 +6,7 @@ const authMiddleware = require("../../middlewares/auth.middleware");
 const roleMiddleware = require("../../middlewares/role.middleware");
 const validate = require("../../middlewares/validate.middleware");
 
-const role = require("../../utils/role.util");
+const Role = require("../../utils/role.util");
 
 const {
   createStyleSchema,
@@ -14,8 +14,8 @@ const {
 } = require("../../validations/style.validation");
 
 const router = express.Router();
-// router.use(authMiddleware);
-// router.use(roleMiddleware(Role.SUPER_ADMIN));
+router.use(authMiddleware);
+router.use(roleMiddleware(Role.SUPER_ADMIN));
 router.post("/", validate(createStyleSchema), styleController.create);
 
 router.put("/:id", validate(updateStyleSchema), styleController.update);

@@ -86,7 +86,7 @@ api.interceptors.response.use(
         // COOKIE TỰ ĐƯỢC GỬI
 
         await axios.post(
-          `${BASE_URL}/auth/refresh`,
+          `${BASE_URL}/auth/refresh-token`,
 
           {}, //Không gửi dữ liệu trong body.
 

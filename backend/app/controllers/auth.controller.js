@@ -2,6 +2,7 @@ const authService = require("../services/auth.service");
 const ApiResponse = require("../constants/api-response");
 const config = require("../config/index");
 const ms = require("ms");
+const User = require("../models/user.model");
 exports.register = async (req, res, next) => {
   try {
     const user = await authService.register(req.body);
@@ -121,9 +122,11 @@ exports.forgotPassword = (req, res) => {
 
 exports.me = async (req, res, next) => {
   try {
+    const user = await authService.me(req.user._id);
+
     return ApiResponse.success({
       res,
-      data: req.user,
+      data: user,
       message: "Lấy thông tin user thành công",
     });
   } catch (err) {

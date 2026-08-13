@@ -12,8 +12,8 @@ const { uploadCategoryImage } = require("../../middlewares/upload.middleware");
 
 const Role = require("../../utils/role.util");
 
-// router.use(authMiddleware);
-// router.use(roleMiddleware(Role.SUPER_ADMIN));
+router.use(authMiddleware);
+router.use(roleMiddleware(Role.SUPER_ADMIN));
 
 // Tạo category
 router.post(

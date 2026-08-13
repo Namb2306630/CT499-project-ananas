@@ -1,11 +1,12 @@
 <script setup>
 import AuthFormLayout from '@/components/auth/AuthFormLayout.vue'
 import { ROUTE_NAMES } from '@/constants/routes';
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { storeToRefs } from 'pinia';
 import { useAuthStore } from '@/stores/auth';
 import { useToastStore } from '@/stores/toast';
 import { useRouter } from 'vue-router';
+import { ROLE } from '@/utils/role'
 
 const router = useRouter()
 const authStore = useAuthStore()
@@ -14,7 +15,13 @@ const { error, loading } = storeToRefs(authStore)
 
 const showPassword = ref(false)
 
+onMounted(() => {
+    authStore.clearError()
+})
 
+onUnmounted(() => {
+    authStore.clearError()
+})
 const handleTogglePassword = () => {
     showPassword.value = !showPassword.value
 }
@@ -32,10 +39,12 @@ const canSubmit = computed(() => {
 const login = async () => {
     authStore.clearError()
     const res = await authStore.login(authUser.value)
+  
     if (res?.code === 200) {
         toastStore.showToast(res.message)
-        if (res.data?.role === 'admin') {
-            router.push({ name: ROUTE_NAMES.ADMIN })
+       const role = res.result?.user?.role
+        if (role === ROLE.ADMIN || role === ROLE.SUPER_ADMIN) {
+            router.push({ name: ROUTE_NAMES.DASHBOARD })
         } else {
             router.push({ name: ROUTE_NAMES.HOME })
         }

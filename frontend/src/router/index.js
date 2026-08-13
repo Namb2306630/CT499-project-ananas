@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { ROUTE_NAMES } from '@/constants/routes.js'
-
+import { ROLE } from '@/utils/role'
 //layout
 import AuthLayout from '@/layouts/AuthLayout.vue'
 import UserLayout from '@/layouts/UserLayout.vue'
@@ -69,7 +69,7 @@ const router = createRouter({
         },
       ],
     },
-    //auth
+    // auth
     {
       path: '/auth',
       component: () => AuthLayout,
@@ -102,10 +102,10 @@ const router = createRouter({
     {
       path: '/admin',
       component: () => AdminLayout,
-      // meta: {
-      //   requiresAuth: true,
-      //   role: 'ADMIN',
-      // },
+      meta: {
+        requiresAuth: true,
+        role: [ROLE.ADMIN, ROLE.SUPER_ADMIN],
+      },
       children: [
         {
           path: '',
@@ -287,20 +287,52 @@ const router = createRouter({
   ],
 })
 //kiểm tra trước
+//to chính là route mà người dùng đang muốn đi tới
 router.beforeEach(async (to) => {
   const authStore = useAuthStore()
-  if (to.meta.requiresAuth) {
-    // chưa có user thì hỏi BE
+
+  const isAuthPage = [
+    ROUTE_NAMES.LOGIN,
+    ROUTE_NAMES.REGISTER,
+    ROUTE_NAMES.FORGOT_PASSWORD,
+  ].includes(to.name)
+
+  if (isAuthPage) {
     if (!authStore.user) {
       try {
         await authStore.getMe()
       } catch {
-        return '/login'
+        return true
       }
     }
-    //so sánh quyền của user hiện tại với quyền yêu cầu của route
-    if (authStore.user.role !== to.meta.role) {
-      return '/'
+
+    if (authStore.user) {
+      return {
+        name: ROUTE_NAMES.HOME,
+      }
+    }
+
+    return true
+  }
+
+  //nếu đí tưới url có requiresAuth: true thì yêu cầu đăng nhập
+  if (to.meta.requiresAuth) {
+    if (!authStore.user) {
+      try {
+        await authStore.getMe()
+      } catch {
+        return {
+          name: ROUTE_NAMES.LOGIN,
+        }
+      }
+    }
+
+    const allowedRoles = to.meta.role
+
+    if (allowedRoles && !allowedRoles.includes(authStore.user.role)) {
+      return {
+        name: ROUTE_NAMES.HOME,
+      }
     }
   }
 

@@ -3,7 +3,7 @@ const brandController = require("../../controllers/brand.controller");
 const validate = require("../../middlewares/validate.middleware");
 const authMiddleware = require("../../middlewares/auth.middleware");
 const roleMiddleware = require("../../middlewares/role.middleware");
-const role = require("../../utils/role.util");
+const Role = require("../../utils/role.util");
 const router = express.Router();
 const { uploadBrandLogo } = require("../../middlewares/upload.middleware");
 const {
@@ -11,8 +11,8 @@ const {
   updateBrandSchema,
 } = require("../../validations/brand.validation");
 
-// router.use(authMiddleware);
-// router.use(roleMiddleware(Role.SUPER_ADMIN));
+router.use(authMiddleware);
+router.use(roleMiddleware(Role.SUPER_ADMIN));
 
 router.post(
   "/",

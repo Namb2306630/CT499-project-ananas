@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const cookieParser = require("cookie-parser");
 //chung
 const authRouter = require("./app/routes/auth.route");
 const provinceRouter = require("./app/routes/province.route");
@@ -52,7 +53,9 @@ app.use(
 );
 
 app.use(express.json()); //Express tự động đọc dữ liệu JSON từ request
-
+app.use(cookieParser()); //Cookie gửi từ trình duyệt lên BE nằm trong HTTP request header
+//cookie-parser đứng giữa request và route
+//Đọc Cookie mà browser đã gửi và chuyển nó thành req.cookies để code Express dễ sử dụng
 app.get("/", (req, res) => {
   res.json({ message: "Welcome to ananas" });
 });

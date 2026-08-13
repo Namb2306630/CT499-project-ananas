@@ -7,8 +7,8 @@ const authMiddleware = async (req, res, next) => {
     //lấy từ Local
     // const authHeader = req.headers.authorization;
 
-    // lấy token từ cookie
-    const token = req.cookies[config.jwt.accessToken];
+    // lấy token từ cookie FE gửi lên
+    const token = req.cookies?.[config.jwt.accessToken];
 
     if (!token) {
       return next(ErrorCode.UNAUTHORIZED());
@@ -18,6 +18,8 @@ const authMiddleware = async (req, res, next) => {
 
     const decoded = jwt.verify(token, config.jwt.accessSecret);
 
+
+    //gửi kèm request
     req.user = decoded;
     //     {
     //   _id: "123",
