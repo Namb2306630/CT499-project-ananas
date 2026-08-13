@@ -129,7 +129,7 @@ onUnmounted(() => {
   left: 0;
   min-width: 500px;
   padding: 25px;
-  background: white;
+  background: var(--bg-footer-color);
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
   display: none;
   grid-template-columns: repeat(3, 1fr);
@@ -145,16 +145,27 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
-
+  gap: px;
   cursor: pointer;
 }
 
 .category-child img {
-  width: 100px;
-  height: 100px;
+  width: 200px;
   object-fit: cover;
-  border-radius: 8px;
+  opacity: 0.7;
+}
+
+.category-child span {
+  color: white;
+  font-weight: 500;
+}
+
+.category-child:hover img {
+  opacity: 1;
+}
+
+.category-child:hover span {
+  color: var(--color-23)
 }
 
 .header-box-inner {
