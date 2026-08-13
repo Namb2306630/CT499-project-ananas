@@ -6,18 +6,22 @@ import { useUiStore } from '@/stores/ui'
 import { storeToRefs } from 'pinia'
 import { useAuthStore } from '@/stores/auth'
 import { useToastStore } from '@/stores/toast'
-
-
+import { onMounted,computed } from 'vue'
+const BASE_URL = import.meta.env.VITE_BACKEND
 
 const route = useRoute()
 const router = useRouter()
 const uiStore = useUiStore()
 const authStore = useAuthStore()
-const { error, loading } = storeToRefs(authStore)
+const { error, loading, user } = storeToRefs(authStore)
 const toastStore = useToastStore()
 const props = defineProps({
   isShow: Boolean,
   handle: Function,
+})
+
+onMounted(async () => {
+  await authStore.getMe()
 })
 
 //đóng menu
@@ -68,9 +72,25 @@ const toggleOrderMenu = () => {
 const isActiveMenu = (menuName) => {
   return route.name === menuName || route.meta.activeMenu === menuName
 }
+
+const avatarUrl = computed(() => {
+   console.log('USER:', user.value)
+  console.log('AVATAR:', user.value?.avatar)
+  if (!user.value?.avatar) {
+    return ''
+  }
+  // Avatar là URL đầy đủ
+  if (user.value.avatar.startsWith('http')) {
+    return user.value.avatar
+  }
+
+  // Avatar là đường dẫn file trên BE
+  return `${BASE_URL}/${user.value.avatar}`
+})
 </script>
 
 <template>
+  <!-- dưa khối này ra body -->
   <Teleport to="body">
     <div class="sidebar-overlay" :class="{ show: isShow }" @click="closeMenu"></div>
   </Teleport>
@@ -78,10 +98,10 @@ const isActiveMenu = (menuName) => {
   <div class="sidebar" :class="{ show: isShow }" @click="handleLinkClick">
     <RouterLink :to="{ name: ROUTE_NAMES.PROFILE }" class="text-decoration-none">
       <div class="profile">
-        <img :src="avatar" alt="avatar" />
+        <img :src="avatarUrl" alt="avatar" />
         <div>
-          <p class="p-0 m-0">Admin</p>
-          <p class="p-0 m-0">admin123@gmail.com</p>
+          <p class="p-0 m-0">{{user.userName}}</p>
+          <p class="p-0 m-0">{{user.email}}</p>
         </div>
       </div>
     </RouterLink>

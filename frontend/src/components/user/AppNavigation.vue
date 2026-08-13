@@ -6,6 +6,7 @@ import { storeToRefs } from 'pinia'
 import { useSystemConfigStore } from '@/stores/system-config.js'
 import { formatFreeShip } from '@/utils/formatCurrency'
 import { useCategoryStore } from '@/stores/caterory.js'
+const BASE_URL = import.meta.env.VITE_BACKEND
 
 const categoryStore = useCategoryStore()
 const systemConfigStore = useSystemConfigStore()
@@ -15,8 +16,6 @@ let timer
 onMounted(async () => {
   await systemConfigStore.get()
   await categoryStore.fetchCategoriesForUser()
-
-  console.log('categories:', categories.value)
 
   timer = setInterval(() => {
     nextMessage()
@@ -66,7 +65,7 @@ onUnmounted(() => {
           <!-- CON -->
           <div v-if="category.children?.length" class="category-dropdown">
             <div v-for="child in category.children" :key="child._id" class="category-child">
-              <img v-if="child.image" :src="child.image" :alt="child.name" />
+              <img v-if="child.image" :src="`${BASE_URL}/${child.image}`" :alt="child.name" />
 
               <span>{{ child.name }}</span>
             </div>
@@ -128,20 +127,13 @@ onUnmounted(() => {
   position: absolute;
   top: 100%;
   left: 0;
-
   min-width: 500px;
-
   padding: 25px;
-
   background: white;
-
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
-
   display: none;
-
   grid-template-columns: repeat(3, 1fr);
   gap: 20px;
-
   z-index: 999;
 }
 
@@ -161,7 +153,6 @@ onUnmounted(() => {
 .category-child img {
   width: 100px;
   height: 100px;
-
   object-fit: cover;
   border-radius: 8px;
 }

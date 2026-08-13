@@ -15,7 +15,9 @@ const slugName = (name) =>
 const buildCategoryTree = (categories, parent = null) => {
   return categories
     .filter((item) => {
+      //Lấy parent của category hiện tại
       const itemParent = item.parent ? item.parent.toString() : null;
+      //Lấy ID của parent mà hàm đang tìm
       const parentId = parent ? parent.toString() : null;
 
       return itemParent === parentId;
@@ -250,11 +252,9 @@ class CategoryService {
       isActive: true,
     })
       .sort({ slug: -1 })
-      .populate("parent")
       .lean();
 
     return buildCategoryTree(categories);
-    // return categories;
   }
 
   async getBySlug(slug) {
