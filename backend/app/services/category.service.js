@@ -2,7 +2,11 @@ const Category = require("../models/category.model");
 const ErrorCode = require("../constants/errors");
 const slugify = require("slugify");
 const updateFields = require("../utils/updateFields.util");
-
+const ProductType = require("../models/product-type.model");
+const ProductLine = require("../models/product-line.model");
+const Style = require("../models/style.model");
+const Brand = require("../models/brand.model");
+const Collection = require("../models/collection.model");
 const { deleteImage } = require("../utils/uploadImage.util");
 
 const slugName = (name) =>
@@ -12,20 +16,28 @@ const slugName = (name) =>
     strict: true,
   });
 
-const buildCategoryTree = (categories, parent = null) => {
-  return categories
-    .filter((item) => {
-      //Lấy parent của category hiện tại
-      const itemParent = item.parent ? item.parent.toString() : null;
-      //Lấy ID của parent mà hàm đang tìm
-      const parentId = parent ? parent.toString() : null;
+const buildCategoryTree = async (categories, parent = null) => {
+  const currentCategories = categories.filter((item) => {
+    const itemParent = item.parent ? item.parent.toString() : null;
 
-      return itemParent === parentId;
-    })
-    .map((item) => ({
-      ...item,
-      children: buildCategoryTree(categories, item._id),
-    }));
+    const parentId = parent ? parent.toString() : null;
+
+    return itemParent === parentId;
+  });
+
+  return Promise.all(
+    currentCategories.map(async (item) => {
+      const megaMenu = await buildMegaMenu(item);
+
+      return {
+        ...item,
+
+        megaMenu,
+
+        children: await buildCategoryTree(categories, item._id),
+      };
+    }),
+  );
 };
 
 const checkChild = async (parentId, categoryId) => {
@@ -45,6 +57,85 @@ const checkChild = async (parentId, categoryId) => {
     }
   }
   return false;
+};
+
+const getMegaMenuItems = async (type) => {
+  switch (type) {
+    case "productType":
+      return ProductType.find({
+        isActive: true,
+        isDeleted: false,
+      })
+        .select("_id name slug")
+        .sort({ name: 1 })
+        .lean();
+
+    case "productLine":
+      return ProductLine.find({
+        isActive: true,
+        isDeleted: false,
+      })
+        .select("_id name slug brand")
+        .sort({ name: 1 })
+        .lean();
+
+    case "style":
+      return Style.find({
+        isActive: true,
+        isDeleted: false,
+      })
+        .select("_id name slug")
+        .sort({ name: 1 })
+        .lean();
+
+    case "brand":
+      return Brand.find({
+        isActive: true,
+        isDeleted: false,
+      })
+        .select("_id name slug logo")
+        .sort({ name: 1 })
+        .lean();
+
+    case "collection":
+      return Collection.find({
+        isActive: true,
+        isDeleted: false,
+      })
+        .select("_id name slug")
+        .sort({ name: 1 })
+        .lean();
+
+    default:
+      return [];
+  }
+};
+
+const buildMegaMenu = async (category) => {
+  // Category không có mega menu
+  if (!category.megaMenu?.enabled) {
+    return null;
+  }
+
+  const sections = await Promise.all(
+    category.megaMenu.sections
+      .sort((a, b) => a.order - b.order)
+      .map(async (section) => {
+        const items = await getMegaMenuItems(section.type);
+
+        return {
+          title: section.title,
+          type: section.type,
+          order: section.order,
+          items,
+        };
+      }),
+  );
+
+  return {
+    enabled: true,
+    sections,
+  };
 };
 class CategoryService {
   async create(payload, file) {
@@ -146,7 +237,7 @@ class CategoryService {
       }
     }
 
-    updateFields(category, payload, ["image", "parent", "isActive"]);
+    updateFields(category, payload, ["image", "parent", "isActive", "megaMenu"]);
 
     await category.save();
 
@@ -251,7 +342,7 @@ class CategoryService {
       isDeleted: false,
       isActive: true,
     })
-      .sort({ slug: -1 })
+      .sort({ createdAt: -1 })
       .lean();
 
     return buildCategoryTree(categories);

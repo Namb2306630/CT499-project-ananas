@@ -6,13 +6,18 @@ import { storeToRefs } from 'pinia'
 import { useSystemConfigStore } from '@/stores/system-config.js'
 import { formatFreeShip } from '@/utils/formatCurrency'
 import { useCategoryStore } from '@/stores/caterory.js'
-const BASE_URL = import.meta.env.VITE_BACKEND
 
+
+const BASE_URL = import.meta.env.VITE_BACKEND
 const categoryStore = useCategoryStore()
 const systemConfigStore = useSystemConfigStore()
 const { systemConfig } = storeToRefs(systemConfigStore)
 const { categories } = storeToRefs(categoryStore)
+const showMenu = ref(false)
+const currentIndex = ref(0)
+const direction = ref('next')
 let timer
+
 onMounted(async () => {
   await systemConfigStore.get()
   await categoryStore.fetchCategoriesForUser()
@@ -21,8 +26,6 @@ onMounted(async () => {
     nextMessage()
   }, 3000)
 })
-const currentIndex = ref(0)
-const direction = ref('next')
 
 const messages = computed(() => [
   `Miễn phí vận chuyển cho đơn hàng từ ${formatFreeShip(systemConfig.value?.freeShippingThreshold)}`,
@@ -40,11 +43,14 @@ const prevMessage = () => {
   currentIndex.value = (currentIndex.value - 1 + messages.value.length) % messages.value.length
 }
 
-
+const handleMenu = () => {
+  showMenu.value = !showMenu.value
+}
 
 onUnmounted(() => {
   clearInterval(timer)
 })
+
 
 
 </script>
@@ -56,20 +62,26 @@ onUnmounted(() => {
       <div class="category-box">
         <div v-for="category in categories" :key="category._id" class="category">
           <!-- CHA -->
-          <div class="category-title">
+          <div class="category-title" @click="handleMenu" :class="{ 'click-menu': showMenu }">
             {{ category.name }}
 
-            <i v-if="category.children?.length" class="fa-solid fa-chevron-down"></i>
+            <i v-if="category.children?.length" class="fa-solid"
+              :class="showMenu ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
           </div>
 
           <!-- CON -->
-          <div v-if="category.children?.length" class="category-dropdown">
-            <div v-for="child in category.children" :key="child._id" class="category-child">
-              <img v-if="child.image" :src="`${BASE_URL}/${child.image}`" :alt="child.name" />
+          <div v-if="category.children?.length" :class="{ 'category-dropdown': showMenu }">
+            <div class="category-dropdown-innert" :class="{ 'show-menu': showMenu }">
+              <div v-for="child in category.children" :key="child._id" class="category-child">
+                <img v-if="child.image" :src="`${BASE_URL}/${child.image}`" :alt="child.name" />
 
-              <span>{{ child.name }}</span>
+                <span>{{ child.name }}</span>
+              </div>
+              <p>Mọi người thường gọi chúng tôi là <span>Dứa</span>!</p>
             </div>
+
           </div>
+
         </div>
       </div>
 
@@ -102,6 +114,21 @@ onUnmounted(() => {
 </template>
 
 <style scoped>
+.category-dropdown p {
+  /* Kéo dài qua cả 4 cột */
+  grid-column: 1/-1;
+  text-align: center;
+  color: #ccc;
+  margin: 10px 0 0;
+  text-transform: uppercase;
+  font-style: italic;
+}
+
+.category-dropdown p span {
+  color: var(--color-23);
+  font-weight: 600;
+}
+
 .category-box {
   display: flex;
   align-items: center;
@@ -116,28 +143,43 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   gap: 6px;
-
   padding: 10px;
   cursor: pointer;
-
   white-space: nowrap;
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 20px;
+}
+
+.category-title:hover {
+  color: var(--color-23)
+}
+
+.click-menu {
+  color: var(--color-23)
 }
 
 .category-dropdown {
-  position: absolute;
-  top: 100%;
+  position: fixed;
+  top: 150px;
   left: 0;
-  min-width: 500px;
+  width: 100vw;
   padding: 25px;
+  box-sizing: border-box;
   background: var(--bg-footer-color);
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
-  display: none;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
   z-index: 999;
 }
 
-.category:hover .category-dropdown {
+.category-dropdown-innert {
+  width: var(--max-width);
+  margin: 0 auto;
+  display: none;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.category-dropdown-innert.show-menu {
   display: grid;
 }
 
@@ -145,12 +187,13 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: px;
+  justify-content: center;
+  gap: 10px;
   cursor: pointer;
 }
 
 .category-child img {
-  width: 200px;
+  width: 280px;
   object-fit: cover;
   opacity: 0.7;
 }
@@ -158,6 +201,7 @@ onUnmounted(() => {
 .category-child span {
   color: white;
   font-weight: 500;
+  font-size: 22px;
 }
 
 .category-child:hover img {

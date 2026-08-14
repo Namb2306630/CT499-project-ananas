@@ -42,6 +42,42 @@ const categorySchema = new mongoose.Schema(
     },
     // Danh mục cha (nếu có)
 
+    megaMenu: {
+      enabled: {
+        type: Boolean,
+        default: false,
+      },
+
+      sections: [
+        {
+          title: {
+            type: String,
+            required: true,
+            trim: true,
+          },
+
+          type: {
+            type: String,
+            enum: [
+              "productType",
+              "productLine",
+              "style",
+              "brand",
+              "collection",
+            ],
+            required: true,
+          },
+
+          order: {
+            type: Number,
+            default: 0,
+          },
+        },
+      ],
+    },
+
+    // =====================================
+
     isActive: {
       type: Boolean,
       default: true,

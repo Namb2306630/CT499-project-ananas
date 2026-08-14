@@ -1,6 +1,28 @@
 const Joi = require("joi");
 const REGEX = require("../utils/regex.util");
+const megaMenuSchema = Joi.object({
+  enabled: Joi.boolean().default(false),
 
+  sections: Joi.array()
+    .items(
+      Joi.object({
+        title: Joi.string().required().trim(),
+
+        type: Joi.string()
+          .valid(
+            "productType",
+            "productLine",
+            "style",
+            "brand",
+            "collection"
+          )
+          .required(),
+
+        order: Joi.number().default(0),
+      })
+    )
+    .default([]),
+});
 exports.createCategorySchema = Joi.object({
   name: Joi.string().min(2).max(100).required().messages({
     "string.empty": "Tên danh mục không được để trống",
@@ -13,6 +35,7 @@ exports.createCategorySchema = Joi.object({
   }),
   // image: Joi.string().allow("", null).optional(),
   image: Joi.any(),
+  megaMenu: megaMenuSchema,
 });
 
 exports.updateCategorySchema = Joi.object({
@@ -32,4 +55,5 @@ exports.updateCategorySchema = Joi.object({
 
   isActive: Joi.boolean(),
   image: Joi.any(),
+  megaMenu: megaMenuSchema,
 }).min(0);
