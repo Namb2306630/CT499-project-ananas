@@ -44,6 +44,10 @@ class ProductLineService {
         // description,
       });
 
+      await doc.populate({
+        path: "brand",
+        select: "_id name slug logo",
+      });
       return { data: doc, action: "created" };
     }
 

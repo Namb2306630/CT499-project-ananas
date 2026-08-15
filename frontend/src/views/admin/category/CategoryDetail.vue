@@ -1,7 +1,7 @@
 <script setup>
 import HeaderDetail from '@/components/admin/detail/HeaderDetail.vue'
 import UploadImage from '@/components/admin/forms/UploadImage.vue'
-import ConfirmDialog from '@/components/common/ConfirmDialog.vue'
+import ConfirmDialog from '@/components/admin/detail/ConfirmDialog.vue'
 import { storeToRefs } from 'pinia'
 import { useRoute } from 'vue-router'
 import { ref, onMounted, computed, watch } from 'vue'
@@ -33,6 +33,10 @@ const category = ref({
   isActive: true,
   productCount: 0,
   createdAt: '',
+  megaMenu: {
+    enabled: false,
+    sections: [],
+  },
 })
 
 onMounted(async () => {
@@ -49,6 +53,10 @@ onMounted(async () => {
     category.value = {
       ...data,
       parent: data.parent?._id || data.parent || '',
+      megaMenu: data.megaMenu ?? {
+        enabled: false,
+        sections: [],
+      },
     }
   } catch (error) {
     toastStore.showToast(error.general, 'error')
@@ -145,6 +153,9 @@ const cancelDelete = () => {
               :show-content-in-image="false"
               :show-b-g-image="false"
             />
+            <!-- <div v-if="category.image === null">
+              <span class="material-symbols-outlined"> hide_image </span>
+            </div> -->
           </div>
 
           <div class="form">
@@ -194,9 +205,11 @@ const cancelDelete = () => {
 
         <DetailStatus
           v-model="category.isActive"
+          v-model:megaMenu="category.megaMenu.enabled"
           title="Trạng thái"
           label="Hiển thị trên website"
           description="Khách hàng có thể thấy danh mục này"
+          show-mega-munu="true"
         />
       </div>
       <DetailActions

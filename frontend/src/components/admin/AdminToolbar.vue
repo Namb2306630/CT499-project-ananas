@@ -1,7 +1,7 @@
 <script setup>
 import { computed } from 'vue'
 import LoadingState from '../common/LoadingState.vue'
-import AddCard from '../common/AddCard.vue'
+import AddCard from './AddCard.vue'
 
 const props = defineProps({
   content: String,

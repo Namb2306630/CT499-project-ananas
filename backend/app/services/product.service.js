@@ -482,7 +482,9 @@ class ProductService {
   async getAllForUser() {
     return Product.find({
       status: "active",
-    }).sort({ createdAt: -1 });
+    })
+      .sort({ createdAt: -1 })
+      .lean();
   }
 
   async getBySlug(slug) {

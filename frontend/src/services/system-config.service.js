@@ -4,6 +4,9 @@ export default {
   get() {
     return api.get('/admin/system-config')
   },
+  getForUser() {
+    return api.get('/system-config')
+  },
   update(data) {
     const payload = {
       taxCode: data.taxCode,

@@ -73,6 +73,28 @@ exports.getAll = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.getForUser = async (req, res, next) => {
+  try {
+    const data = await service.getAllForUser();
+
+    if (data.length === 0) {
+      return ApiResponse.success({
+        res,
+        data,
+        message: "Danh sách sản phẩm rỗng",
+      });
+    }
+
+    return ApiResponse.success({
+      res,
+      data,
+      message: "Lấy danh sách sản phẩm thành công",
+    });
+  } catch (err) {
+    next(err);
+  }
+};
 exports.getById = async (req, res, next) => {
   try {
     const id = req.params.id;
@@ -164,5 +186,20 @@ exports.getOptions = async (req, res, next) => {
     });
   } catch (error) {
     next(error);
+  }
+};
+exports.getProductDetailForUser = async (req, res, next) => {
+  try {
+    const id = req.params.id;
+
+    const data = await service.getDetailForUser(id);
+
+    return ApiResponse.success({
+      res,
+      data,
+      message: "Lấy chi tiết sản phẩm thành công",
+    });
+  } catch (err) {
+    next(err);
   }
 };

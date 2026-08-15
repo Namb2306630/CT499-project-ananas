@@ -12,6 +12,7 @@ const productLineRouter = require("./app/routes/product-line.route");
 const collectionRouter = require("./app/routes/collection.route");
 const productVariantRouter = require("./app/routes/product-variant.route");
 const productRouter = require("./app/routes/product.route");
+const configRouter = require("./app/routes/system-config.route");
 
 //admin
 const systemConfigAdminRouter = require("./app/routes/admin/system-config.route");
@@ -73,6 +74,7 @@ app.use("/api/collections/options", collectionRouter);
 app.use("/api/product-lines/options", productLineRouter);
 app.use("/api/product-variants/options", productVariantRouter);
 app.use("/api/products/options", productRouter);
+app.use("/api/system-config", configRouter);
 
 //admin
 app.use("/api/admin/system-config", systemConfigAdminRouter);

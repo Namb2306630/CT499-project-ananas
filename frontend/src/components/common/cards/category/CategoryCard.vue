@@ -46,14 +46,23 @@ defineEmits(['edit', 'delete'])
         {{ item.isActive ? 'Hoạt động' : 'Ẩn' }}
       </span>
 
-      <div class="product-stat">
-        <span class="count">
-          {{ item.productCount }}
-        </span>
+      <div class="center-box">
+        <div class="product-stat">
+          <span class="count">
+            {{ item.productCount }}
+          </span>
 
-        <span class="label">
-          {{ countLabel }}
-        </span>
+          <span class="label">
+            {{ countLabel }}
+          </span>
+        </div>
+        <div class="mega-menu">
+          <span class="label"> Mega Menu: </span>
+
+          <span :class="item.megaMenu.enabled ? 'enabled' : 'un-enabled'">
+            {{ item.megaMenu.enabled ? 'Có' : 'Không' }}
+          </span>
+        </div>
       </div>
 
       <div class="parent-category">
@@ -69,6 +78,21 @@ defineEmits(['edit', 'delete'])
 
 <style scoped>
 @import '@/assets/css/card.css';
+.center-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+}
+
+.enabled {
+  color: var(--primary-color);
+  font-weight: bolder;
+}
+.un-enabled {
+  color: var(--color-23);
+  font-weight: bolder;
+}
 .card-header {
   display: flex;
   align-items: center;
@@ -81,7 +105,6 @@ defineEmits(['edit', 'delete'])
   display: flex;
   align-items: baseline;
   gap: 6px;
-  margin-top: 12px;
 }
 
 .product-stat .count {
@@ -90,7 +113,8 @@ defineEmits(['edit', 'delete'])
   color: var(--primary-color);
 }
 
-.product-stat .label {
+.product-stat .label,
+.mega-menu .label {
   color: var(--text-gray-3);
   font-size: var(--font-size-sm);
 }

@@ -70,7 +70,6 @@ defineEmits(['edit', 'delete'])
 </template>
 <style scoped>
 @import '@/assets/css/card.css';
-@import '@/assets/css/image-hover.css';
 .color-dot {
   display: inline-block;
   width: 14px;
@@ -120,4 +119,43 @@ defineEmits(['edit', 'delete'])
 .size-badge i {
   font-size: 12px;
 }
+
+/* css hover ảnh từ main sang hover */
+.image-wrapper {
+  position: relative;
+  width: 100%;
+  height: var(--height-card-img);
+  overflow: hidden;
+}
+
+.image-wrapper img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+
+  transition:
+    opacity 0s ease-in-out,
+    transform 0.4s ease;
+
+  will-change: opacity, transform;
+}
+
+.main-image {
+  opacity: 1;
+}
+
+.hover-image {
+  opacity: 0;
+}
+
+.image-wrapper:hover .main-image {
+  opacity: 0;
+}
+
+.image-wrapper:hover .hover-image {
+  opacity: 1;
+}
+/* ===================== */
 </style>

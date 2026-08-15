@@ -43,7 +43,7 @@ const handleLinkClick = (e) => {
 const handleLogout = async () => {
   try {
     await authStore.logout()
-    await router.push({ name: ROUTE_NAMES.LOGIN })
+    await router.push({ name: ROUTE_NAMES.HOME })
   } catch {
     const message =
       Object.values(authStore.error.errors)[0] ||
@@ -74,8 +74,6 @@ const isActiveMenu = (menuName) => {
 }
 
 const avatarUrl = computed(() => {
-   console.log('USER:', user.value)
-  console.log('AVATAR:', user.value?.avatar)
   if (!user.value?.avatar) {
     return ''
   }

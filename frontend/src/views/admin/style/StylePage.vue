@@ -9,7 +9,7 @@ import { ref, onMounted } from 'vue'
 import { ROUTE_NAMES } from '@/constants/routes'
 import router from '@/router'
 import { useDelete } from '@/composables/useDelete'
-import ConfirmDialog from '@/components/common/ConfirmDialog.vue'
+import ConfirmDialog from '@/components/admin/detail/ConfirmDialog.vue'
 import StyleListItem from '@/components/common/lists/style/StyleListItem.vue'
 import AppLoading from '@/components/common/LoadingState.vue'
 

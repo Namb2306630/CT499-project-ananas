@@ -1,3 +1,3 @@
-<template> 
-    <div>FORGOT_PASSWORD</div>
+<template>
+  <div>FORGOT_PASSWORD</div>
 </template>

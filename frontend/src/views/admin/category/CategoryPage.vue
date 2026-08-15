@@ -9,7 +9,7 @@ import DialogForm from '@/components/admin/forms/DialogForm.vue'
 import { useCategoryStore } from '@/stores/caterory'
 import { storeToRefs } from 'pinia' // giúp giữ tính reactive - tự cập nhật giao diện khi lấy dl từ pinia như ref
 import { useToastStore } from '@/stores/toast'
-import ConfirmDialog from '@/components/common/ConfirmDialog.vue'
+import ConfirmDialog from '@/components/admin/detail/ConfirmDialog.vue'
 import { useRouter } from 'vue-router'
 import { useDelete } from '@/composables/useDelete'
 import CategoryCard from '@/components/common/cards/category/CategoryCard.vue'
@@ -77,6 +77,10 @@ const fields = computed(() => {
       options,
     },
   ]
+})
+
+const fillteredCategories = computed(() => {
+  return categories.value.filter((category) => !category.parent)
 })
 
 const saveCategory = async (data) => {

@@ -4,6 +4,11 @@ const model = defineModel({
   default: false,
 })
 
+const megaMenuModel = defineModel('megaMenu', {
+  type: Boolean,
+  default: false,
+})
+
 defineProps({
   title: {
     type: String,
@@ -35,6 +40,10 @@ defineProps({
   iconColor: {
     type: String,
     default: 'var(--color-bule)',
+  },
+  showMegaMunu: {
+    type: Boolean,
+    default: false,
   },
 })
 </script>
@@ -74,6 +83,23 @@ defineProps({
 
         <div class="switch">
           <input type="checkbox" v-model="model" />
+
+          <span class="slider"></span>
+        </div>
+      </label>
+      <label v-if="showMegaMunu" class="switch-container">
+        <div class="content">
+          <h5 class="p-0 m-0">
+            Hiện thị Mega Menu
+          </h5>
+
+          <p class="p-0 m-0 description">
+            Mega Menu là một menu lớn, hiển thị nhiều danh mục con và hình ảnh, giúp người dùng dễ dàng tìm kiếm sản phẩm hơn.
+          </p>
+        </div>
+
+        <div class="switch">
+          <input type="checkbox" v-model="megaMenuModel" />
 
           <span class="slider"></span>
         </div>

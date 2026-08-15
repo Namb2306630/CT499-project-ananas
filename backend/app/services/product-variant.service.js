@@ -4,6 +4,7 @@ const updateFields = require("../utils/updateFields.util");
 const { deleteImage, uploadImg } = require("../utils/uploadImage.util");
 const Product = require("../models/product.model");
 const ProductVariantItem = require("../models/product-variant-item.model");
+const mongoose = require("mongoose");
 class ProductVariantService {
   async getByIdOrThrow(id) {
     const productVari = await ProductVariant.findById(id);
@@ -237,6 +238,79 @@ class ProductVariantService {
       },
     ]);
   }
+
+  async getAllForUser() {
+    return ProductVariant.aggregate([
+      {
+        $match: {
+          status: {
+            $in: ["active", "out_of_stock"],
+          },
+        },
+      },
+
+      {
+        $lookup: {
+          from: "products",
+          let: {
+            productId: "$product",
+          },
+          pipeline: [
+            {
+              $match: {
+                status: "active",
+                $expr: {
+                  $eq: ["$_id", "$$productId"],
+                },
+              },
+            },
+            {
+              $project: {
+                _id: 1,
+                name: 1,
+                slug: 1,
+                sellingPrice: 1,
+                originalPrice: 1,
+                discountPercent: 1,
+                gender: 1,
+                isBestSeller: 1,
+                isNewArrival: 1,
+                isSale: 1,
+                ratingAverage: 1,
+                ratingCount: 1,
+              },
+            },
+          ],
+          as: "product",
+        },
+      },
+
+      // 3. Product bắt buộc phải tồn tại
+      {
+        $unwind: "$product",
+      },
+
+      // 4. Chỉ lấy field cần cho ProductList
+      {
+        $project: {
+          _id: 1,
+          product: 1,
+          colorName: 1,
+          colorCode: 1,
+          mainImage: 1,
+          hoverImage: 1,
+          status: 1,
+        },
+      },
+
+      // 5. Mới nhất trước
+      {
+        $sort: {
+          createdAt: -1,
+        },
+      },
+    ]);
+  }
   async getById(id) {
     const [proVari] = await ProductVariant.aggregate([
       {
@@ -430,6 +504,110 @@ class ProductVariantService {
     })
       .populate("product", "name")
       .sort({ colorName: 1 });
+  }
+
+  async getDetailForUser(variantId) {
+    const [variant] = await ProductVariant.aggregate([
+      {
+        $match: {
+          _id: variantId,
+          status: {
+            $in: ["active", "out_of_stock"],
+          },
+        },
+      },
+      {
+        $lookup: {
+          from: "products",
+          let: {
+            productId: "$product",
+          },
+          pipeline: [
+            {
+              $match: {
+                status: "active",
+                $expr: {
+                  $eq: ["$_id", "$$productId"],
+                },
+              },
+            },
+            {
+              $project: {
+                _id: 1,
+                name: 1,
+                slug: 1,
+                sellingPrice: 1,
+                originalPrice: 1,
+                discountPercent: 1,
+                gender: 1,
+                isBestSeller: 1,
+                isNewArrival: 1,
+                isSale: 1,
+                ratingAverage: 1,
+                ratingCount: 1,
+              },
+            },
+          ],
+          as: "product",
+        },
+      },
+
+      {
+        $unwind: "$product",
+      },
+      {
+        $lookup: {
+          from: "productvariantitems",
+          let: {
+            variantId: "$_id",
+          },
+          pipeline: [
+            {
+              $match: {
+                status: "active",
+                $expr: {
+                  $eq: ["$variant", "$$variantId"],
+                },
+              },
+            },
+            {
+              $project: {
+                _id: 1,
+                size: 1,
+                stock: 1,
+                status: 1,
+              },
+            },
+            {
+              $sort: {
+                size: 1,
+              },
+            },
+          ],
+          as: "items",
+        },
+      },
+
+      {
+        $project: {
+          _id: 1,
+          product: 1,
+          colorName: 1,
+          colorCode: 1,
+          mainImage: 1,
+          hoverImage: 1,
+          images: 1,
+          status: 1,
+          items: 1,
+        },
+      },
+    ]);
+
+    if (!variant) {
+      throw ErrorCode.PRODUCT_VARI_NOT_EXISTS();
+    }
+
+    return variant;
   }
 }
 

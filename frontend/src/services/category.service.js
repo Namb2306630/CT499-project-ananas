@@ -41,7 +41,9 @@ export default {
     if (form.image) {
       formData.append('image', form.image)
     }
-    
+
+    formData.append('megaMenu', JSON.stringify(form.megaMenu))
+
     return api.put(`/admin/categories/${id}`, formData)
   },
 

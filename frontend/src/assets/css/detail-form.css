@@ -1,3 +1,7 @@
+.container-detail {
+  padding: 20px;
+}
+
 /* ---------------------------------------- */
 /* DETAIL */
 .form input,
@@ -181,9 +185,9 @@ select:hover {
   }
 }
 
-
 /* chia làm 2 cột ở productvariant và productvariantitem */
-.color-box,.size-stock-box {
+.color-box,
+.size-stock-box {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -191,27 +195,32 @@ select:hover {
   gap: 20px;
 }
 
-.color-box > div:first-child,.size-stock-box > div:first-child {
+.color-box > div:first-child,
+.size-stock-box > div:first-child {
   flex: 2;
 }
 
-.color-box > div:last-child,.size-stock-box > div:last-child {
+.color-box > div:last-child,
+.size-stock-box > div:last-child {
   flex: 1;
 }
 
 @media (max-width: 767px) {
-  .color-box,.size-stock-box {
+  .color-box,
+  .size-stock-box {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     gap: 0px;
   }
-  .color-box div,.size-stock-box div {
+  .color-box div,
+  .size-stock-box div {
     width: 100%;
   }
 
-  .color-box label,.size-stock-box label {
+  .color-box label,
+  .size-stock-box label {
     padding: 0;
     margin: 10px 0 0 0;
   }

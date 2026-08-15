@@ -2,7 +2,7 @@
 import AppAdminPageHeader from '@/components/admin/AppAdminPageHeader.vue'
 import AdminToolbar from '@/components/admin/AdminToolbar.vue'
 import DialogForm from '@/components/admin/forms/DialogForm.vue'
-import ConfirmDialog from '@/components/common/ConfirmDialog.vue'
+import ConfirmDialog from '@/components/admin/detail/ConfirmDialog.vue'
 import { useBrandStore } from '@/stores/brand'
 import { useToastStore } from '@/stores/toast'
 import { storeToRefs } from 'pinia'

@@ -13,7 +13,7 @@ import DetailStats from '@/components/admin/detail/DetailStats.vue'
 import { ref, onMounted, watch, computed } from 'vue'
 import HeaderDetail from '@/components/admin/detail/HeaderDetail.vue'
 import UploadImage from '@/components/admin/forms/UploadImage.vue'
-import ConfirmDialog from '@/components/common/ConfirmDialog.vue'
+import ConfirmDialog from '@/components/admin/detail/ConfirmDialog.vue'
 import { ROUTE_NAMES } from '@/constants/routes'
 
 const { showConfirm, deleteItem, openDelete, closeDelete } = useDelete()

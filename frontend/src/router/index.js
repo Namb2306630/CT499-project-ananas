@@ -55,12 +55,29 @@ const router = createRouter({
         {
           path: '',
           name: ROUTE_NAMES.HOME,
-          component: () => import('@/views/user/HomeView.vue'),
+          component: () => import('@/views/user/public/HomeView.vue'),
+        },
+        {
+          path: 'disccover-you',
+          name: ROUTE_NAMES.DISCOVER_YOU,
+          component: () => import('@/views/user/public/DiscoverYOUView.vue'),
         },
         {
           path: 'about',
           name: ROUTE_NAMES.ABOUT,
-          component: () => import('@/views/user/AboutView.vue'),
+          component: () => import('@/views/user/public/AboutView.vue'),
+        },
+
+        {
+          path: 'product-lists',
+          name: ROUTE_NAMES.PRODUCT_LISTS,
+          component: () => import('@/views/user/public/ProductList.vue'),
+        },
+
+        {
+          path: 'product-detail/:id',
+          name: ROUTE_NAMES.PRODUCT_VIEW,
+          component: () => import('@/views/user/public/ProductDetail.vue'),
         },
         // Not Found
         {
@@ -96,7 +113,7 @@ const router = createRouter({
     {
       path: '/help',
       name: ROUTE_NAMES.HELP,
-      component: () => import('@/views/user/HelpView.vue'),
+      component: () => import('@/views/user/public/HelpView.vue'),
     },
     //admin
     {

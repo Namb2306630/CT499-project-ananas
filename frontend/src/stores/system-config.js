@@ -38,6 +38,25 @@ export const useSystemConfigStore = defineStore('system-config', {
       }
     },
 
+    async getForUser() {
+      try {
+        this.clearError()
+        this.loading = true
+        const res = await SystemConfigService.getForUser()
+
+        this.systemConfig = res.data.result ?? {}
+      } catch (error) {
+        const data = error.response?.data
+        this.error = {
+          code: data?.code || 500,
+          general: data?.message || 'Lỗi lấy dữ liệu cấu hình hệ thống',
+          errors: data?.errors || {},
+        }
+      } finally {
+        this.loading = false
+      }
+    },
+
     async update(data) {
       try {
         this.clearError()

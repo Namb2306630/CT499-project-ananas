@@ -100,6 +100,23 @@ export const useProductVariant = defineStore('product-variants', {
         this.loading = true
       }
     },
+    async fetchForUser() {
+      try {
+        this.clearError()
+        const res = await service.getForUser()
+        this.productVariants = Array.isArray(res.data.result) ? res.data.result : []
+        return res.data
+      } catch (error) {
+        const data = error.response?.data
+        this.error = {
+          code: data?.code || 500,
+          general: data?.message || 'Lỗi lấy danh sách biến thể sản phẩm!',
+          errors: data?.errors || {},
+        }
+      } finally {
+        this.loading = true
+      }
+    },
     async getById(id) {
       try {
         this.clearError()

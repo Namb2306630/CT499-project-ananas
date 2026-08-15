@@ -7,21 +7,16 @@ const megaMenuSchema = Joi.object({
     .items(
       Joi.object({
         title: Joi.string().required().trim(),
-
         type: Joi.string()
-          .valid(
-            "productType",
-            "productLine",
-            "style",
-            "brand",
-            "collection"
-          )
+          .valid("productType", "productLine", "style", "brand", "collection")
           .required(),
-
         order: Joi.number().default(0),
-      })
+      }),
     )
     .default([]),
+}).default({
+  enabled: false,
+  sections: [],
 });
 exports.createCategorySchema = Joi.object({
   name: Joi.string().min(2).max(100).required().messages({

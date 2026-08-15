@@ -2,7 +2,7 @@
 import HeaderDetail from '@/components/admin/detail/HeaderDetail.vue'
 import DetailLayout from '@/components/admin/detail/DetailLayout.vue'
 import DetailActions from '@/components/admin/detail/DetailActions.vue'
-import ConfirmDialog from '@/components/common/ConfirmDialog.vue'
+import ConfirmDialog from '@/components/admin/detail/ConfirmDialog.vue'
 import DetailStatus from '@/components/admin/detail/DetailStatus.vue'
 import { useProductType } from '@/stores/product-type'
 import { useToastStore } from '@/stores/toast'

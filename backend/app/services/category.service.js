@@ -59,6 +59,7 @@ const checkChild = async (parentId, categoryId) => {
   return false;
 };
 
+//lấy danh sách các mục trong mega menu theo loại
 const getMegaMenuItems = async (type) => {
   switch (type) {
     case "productType":
@@ -112,24 +113,53 @@ const getMegaMenuItems = async (type) => {
 };
 
 const buildMegaMenu = async (category) => {
-  // Category không có mega menu
   if (!category.megaMenu?.enabled) {
-    return null;
+    return {
+      enabled: false,
+      sections: [],
+    };
   }
 
-  const sections = await Promise.all(
-    category.megaMenu.sections
-      .sort((a, b) => a.order - b.order)
-      .map(async (section) => {
-        const items = await getMegaMenuItems(section.type);
+  const types = [
+    {
+      title: "Thương hiệu",
+      type: "brand",
+      order: 1,
+    },
 
-        return {
-          title: section.title,
-          type: section.type,
-          order: section.order,
-          items,
-        };
-      }),
+    {
+      title: "Loại sản phẩm",
+      type: "productType",
+      order: 2,
+    },
+    {
+      title: "Dòng sản phẩm",
+      type: "productLine",
+      order: 3,
+    },
+    {
+      title: "Bộ sưu tập",
+      type: "collection",
+      order: 4,
+    },
+    {
+      title: "Phong cách",
+      type: "style",
+      order: 5,
+    },
+  ];
+
+  const sections = await Promise.all(
+    types.map(async (section) => {
+      const items = await getMegaMenuItems(section.type);
+
+      return {
+        title: section.title,
+        type: section.type,
+        order: section.order,
+        items,
+      };
+    }),
   );
 
   return {
@@ -237,7 +267,12 @@ class CategoryService {
       }
     }
 
-    updateFields(category, payload, ["image", "parent", "isActive", "megaMenu"]);
+    updateFields(category, payload, [
+      "image",
+      "parent",
+      "isActive",
+      "megaMenu",
+    ]);
 
     await category.save();
 
@@ -342,7 +377,7 @@ class CategoryService {
       isDeleted: false,
       isActive: true,
     })
-      .sort({ createdAt: -1 })
+      .sort({ createdAt: 1 })
       .lean();
 
     return buildCategoryTree(categories);
