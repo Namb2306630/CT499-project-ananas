@@ -11,7 +11,7 @@ const ErrorCode = {
   INVALID_PHONE: () => new AppError(1004, "Số điện thoại không hợp lệ."),
 
   UNAUTHORIZED: (message = "Bạn cần đăng nhập để thực hiện chức năng này.") =>
-    new AppError(1005, message),
+    new AppError(1005, message, 401),
 
   PASSWORD_NOT_MATCH: () => new AppError(1006, "Mật khẩu xác nhận không khớp."),
 

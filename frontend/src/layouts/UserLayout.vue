@@ -3,10 +3,15 @@ import AppFooter from '@/components/user/AppUserFooter.vue'
 import AppHeader from '@/components/user/AppUserHeader.vue'
 import AppSidebar from '@/components/user/AppUserSidebar.vue'
 import AppNavigation from '@/components/user/AppNavigation.vue'
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { ROUTE_NAMES } from '@/constants/routes'
+import { useAuthStore } from '@/stores/auth'
 
+const authStore = useAuthStore()
+onMounted(async () => {
+  await authStore.getMe()
+})
 const route = useRoute()
 const isHomePage = computed(() => {
   return route.name === ROUTE_NAMES.HOME
@@ -29,7 +34,7 @@ const handleClick = () => {
     <AppHeader />
     <AppNavigation />
 
-    <div class="layout-body">
+    <div class="layout-body mt-4">
       <aside
         v-if="!isHomePage && !isDiscoverYouPage && !isProductDetail"
         class="sidebar-wrapper"

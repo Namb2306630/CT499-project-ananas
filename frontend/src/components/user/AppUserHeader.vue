@@ -15,9 +15,9 @@ const isUserMenuOpen = ref(false)
 const toggleUserMenu = () => {
   isUserMenuOpen.value = !isUserMenuOpen.value
 }
-onMounted(async () => {
-  await authStore.getMe()
-})
+// onMounted(async () => {
+//   await authStore.getMe()
+// })
 
 const avatarUrl = computed(() => {
   if (!user.value?.avatar) {

@@ -532,19 +532,101 @@ class ProductVariantService {
               },
             },
             {
+              $lookup: {
+                from: "producttypes",
+                let: {
+                  typeId: "$productType",
+                },
+                pipeline: [
+                  {
+                    $match: {
+                      isActive: true,
+                      isDeleted: false,
+                      $expr: {
+                        $eq: ["$_id", "$$typeId"],
+                      },
+                    },
+                  },
+                  {
+                    $project: {
+                      _id: 1,
+                      name: 1,
+                    },
+                  },
+                ],
+                as: "productType",
+              },
+            },
+            {
+              $unwind: {
+                path: "$productType",
+                preserveNullAndEmptyArrays: true,
+              },
+            },
+            {
+              $match: {
+                status: "active",
+                $expr: {
+                  $eq: ["$_id", "$$productId"],
+                },
+              },
+            },
+            {
+              $lookup: {
+                from: "productlines",
+                let: {
+                  lineId: "$productLine",
+                },
+                pipeline: [
+                  {
+                    $match: {
+                      isActive: true,
+                      isDeleted: false,
+                      $expr: {
+                        $eq: ["$_id", "$$lineId"],
+                      },
+                    },
+                  },
+                  {
+                    $project: {
+                      _id: 1,
+                      name: 1,
+                    },
+                  },
+                ],
+                as: "productLine",
+              },
+            },
+            {
+              $unwind: {
+                path: "$productLine",
+                preserveNullAndEmptyArrays: true,
+              },
+            },
+
+            {
               $project: {
                 _id: 1,
                 name: 1,
                 slug: 1,
+
                 sellingPrice: 1,
                 originalPrice: 1,
                 discountPercent: 1,
+
                 gender: 1,
+
                 isBestSeller: 1,
                 isNewArrival: 1,
                 isSale: 1,
+
                 ratingAverage: 1,
                 ratingCount: 1,
+
+                productType: 1,
+                productLine: 1,
+
+                description: 1,
               },
             },
           ],

@@ -75,7 +75,7 @@ exports.refreshToken = async (req, res, next) => {
         httpOnly: true,
         secure: false,
         sameSite: "strict",
-
+        path: "/api/auth/refresh-token",
         maxAge: ms(config.jwt.refreshExpires),
       }));
 

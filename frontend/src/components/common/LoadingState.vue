@@ -10,15 +10,28 @@ defineProps({
     default: () => ({}),
   },
 
+  showText: {
+    type: Boolean,
+    default: true,
+  },
+
   text: {
     type: String,
     default: 'Đang tải dữ liệu...',
+  },
+  hasSidebar: {
+    type: Boolean,
+    default: true,
   },
 })
 </script>
 
 <template>
-  <div v-if="loading || (error && Object.keys(error).length)" class="container-state">
+  <div
+    v-if="loading || (error && Object.keys(error).length)"
+    class="container-state"
+    :class="{ 'has-sidebar': hasSidebar }"
+  >
     <!-- Error -->
     <div v-if="Object.keys(error).length" class="error-box">
       <i class="fa-solid fa-circle-exclamation"></i>
@@ -28,7 +41,7 @@ defineProps({
     <!-- Loading -->
     <div v-else class="loading-box">
       <div class="spinner"></div>
-      <span>{{ text }}</span>
+      <span v-if="showText">{{ text }}</span>
     </div>
   </div>
 </template>
@@ -40,8 +53,6 @@ defineProps({
   z-index: 100;
   display: flex;
   justify-content: center;
-
-  top: 20%;
   background: rgba(255, 255, 255, 0.7);
 }
 
@@ -49,7 +60,7 @@ defineProps({
 .loading-box {
   position: fixed;
   top: 0;
-  left: var(--sidebar-width);
+
   right: 0;
   bottom: 0;
 
@@ -58,6 +69,18 @@ defineProps({
   align-items: center;
   justify-content: center;
   gap: 12px;
+}
+
+/* Có sidebar */
+.container-state.has-sidebar .loading-box {
+  left: var(--sidebar-width);
+  top: 20%;
+}
+
+/* Không có sidebar */
+.container-state:not(.has-sidebar) .loading-box {
+  left: 0;
+  top: 0;
 }
 
 .spinner {
@@ -79,12 +102,9 @@ defineProps({
   display: flex;
   align-items: center;
   gap: 8px;
-
   padding: 12px 16px;
-
   color: var(--text-red);
   background: #fff;
-
   border-radius: 8px;
 }
 

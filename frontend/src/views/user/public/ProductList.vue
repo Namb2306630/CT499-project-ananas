@@ -5,7 +5,7 @@ import { useRouter, useRoute } from 'vue-router'
 import { ROUTE_NAMES } from '@/constants/routes'
 import { useProductVariant } from '@/stores/product-variant'
 import AppLoading from '@/components/common/LoadingState.vue'
-import { formatFreeShip } from '@/utils/formatCurrency'
+import { formatPrice } from '@/utils/formatCurrency'
 
 const BASE_URL = import.meta.env.VITE_BACKEND
 const router = useRouter()
@@ -21,19 +21,34 @@ onMounted(async () => {
   productVariantStore.clearError()
 
   try {
-    await Promise.all([productVariantStore.fetchForUser(), delay(200)])
+    await Promise.all([productVariantStore.fetchForUser(), delay(0)])
   } finally {
     pageLoading.value = false
   }
 })
+
+const goToProductDetail = async (id) => {
+  try {
+    await productVariantStore.getDetailForUser(id)
+
+    router.push({
+      name: ROUTE_NAMES.PRODUCT_VIEW,
+      params: {
+        id,
+      },
+    })
+  } catch (error) {
+    console.error('Không thể lấy chi tiết sản phẩm:', error)
+  }
+}
 </script>
 
 <template>
   <div class="product-box">
     <img :src="Banner" alt="banner" />
-    <div>
-      <AppLoading v-if="pageLoading" />
-      <div v-else class="product-list">
+    <div class="product-main">
+      <!-- <AppLoading v-if="pageLoading" :loading="pageLoading" :error="error.general" /> -->
+      <div class="product-list">
         <div v-if="error.general" class="error">
           {{ error.errors?.[0] || error.general || 'Có lỗi xảy ra' }}
         </div>
@@ -43,15 +58,11 @@ onMounted(async () => {
           </div>
           <div class="product-card">
             <div v-for="productVariant in productVariants" :key="productVariant._id">
-              <RouterLink
-                :to="{
-                  name: ROUTE_NAMES.PRODUCT_VIEW,
-                  params: {
-                    id: productVariant._id,
-                  },
-                }"
+              <div
                 :class="{ 'disabled-link': productVariant.status === 'out_of_stock' }"
-                @click="productVariant.status === 'out_of_stock' && $event.preventDefault()"
+                @click="
+                  productVariant.status !== 'out_of_stock' && goToProductDetail(productVariant._id)
+                "
               >
                 <div class="card">
                   <div class="card-image">
@@ -72,18 +83,13 @@ onMounted(async () => {
                     >
                       HẾT HÀNG
                     </div>
-                    <RouterLink
+                    <button
                       v-else
                       class="shopping"
-                      :to="{
-                        name: ROUTE_NAMES.PRODUCT_VIEW,
-                        params: {
-                          id: productVariant._id,
-                        },
-                      }"
+                      @click.stop="goToProductDetail(productVariant._id)"
                     >
                       MUA HÀNG
-                    </RouterLink>
+                    </button>
 
                     <button class="favorite-btn">
                       <i class="fa-regular fa-heart"></i>
@@ -121,15 +127,15 @@ onMounted(async () => {
                       }"
                     >
                       <span class="selling-price">{{
-                        formatFreeShip(productVariant.product.sellingPrice)
+                        formatPrice(productVariant.product.sellingPrice)
                       }}</span>
                       <span v-if="productVariant.product.discountPercent > 0" class="old-price">{{
-                        formatFreeShip(productVariant.product.originalPrice)
+                        formatPrice(productVariant.product.originalPrice)
                       }}</span>
                     </div>
                   </div>
                 </div>
-              </RouterLink>
+              </div>
             </div>
           </div>
         </div>
@@ -138,6 +144,9 @@ onMounted(async () => {
   </div>
 </template>
 <style scoped>
+.product-main {
+  position: relative;
+}
 .card {
   border: none;
 }
@@ -248,6 +257,7 @@ a:hover {
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 0 20px;
 }
 
 .has-discount-percent {
@@ -259,7 +269,7 @@ a:hover {
 .selling-price {
   color: black;
   font-weight: bold;
-  font-size: 17px;
+  font-size: 20px;
   text-align: center;
 }
 .old-price {

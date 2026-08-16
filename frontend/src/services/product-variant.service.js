@@ -66,4 +66,8 @@ export default {
       },
     })
   },
+
+  getDetailForUser(id) {
+    return api.get(`/product-variants/${id}`)
+  },
 }

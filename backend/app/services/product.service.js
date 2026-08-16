@@ -489,12 +489,12 @@ class ProductService {
 
   async getBySlug(slug) {
     const [product] = await Product.aggregate([
-      // {
-      //   $match: {
-      //     slug,
-      //     status: { $ne: "discontinued" },
-      //   },
-      // },
+      {
+        $match: {
+          slug,
+          status: { $ne: "discontinued" },
+        },
+      },
 
       // Categories (array)
       {

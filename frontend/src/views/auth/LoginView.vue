@@ -72,7 +72,7 @@ const login = async () => {
         />
         <i
           class="fa-regular"
-          :class="showPassword ? 'fa-eye' : 'fa-eye-slash'"
+          :class="showPassword ? 'fa-eye-slash' : 'fa-eye'"
           @click="handleTogglePassword"
         ></i>
       </div>

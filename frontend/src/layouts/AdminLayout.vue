@@ -1,11 +1,20 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { RouterView } from 'vue-router'
 
 import AppAdminFooter from '@/components/admin/AppAdminFooter.vue'
 import AppAdminSidebar from '@/components/admin/AppAdminSidebar.vue'
 import AppAdminHeader from '@/components/admin/AppAdminHeader.vue'
+
+import { useAuthStore } from '@/stores/auth'
+
+const authStore = useAuthStore()
+
 const showSidebar = ref(true)
+
+onMounted(async () => {
+  await authStore.getMe()
+})
 
 const handleClick = () => {
   showSidebar.value = !showSidebar.value

@@ -22,6 +22,13 @@ export const formatFreeShip = (costPrice, currency = 'VND') => {
   }).format(costPrice ?? 0)
 }
 
+export const formatPrice = (costPrice, currency = 'VND') => {
+  return new Intl.NumberFormat(currency === 'USD' ? 'en-US' : 'vi-VN', {
+    style: 'currency',
+    currency,
+  }).format(costPrice ?? 0)
+}
+
 // % lợi nhuận
 export const calculateProfitPercent = (costPrice, sellingPrice) => {
   if (!costPrice || costPrice <= 0) return 0

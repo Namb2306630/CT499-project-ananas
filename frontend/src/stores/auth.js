@@ -28,6 +28,14 @@ export const useAuthStore = defineStore('auth', {
 
         return this.user
       } catch (error) {
+        const status = error.response?.status
+
+        // Chưa đăng nhập → bình thường
+        if (status === 401) {
+          this.user = null
+          return null
+        }
+
         const data = error.response?.data
 
         this.user = null

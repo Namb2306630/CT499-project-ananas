@@ -20,9 +20,9 @@ const props = defineProps({
   handle: Function,
 })
 
-onMounted(async () => {
-  await authStore.getMe()
-})
+// onMounted(async () => {
+//   await authStore.getMe()
+// })
 
 //đóng menu
 const closeMenu = () => {

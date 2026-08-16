@@ -344,6 +344,13 @@ router.beforeEach(async (to) => {
       }
     }
 
+    // getMe() có thể trả null khi chưa đăng nhập
+    if (!authStore.user) {
+      return {
+        name: ROUTE_NAMES.LOGIN,
+      }
+    }
+
     const allowedRoles = to.meta.role
 
     if (allowedRoles && !allowedRoles.includes(authStore.user.role)) {

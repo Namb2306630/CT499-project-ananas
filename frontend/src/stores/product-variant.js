@@ -137,6 +137,26 @@ export const useProductVariant = defineStore('product-variants', {
       }
     },
 
+    async getDetailForUser(id) {
+      try {
+        this.clearError()
+        this.loading = true
+        const res = await service.getDetailForUser(id)
+        this.productVariant = res.data.result ?? {}
+        return this.productVariant
+      } catch (error) {
+        const data = error.response?.data
+        this.error = {
+          code: data?.code || 500,
+          general: data?.message || 'Lỗi lấy dữ liệu biến thể sản phẩm!',
+          errors: data?.errors || {},
+        }
+        throw this.error
+      } finally {
+        this.loading = false
+      }
+    },
+
     async fetchOptions(productId) {
       try {
         const res = await service.fetchOptions(productId)
