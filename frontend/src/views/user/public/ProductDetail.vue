@@ -5,7 +5,9 @@ import { storeToRefs } from 'pinia'
 import { useProductVariant } from '@/stores/product-variant'
 import AppLoading from '@/components/common/LoadingState.vue'
 import { formatPrice } from '@/utils/formatCurrency'
+import { useCartStore } from '@/stores/cart'
 
+const cartStore = useCartStore()
 const SizeChart = '/banners/Ananas_SizeChart.jpg'
 const BASE_URL = import.meta.env.VITE_BACKEND
 const pageLoading = ref(false)
@@ -13,6 +15,7 @@ const route = useRoute()
 const productVariantStore = useProductVariant()
 const showQuantityDropdown = ref(false)
 const { productVariant, loading, error } = storeToRefs(productVariantStore)
+const { carts, error: errorCart, loading: loadingCart } = storeToRefs(cartStore)
 const selectedSize = ref('')
 const showSizeDropdown = ref(false)
 const quantity = ref(1)
@@ -53,7 +56,7 @@ const selectSize = (size) => {
   quantity.value = 1
 }
 
-const handlePayment = async () => {
+const addToCart = async () => {
   if (selectedSize.value === '') {
     errorPayment.value = 'Vui lòng chọn Size/Số lượng phù hợp'
     return
@@ -66,7 +69,15 @@ const handlePayment = async () => {
 
   errorPayment.value = ''
 
-  alert('Thanh toán OKE')
+  const data = await cartStore.create({
+    variantId: productVariant.value._id,
+    size: selectedSize.value,
+    quantity: quantity.value,
+  })
+
+  if (data) {
+    alert('Thêm sản phẩm vào giỏ hàng thành công')
+  }
 }
 
 const handleInfor = () => {
@@ -278,7 +289,7 @@ const handleHear = () => {
 
             <!-- NÚT NHẤN -->
             <div class="product-buttons">
-              <button class="add-to-cart">THÊM VÀO GIỎ HÀNG</button>
+              <button class="add-to-cart" @click="addToCart">THÊM VÀO GIỎ HÀNG</button>
 
               <button class="add-to-wishlist" @click="handleHear">
                 <i class="fa-heart" :class="hear ? 'fa-solid' : 'fa-regular'"></i>
@@ -286,7 +297,7 @@ const handleHear = () => {
             </div>
 
             <!-- THANH TOÁN -->
-            <button class="checkout-button" @click="handlePayment">THANH TOÁN</button>
+            <button class="checkout-button" @click="addToCart">THANH TOÁN</button>
             <!-- lỗi chưa chọn size/stock -->
             <p v-if="errorPayment !== ''" class="error error-payment">{{ errorPayment }}</p>
           </div>
