@@ -49,7 +49,7 @@ const goToProductDetail = async (id) => {
     <div class="product-main">
       <!-- <AppLoading v-if="pageLoading" :loading="pageLoading" :error="error.general" /> -->
       <div class="product-list">
-        <div v-if="error.general" class="error">
+        <div v-if="error.general" class="error error-general">
           {{ error.errors?.[0] || error.general || 'Có lỗi xảy ra' }}
         </div>
         <div v-else>
@@ -208,6 +208,10 @@ const goToProductDetail = async (id) => {
 
 .card:hover .hover-image {
   opacity: 1;
+}
+
+.card:hover {
+  cursor: pointer;
 }
 
 a {

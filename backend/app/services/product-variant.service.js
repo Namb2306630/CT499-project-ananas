@@ -475,13 +475,13 @@ class ProductVariantService {
   async syncVariantStatus(variantId) {
     const hasStock = await ProductVariantItem.exists({
       variant: variantId,
-      stock: { $gt: 0 }, //$gt = greater than = lớn hơn
+      stock: { $gt: 0 },
     });
 
-    // có ít nhất một size còn hàng thì active
     const status = hasStock ? "active" : "out_of_stock";
 
     await ProductVariant.updateOne({ _id: variantId }, { status });
+
     return status;
   }
 
@@ -647,6 +647,7 @@ class ProductVariantService {
             {
               $match: {
                 status: "active",
+                stock: { $gt: 0 },
                 $expr: {
                   $eq: ["$variant", "$$variantId"],
                 },

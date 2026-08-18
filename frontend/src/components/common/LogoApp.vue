@@ -34,11 +34,23 @@ defineProps({
     type: String,
     default: '0',
   },
+  alignItems: {
+    type: String,
+    default: 'baseline',
+  },
 })
 </script>
 
 <template>
-  <div class="logo" :style="{ flexDirection: direction, gap: gap }" @click="handleClick">
+  <div
+    class="logo"
+    :style="{
+      flexDirection: direction,
+      gap,
+      alignItems,
+    }"
+    @click="handleClick"
+  >
     <i class="fa-brands fa-shopify" :style="{ fontSize: size, color: colorIcon }"></i>
     <p class="p-0 m-0 logo-text" :style="{ color: colorText, fontSize: sizeText }">Shin</p>
   </div>
@@ -47,7 +59,6 @@ defineProps({
 <style scoped>
 .logo {
   display: flex;
-  align-items: baseline;
 }
 .logo:hover {
   cursor: pointer;

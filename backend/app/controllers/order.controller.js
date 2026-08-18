@@ -95,6 +95,22 @@ class OrderController {
       next(err);
     }
   }
+  async updateStatus(req, res, next) {
+    try {
+      const data = await orderService.updateStatus(
+        req.params.orderCode,
+        req.body.orderStatus,
+      );
+
+      return ApiResponse.success({
+        res,
+        data,
+        message: "Cập nhật trạng thái đơn hàng thành công",
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
 }
 
 module.exports = new OrderController();

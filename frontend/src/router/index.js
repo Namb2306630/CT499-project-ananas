@@ -46,11 +46,21 @@ import { useAuthStore } from '@/stores/auth'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
+  // scrollBehavior(to, from, savedPosition) {
+  //   if (savedPosition) {
+  //     return savedPosition
+  //   }
+
+  //   return {
+  //     top: 0,
+  //   }
+  // },
   routes: [
-    //user
+    //--------------------------------------------------------------------------
+    //public
     {
       path: '/',
-      component: () => UserLayout,
+      component: UserLayout,
       children: [
         {
           path: '',
@@ -86,10 +96,48 @@ const router = createRouter({
         },
       ],
     },
+    //--------------------------------------------------------------------------
+    //user -> auth
+    {
+      path: '/',
+      component: UserLayout,
+      meta: {
+        requiresAuth: true,
+        role: [ROLE.USER],
+      },
+      children: [
+        {
+          path: 'you-cart',
+          name: ROUTE_NAMES.YOU_CART,
+          component: () => import('@/views/user/private/YouCart.vue'),
+        },
+        {
+          path: 'shipping-infomation',
+          name: ROUTE_NAMES.SHIPPING,
+          component: () => import('@/views/user/private/ShippingInfomation.vue'),
+        },
+        {
+          path: '/order-success',
+          name: ROUTE_NAMES.ORDER_SUCCESS,
+          component: () => import('@/views/user/private/OrderSuccessView.vue'),
+        },
+        {
+          path: '/orders',
+          name: ROUTE_NAMES.MY_ORDERS,
+          component: () => import('@/views/user/private/OrderPage.vue'),
+        },
+        {
+          path: '/my-order-detail',
+          name: ROUTE_NAMES.MY_ORDER_DETAIL,
+          component: () => import('@/views/user/private/OrderDetail.vue'),
+        },
+      ],
+    },
+    //--------------------------------------------------------------------------
     // auth
     {
       path: '/auth',
-      component: () => AuthLayout,
+      component: AuthLayout,
       children: [
         {
           path: '/login',
@@ -109,16 +157,18 @@ const router = createRouter({
       ],
     },
 
+    //--------------------------------------------------------------------------
     //help
     {
       path: '/help',
       name: ROUTE_NAMES.HELP,
       component: () => import('@/views/user/public/HelpView.vue'),
     },
+    //--------------------------------------------------------------------------
     //admin
     {
       path: '/admin',
-      component: () => AdminLayout,
+      component: AdminLayout,
       meta: {
         requiresAuth: true,
         role: [ROLE.ADMIN, ROLE.SUPER_ADMIN],
@@ -210,6 +260,13 @@ const router = createRouter({
           component: () => import('@/views/admin/product-variant-item/ProductVariantItemPage.vue'),
         },
 
+        {
+          path: 'orders',
+          name: ROUTE_NAMES.ORDERS,
+          component: () => import('@/views/admin/order/OrderPage.vue'),
+        },
+
+        //--------------------------------------------------------------------------
         // detail
         {
           path: 'categories/:slug',
@@ -332,7 +389,6 @@ router.beforeEach(async (to) => {
     return true
   }
 
-  //nếu đí tưới url có requiresAuth: true thì yêu cầu đăng nhập
   if (to.meta.requiresAuth) {
     if (!authStore.user) {
       try {
@@ -344,7 +400,6 @@ router.beforeEach(async (to) => {
       }
     }
 
-    // getMe() có thể trả null khi chưa đăng nhập
     if (!authStore.user) {
       return {
         name: ROUTE_NAMES.LOGIN,

@@ -52,5 +52,11 @@ export const ROUTE_NAMES = {
   ABOUT: 'about',
   PRODUCT_LISTS: 'product-lists',
   PRODUCT_VIEW: 'product.view',
+
   // user
+  YOU_CART: 'you-cart',
+  SHIPPING: 'shipping-infomation',
+  ORDER_SUCCESS: 'order-success',
+  MY_ORDERS: 'my-orders',
+  MY_ORDER_DETAIL: 'my-order-detail',
 }

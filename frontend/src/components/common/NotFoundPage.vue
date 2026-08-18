@@ -15,9 +15,6 @@ onMounted(async () => {
   await systemConfigStore.get()
 
   Object.assign(form.value, systemConfigStore.systemConfig)
-
-  console.log(form.value)
-  console.log(`${BASE_URL}/${form.value.notFoundImage}`)
 })
 
 const goHome = () => {

@@ -7,11 +7,13 @@ import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { ROUTE_NAMES } from '@/constants/routes'
 import { useAuthStore } from '@/stores/auth'
+import { useCartStore } from '@/stores/cart'
 
 const authStore = useAuthStore()
-onMounted(async () => {
-  await authStore.getMe()
-})
+const cartStore = useCartStore()
+// onMounted(async () => {
+//   await cartStore.fetchCart()
+// })
 const route = useRoute()
 const isHomePage = computed(() => {
   return route.name === ROUTE_NAMES.HOME
@@ -21,6 +23,26 @@ const isDiscoverYouPage = computed(() => {
 })
 const isProductDetail = computed(() => {
   return route.name === ROUTE_NAMES.PRODUCT_VIEW
+})
+
+const isYouCart = computed(() => {
+  return route.name === ROUTE_NAMES.YOU_CART
+})
+
+const isShipping = computed(() => {
+  return route.name === ROUTE_NAMES.SHIPPING
+})
+
+const isOrderSuccess = computed(() => {
+  return route.name === ROUTE_NAMES.ORDER_SUCCESS
+})
+
+const isOrder = computed(() => {
+  return route.name === ROUTE_NAMES.MY_ORDERS
+})
+
+const isOrderDetail = computed(() => {
+  return route.name === ROUTE_NAMES.MY_ORDER_DETAIL
 })
 const showSidebar = ref(true)
 
@@ -34,9 +56,18 @@ const handleClick = () => {
     <AppHeader />
     <AppNavigation />
 
-    <div class="layout-body mt-4">
+    <div class="layout-body mt-4 container-custom">
       <aside
-        v-if="!isHomePage && !isDiscoverYouPage && !isProductDetail"
+        v-if="
+          !isHomePage &&
+          !isDiscoverYouPage &&
+          !isProductDetail &&
+          !isYouCart &&
+          !isShipping &&
+          !isOrderSuccess &&
+          !isOrder &&
+          !isOrderDetail
+        "
         class="sidebar-wrapper"
         :class="{ hide: !showSidebar }"
       >
@@ -57,8 +88,8 @@ const handleClick = () => {
 <style scoped>
 @import '../assets/css/lay-out.css';
 
-.layout-body {
+/* .layout-body {
   max-width: var(--max-width);
   margin: 0 auto;
-}
+} */
 </style>

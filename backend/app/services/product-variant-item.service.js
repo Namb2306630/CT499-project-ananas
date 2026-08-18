@@ -137,10 +137,11 @@ class ProVariItemService {
     ]);
 
     return result;
-
   }
   async update(id, payload) {
     const proVariItem = await this.getByIdThrow(id);
+
+    const oldVariantId = proVariItem.variant;
 
     await this.validate(
       {
@@ -150,7 +151,7 @@ class ProVariItemService {
       id,
     );
 
-    let variant = null;
+    let variant;
 
     if (payload.variant) {
       variant = await ProVariant.findById(payload.variant);
@@ -169,24 +170,27 @@ class ProVariItemService {
         payload.size ?? proVariItem.size,
       );
     }
-    // if (payload.stock !== undefined) {
-    //   // cập nhật trạng thái sp
-    //   payload.isInStock = payload.stock > 0;
-    // }
 
     updateFields(proVariItem, payload, [
       "variant",
       "size",
       "stock",
-      // "isInStock",
       "status",
       "sku",
     ]);
 
     await proVariItem.save();
 
-    // sync variant status
+    // Sync variant mới
     await ProVariantService.syncVariantStatus(proVariItem.variant);
+
+    // Nếu chuyển item sang variant khác thì sync luôn variant cũ
+    if (
+      payload.variant !== undefined &&
+      oldVariantId.toString() !== proVariItem.variant.toString()
+    ) {
+      await ProVariantService.syncVariantStatus(oldVariantId);
+    }
 
     return proVariItem;
   }
@@ -205,53 +209,53 @@ class ProVariItemService {
 
     // return true;
 
-  const result = await ProVariItem.aggregate([
-        {
-            $match: {
-                _id: item._id,
-            },
+    const result = await ProVariItem.aggregate([
+      {
+        $match: {
+          _id: item._id,
         },
-        {
-            $lookup: {
-                from: "productvariants",
-                let: {
-                    variantId: "$variant",
+      },
+      {
+        $lookup: {
+          from: "productvariants",
+          let: {
+            variantId: "$variant",
+          },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $eq: ["$_id", "$$variantId"],
                 },
-                pipeline: [
-                    {
-                        $match: {
-                            $expr: {
-                                $eq: ["$_id", "$$variantId"],
-                            },
-                        },
-                    },
-                    {
-                        $project: {
-                            _id: 1,
-                            colorName: 1,
-                        },
-                    },
-                ],
-                as: "variant",
+              },
             },
-        },
-        {
-            $unwind: {
-                path: "$variant",
-                preserveNullAndEmptyArrays: true,
-            },
-        },
-        {
-            $project: {
+            {
+              $project: {
                 _id: 1,
-                variant: 1,
-                size: 1,
-                sku: 1,
-                stock: 1,
-                status: 1,
-                createdAt: 1,
+                colorName: 1,
+              },
             },
+          ],
+          as: "variant",
         },
+      },
+      {
+        $unwind: {
+          path: "$variant",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          variant: 1,
+          size: 1,
+          sku: 1,
+          stock: 1,
+          status: 1,
+          createdAt: 1,
+        },
+      },
     ]);
 
     return result[0];

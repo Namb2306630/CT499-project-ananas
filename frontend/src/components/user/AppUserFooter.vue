@@ -1,7 +1,6 @@
 <script setup>
 //npm i vite-svg-loader dùng ảnh svg như một components
 import Shop from '@/assets/images/shop.svg'
-import Logo from '@/assets/images/Logo_Ananas_Footer.svg'
 import FacebookIcon from '@/assets/icons/icon_facebook.svg'
 import InstagramIcon from '@/assets/icons/icon_instagram.svg'
 import YoutubeIcon from '@/assets/icons/icon_youtube.svg'
@@ -88,7 +87,7 @@ const scrollTop = () => {
                 <div class="footer-links">
                   <router-link to="#">Dứa tuyển dụng</router-link>
                   <router-link to="#">Liên hệ nhượng quyền</router-link>
-                  <router-link to="/about">Về Ananas</router-link>
+                  <router-link to="/about">Về Shin</router-link>
                 </div>
               </div>
 
@@ -102,7 +101,7 @@ const scrollTop = () => {
                 <div class="footer-links">
                   <router-link to="#">Dứa tuyển dụng</router-link>
                   <router-link to="#">Liên hệ nhượng quyền</router-link>
-                  <router-link to="/about">Về Ananas</router-link>
+                  <router-link to="/about">Về Shin</router-link>
                 </div>
               </details>
             </div>
@@ -166,7 +165,7 @@ const scrollTop = () => {
               <div class="row">
                 <div class="col-lg-3 col-12">
                   <h5 class="title">
-                    <p>ANANAS SOCIAL</p>
+                    <p>SHIN SOCIAL</p>
                   </h5>
                   <div class="social">
                     <router-link to="#">
@@ -203,7 +202,7 @@ const scrollTop = () => {
         </div>
       </div>
       <div class="text-center mt-5">
-        <p class="copyright">Copyright &copy; 2026 Ananas. All rights reserved.</p>
+        <p class="copyright">Copyright &copy; 2026 Shin. All rights reserved.</p>
       </div>
     </div>
     <div class="go-top" :class="{ active: showGoTop }" @click="scrollTop">

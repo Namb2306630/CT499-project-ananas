@@ -23,6 +23,14 @@ defineProps({
     type: Boolean,
     default: true,
   },
+  overlay: {
+    type: Boolean,
+    default: false,
+  },
+  width: {
+    type: String,
+    default: '36px',
+  },
 })
 </script>
 
@@ -30,7 +38,7 @@ defineProps({
   <div
     v-if="loading || (error && Object.keys(error).length)"
     class="container-state"
-    :class="{ 'has-sidebar': hasSidebar }"
+    :class="{ 'has-sidebar': hasSidebar, overlay }"
   >
     <!-- Error -->
     <div v-if="Object.keys(error).length" class="error-box">
@@ -40,7 +48,7 @@ defineProps({
 
     <!-- Loading -->
     <div v-else class="loading-box">
-      <div class="spinner"></div>
+      <div class="spinner" :style="{ width: width, height: width }"></div>
       <span v-if="showText">{{ text }}</span>
     </div>
   </div>
@@ -53,9 +61,13 @@ defineProps({
   z-index: 100;
   display: flex;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.7);
 }
-
+.container-state.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(2px);
+}
 /* Loading */
 .loading-box {
   position: fixed;
@@ -84,8 +96,6 @@ defineProps({
 }
 
 .spinner {
-  width: 36px;
-  height: 36px;
   border: 4px solid #ddd;
   border-top-color: var(--color-bule-2);
   border-radius: 50%;

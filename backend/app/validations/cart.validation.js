@@ -15,9 +15,11 @@ exports.createCart = Joi.object({
 });
 
 exports.updateCart = Joi.object({
+  productVariantItem: Joi.string().optional(),
+
   quantity: Joi.number().integer().min(1).messages({
     "number.base": "Số lượng phải là số",
     "number.integer": "Số lượng phải là số nguyên",
     "number.min": "Số lượng phải lớn hơn 0",
   }),
-}).min(0);
+}).min(1);

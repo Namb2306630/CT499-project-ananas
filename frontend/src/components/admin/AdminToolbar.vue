@@ -40,7 +40,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['add', 'edit', 'delete'])
+const emit = defineEmits(['add', 'edit', 'delete', 'update-status'])
 
 const columns = computed(() => {
   return [...props.headers.map((h) => h.width || '1fr'), '120px', '80px'].join(' ')
@@ -88,6 +88,7 @@ const columns = computed(() => {
                 :item="item"
                 @edit="emit('edit', $event)"
                 @delete="emit('delete', $event)"
+                @update-status="emit('update-status', $event)"
                 :headers="headers"
               />
             </template>
@@ -210,7 +211,7 @@ const columns = computed(() => {
   gap: 10px;
   width: 100%;
 }
-.list-scroll {
+/* .list-scroll {
   width: 100%;
   overflow-x: auto;
   scrollbar-width: none;
@@ -226,6 +227,31 @@ const columns = computed(() => {
   flex-direction: column;
   gap: 10px;
 
-  padding: 6px 0; /* để box-shadow không sát mép */
+  padding: 6px 0;
+} */
+
+/* scroll ngag */
+.list-scroll {
+  width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.list-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.list-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  width: max-content;
+  min-width: 100%;
+
+  padding: 6px 0;
 }
 </style>

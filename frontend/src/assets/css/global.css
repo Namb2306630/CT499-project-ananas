@@ -1,3 +1,9 @@
+/* kích cỡ trag */
+.container-custom {
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+
 body {
   margin: 0;
   font-family: Arial, sans-serif;

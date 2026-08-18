@@ -7,9 +7,11 @@ import { useAuthStore } from '@/stores/auth'
 import { useToastStore } from '@/stores/toast'
 import { useRouter } from 'vue-router'
 import { ROLE } from '@/utils/role'
+import { useCartStore } from '@/stores/cart'
 
 const router = useRouter()
 const authStore = useAuthStore()
+const cartStore = useCartStore()
 const toastStore = useToastStore()
 const { error, loading } = storeToRefs(authStore)
 
@@ -38,6 +40,7 @@ const login = async () => {
   const res = await authStore.login(authUser.value)
 
   if (res?.code === 200) {
+    await cartStore.fetchCart()
     toastStore.showToast(res.message)
     const role = res.result?.user?.role
     if (role === ROLE.ADMIN || role === ROLE.SUPER_ADMIN) {

@@ -185,7 +185,7 @@ const openForm = () => {
 .inp-div {
   display: flex;
   align-items: center;
-  width: 50%;
+  width: 40%;
   border: 1px solid var(--border-gray-2);
   border-radius: 10px;
   overflow: hidden;

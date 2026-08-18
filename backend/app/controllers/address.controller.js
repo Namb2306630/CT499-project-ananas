@@ -28,7 +28,6 @@ exports.createAddress = async (req, res, next) => {
       message: "Thêm địa chỉ giao hàng thành công",
     });
   } catch (err) {
-    console.log(err);
     next(err);
   }
 };

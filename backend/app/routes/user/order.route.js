@@ -12,14 +12,20 @@ const authMiddleware = require("../../middlewares/auth.middleware");
 router.post("/", authMiddleware, validate(createOrder), orderController.create);
 
 router.get("/", authMiddleware, orderController.getAll);
-router.get("/user/:userId", authMiddleware, orderController.getByUser);
+router.get("/user", authMiddleware, orderController.getByUser);
 router.get("/:id", authMiddleware, orderController.getById);
 router.patch("/cancel/:id", authMiddleware, orderController.cancelOrder);
+// router.patch(
+//   "/:id",
+//   authMiddleware,
+//   validate(updateOrder),
+//   orderController.update,
+// );
 router.patch(
-  "/:id",
+  "/:orderCode/status",
   authMiddleware,
   validate(updateOrder),
-  orderController.update,
+  orderController.updateStatus,
 );
 
 module.exports = router;

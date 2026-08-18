@@ -3,23 +3,27 @@ import { onMounted, ref, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { useProductVariant } from '@/stores/product-variant'
-import AppLoading from '@/components/common/LoadingState.vue'
 import { formatPrice } from '@/utils/formatCurrency'
 import { useCartStore } from '@/stores/cart'
+import ProductOptions from '@/components/product/ProductOptions.vue'
+import router from '@/router'
+import { ROUTE_NAMES } from '@/constants/routes'
+import { useToastStore } from '@/stores/toast'
+import LoadingState from '@/components/common/LoadingState.vue'
 
 const cartStore = useCartStore()
 const SizeChart = '/banners/Ananas_SizeChart.jpg'
+const toastStore = useToastStore()
 const BASE_URL = import.meta.env.VITE_BACKEND
 const pageLoading = ref(false)
 const route = useRoute()
 const productVariantStore = useProductVariant()
-const showQuantityDropdown = ref(false)
+
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 const { productVariant, loading, error } = storeToRefs(productVariantStore)
 const { carts, error: errorCart, loading: loadingCart } = storeToRefs(cartStore)
 const selectedSize = ref('')
-const showSizeDropdown = ref(false)
 const quantity = ref(1)
-const sizes = ['35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46']
 const errorPayment = ref('')
 const showInformationProduct = ref(false)
 const showWarranty = ref(false)
@@ -34,38 +38,16 @@ onMounted(async () => {
   }
 })
 
-const selectedItem = computed(() => {
-  return productVariant.value?.items?.find((item) => item.size === selectedSize.value)
-})
-
-const selectedStock = computed(() => {
-  return selectedItem.value?.stock ?? 0
-})
-
-const selectQuantity = (value) => {
-  quantity.value = value
-  showQuantityDropdown.value = false
-}
-
-const getSizeItem = (size) => {
-  return productVariant.value?.items?.find((item) => item.size === size)
-}
-const selectSize = (size) => {
-  selectedSize.value = size
-  showSizeDropdown.value = false
-  quantity.value = 1
-}
-
 const addToCart = async () => {
   if (selectedSize.value === '') {
     errorPayment.value = 'Vui lòng chọn Size/Số lượng phù hợp'
     return
   }
 
-  if (quantity.value > selectedStock.value) {
-    errorPayment.value = 'Vui lòng chọn Size/Số lượng phù hợp'
-    return
-  }
+  // if (quantity.value > selectedStock.value) {
+  //   errorPayment.value = 'Vui lòng chọn Size/Số lượng phù hợp'
+  //   return
+  // }
 
   errorPayment.value = ''
 
@@ -75,8 +57,45 @@ const addToCart = async () => {
     quantity: quantity.value,
   })
 
-  if (data) {
+  if (data.code === 200) {
     alert('Thêm sản phẩm vào giỏ hàng thành công')
+  } else {
+    const message =
+      Object.values(cartStore.error.errors)[0] ||
+      cartStore.error.general ||
+      'Thêm sản phẩm vào giỏ hàng thất bại'
+    toastStore.showToast(message, 'error')
+  }
+}
+
+const addPayment = async () => {
+  // pageLoading.value = true
+  try {
+    if (selectedSize.value === '') {
+      errorPayment.value = 'Vui lòng chọn Size/Số lượng phù hợp'
+      return
+    }
+
+    errorPayment.value = ''
+    // await delay(300)
+    const data = await cartStore.create({
+      variantId: productVariant.value._id,
+      size: selectedSize.value,
+      quantity: quantity.value,
+    })
+
+    if (data?.code === 200) {
+      router.push({ name: ROUTE_NAMES.YOU_CART })
+    } else {
+      const message =
+        Object.values(cartStore.error.errors)[0] ||
+        cartStore.error.general ||
+        'Thêm sản phẩm vào giỏ hàng thất bại'
+
+      toastStore.showToast(message, 'error')
+    }
+  } finally {
+    pageLoading.value = false
   }
 }
 
@@ -140,11 +159,13 @@ const handleHear = () => {
 
 <template>
   <div class="product-box">
-    <AppLoading
+    <LoadingState
       v-if="pageLoading"
       :loading="pageLoading"
-      :error="error.general"
       :has-sidebar="false"
+      :overlay="true"
+      :show-text="false"
+      width="30px"
     />
 
     <div v-else-if="productVariant?.product" class="product-title">
@@ -227,65 +248,11 @@ const handleHear = () => {
             <div class="color" :style="{ backgroundColor: productVariant.colorCode }"></div>
           </div>
           <div class="product-actions">
-            <div class="product-options row">
-              <!-- SIZE -->
-              <div class="product-option col-md-6">
-                <span class="option-label">SIZE</span>
-
-                <div class="size-select">
-                  <div class="size-select-display" @click="showSizeDropdown = !showSizeDropdown">
-                    <span>{{ selectedSize || '' }}</span>
-                    <i class="fa-solid fa-chevron-down"></i>
-                  </div>
-
-                  <div v-if="showSizeDropdown" class="size-dropdown">
-                    <button
-                      v-for="size in sizes"
-                      :key="size"
-                      type="button"
-                      class="size-item"
-                      :class="{
-                        selected: selectedSize === size,
-                        disabled: !getSizeItem(size),
-                      }"
-                      :disabled="!getSizeItem(size)"
-                      @click="selectSize(size)"
-                    >
-                      {{ size }}
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              <!-- SỐ LƯỢNG -->
-              <div class="product-option col-md-6">
-                <span class="option-label">SỐ LƯỢNG</span>
-
-                <div class="quantity-select">
-                  <div
-                    class="quantity-select-display"
-                    :class="{ disabled: !selectedSize }"
-                    @click="selectedSize && (showQuantityDropdown = !showQuantityDropdown)"
-                  >
-                    <span>{{ selectedSize ? quantity : '' }}</span>
-                    <i class="fa-solid fa-chevron-down"></i>
-                  </div>
-
-                  <div v-if="showQuantityDropdown" class="quantity-dropdown">
-                    <button
-                      v-for="i in selectedStock"
-                      :key="i"
-                      type="button"
-                      class="quantity-item"
-                      :class="{ selected: quantity === i }"
-                      @click="selectQuantity(i)"
-                    >
-                      {{ i }}
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <ProductOptions
+              v-model:selected-size="selectedSize"
+              v-model:quantity="quantity"
+              :items="productVariant?.items || []"
+            />
 
             <!-- NÚT NHẤN -->
             <div class="product-buttons">
@@ -297,7 +264,7 @@ const handleHear = () => {
             </div>
 
             <!-- THANH TOÁN -->
-            <button class="checkout-button" @click="addToCart">THANH TOÁN</button>
+            <button class="checkout-button" @click="addPayment">THANH TOÁN</button>
             <!-- lỗi chưa chọn size/stock -->
             <p v-if="errorPayment !== ''" class="error error-payment">{{ errorPayment }}</p>
           </div>
@@ -536,139 +503,6 @@ const handleHear = () => {
   border: 1px solid #ddd;
 }
 
-.product-options {
-  color: black;
-  font-weight: bold;
-  font-size: 25px;
-  padding: 20px 0;
-}
-
-.product-option {
-  position: relative;
-}
-
-.option-label {
-  display: block;
-  font-size: 25px;
-  font-weight: bold;
-  margin-bottom: 12px;
-}
-
-/* SIZE */
-.size-select {
-  position: relative;
-  width: 100%;
-}
-
-.size-select-display {
-  height: 43px;
-  border: 1px solid var(--text-gray-3);
-  padding: 0 15px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 18px;
-  cursor: pointer;
-  background: white;
-}
-
-.size-dropdown {
-  position: absolute;
-  top: calc(100% + 4px);
-  left: 0;
-  width: 100%;
-  padding: 6px;
-  background: white;
-  border: 1px solid var(--border-gray-2);
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
-  z-index: 100;
-}
-
-.size-item {
-  height: 60px;
-  border: 1px solid #999;
-  background: white;
-  font-size: 18px;
-  cursor: pointer;
-}
-
-.size-item:hover:not(:disabled) {
-  background: var(--color-25);
-}
-
-.size-item.selected {
-  border: 2px solid black;
-  font-weight: bold;
-}
-
-/* Size không có trong DB */
-.size-item.disabled {
-  color: var(--text-gray-3);
-  background: #fafafa;
-  cursor: not-allowed;
-}
-
-/* SỐ LƯỢNG */
-.quantity-select {
-  position: relative;
-  width: 100%;
-}
-
-.quantity-select-display {
-  height: 43px;
-  border: 1px solid var(--text-gray-3);
-  padding: 0 15px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 18px;
-  background: white;
-  cursor: pointer;
-}
-
-.quantity-select-display.disabled {
-  background: var(--color-25);
-  color: var(--text-gray-3);
-  cursor: not-allowed;
-}
-
-.quantity-dropdown {
-  position: absolute;
-  top: calc(100% + 4px);
-  left: 0;
-  width: 100%;
-  box-sizing: border-box;
-  padding: 6px;
-  background: white;
-  border: 1px solid var(--text-gray-3);
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
-  z-index: 100;
-  max-height: 240px;
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-
-.quantity-item {
-  height: 60px;
-  border: 1px solid #999;
-  background: white;
-  font-size: 18px;
-  cursor: pointer;
-}
-
-.quantity-item:hover {
-  background: var(--color-25);
-}
-
-.quantity-item.selected {
-  border: 2px solid black;
-  font-weight: bold;
-}
-
 .product-buttons {
   width: 100%;
   display: flex;
@@ -708,11 +542,10 @@ const handleHear = () => {
   background: var(--color-23);
   color: white;
   font-size: 22px;
-
   font-weight: bold;
   cursor: pointer;
   border: none;
-  margin: 30px 0 0 0;
+  margin: 10px 0 0 0;
 }
 
 .informationn-box div {

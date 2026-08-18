@@ -22,7 +22,7 @@ const handleClick = (routeName) => {
     <div class="banner1" @click="handleClick(ROUTE_NAMES.PRODUCT_LISTS)">
       <img :src="Banner1" alt="banner" />
     </div>
-    <div class="banner-center">
+    <div class="banner-center container-custom">
       <div class="banner23">
         <div class="banner2">
           <img :src="Banner2" alt="banner" @click="handleClick(ROUTE_NAMES.PRODUCT_LISTS)" />
@@ -108,8 +108,8 @@ const handleClick = (routeName) => {
 }
 
 .banner-center {
-  max-width: var(--max-width);
-  margin: 0 auto;
+  /* max-width: var(--max-width);
+  margin: 0 auto; */
   margin-top: 60px;
   margin-bottom: 60px;
 }

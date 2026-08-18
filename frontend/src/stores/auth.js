@@ -52,9 +52,14 @@ export const useAuthStore = defineStore('auth', {
     // Logout
     async logout() {
       try {
-        await service.logout()
-      } finally {
+        const res = await service.logout()
+
         this.user = null
+
+        return res.data
+      } catch (error) {
+        this.user = null
+        throw error
       }
     },
 
@@ -66,7 +71,7 @@ export const useAuthStore = defineStore('auth', {
 
       try {
         const res = await service.register(payload)
-
+        await this.getMe()
         return res.data
       } catch (error) {
         const data = error.response?.data
@@ -94,12 +99,18 @@ export const useAuthStore = defineStore('auth', {
     async login(payload) {
       this.loading = true
       this.clearError()
+
       const startTime = Date.now()
+
       try {
         const res = await service.login(payload)
+
+        await this.getMe()
+
         return res.data
       } catch (error) {
         const data = error.response?.data
+
         this.error = {
           code: data?.code || 500,
           general: data?.message || 'Lỗi đăng nhập, vui lòng thử lại sau!',
@@ -109,11 +120,13 @@ export const useAuthStore = defineStore('auth', {
         return null
       } finally {
         const elapsed = Date.now() - startTime
+
         if (elapsed < 300) {
           await new Promise((resolve) => {
             setTimeout(resolve, 300 - elapsed)
           })
         }
+
         this.loading = false
       }
     },

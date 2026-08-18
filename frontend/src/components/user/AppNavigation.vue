@@ -61,7 +61,7 @@ onUnmounted(() => {
 
 <template>
   <header class="header-box">
-    <div class="header-box-inner">
+    <div class="header-box-inner container-custom">
       <LogoApp
         class="header-logo"
         color-icon="var(--color-23)"
@@ -133,11 +133,9 @@ onUnmounted(() => {
             </div>
           </div>
 
-          <!-- NGĂN CÁCH -->
           <div v-if="index < categories.length - 1" class="border"></div>
         </template>
         <div class="border"></div>
-        <!-- DISCOVER YOU -->
         <div class="discover-you" @click="routerDiscoverYou">
           <img :src="DiscoverYOU" alt="DiscoverYOU" />
         </div>
@@ -240,11 +238,11 @@ onUnmounted(() => {
 }
 
 .mega-menu-inner {
-  width: var(--max-width);
   margin: 0 auto;
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 30px;
+  max-width: var(--max-width);
 }
 
 .mega-menu-section {

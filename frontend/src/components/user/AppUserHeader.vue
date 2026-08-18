@@ -1,23 +1,33 @@
 <script setup>
-import { ROUTE_NAMES } from '@/constants/routes';
-import { useAuthStore } from '@/stores/auth';
-import { storeToRefs } from 'pinia';
-import { useRouter } from 'vue-router';
-import { useToastStore } from '@/stores/toast';
-import { onMounted, computed, ref } from 'vue';
+import { ROUTE_NAMES } from '@/constants/routes'
+import { useAuthStore } from '@/stores/auth'
+import { useCartStore } from '@/stores/cart'
+import { storeToRefs } from 'pinia'
+import { useRouter } from 'vue-router'
+import { useToastStore } from '@/stores/toast'
+import { onMounted, computed, ref } from 'vue'
+import LoadingState from '../common/LoadingState.vue'
+
 const BASE_URL = import.meta.env.VITE_BACKEND
 const authStore = useAuthStore()
+const cartStore = useCartStore()
 const { user } = storeToRefs(authStore)
+const { cart } = storeToRefs(cartStore)
 const router = useRouter()
 const toastStore = useToastStore()
 const isUserMenuOpen = ref(false)
-
+const pageLoading = ref(false)
 const toggleUserMenu = () => {
   isUserMenuOpen.value = !isUserMenuOpen.value
 }
-// onMounted(async () => {
-//   await authStore.getMe()
-// })
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
+onMounted(async () => {
+  await authStore.getMe()
+
+  if (authStore.user) {
+    await cartStore.fetchCart()
+  }
+})
 
 const avatarUrl = computed(() => {
   if (!user.value?.avatar) {
@@ -32,16 +42,33 @@ const avatarUrl = computed(() => {
   return `${BASE_URL}/${user.value.avatar}`
 })
 const handleLogout = async () => {
-  const res = await authStore.logout()
-  if (res.code === 200) {
-    router.push({ name: ROUTE_NAMES.HOME })
-  } else {
-    toastStore.showToast("Lỗi đăng xuất, vui lòng thử lại!!", 'error')
+  pageLoading.value = true
+  try {
+    await delay(500)
+    await authStore.logout()
+    cartStore.cart = {
+      items: [],
+    }
+    await router.replace({
+      name: ROUTE_NAMES.HOME,
+    })
+  } catch {
+    toastStore.showToast('Lỗi đăng xuất, vui lòng thử lại!!', 'error')
+  } finally {
+    pageLoading.value = false
   }
 }
 </script>
 
 <template>
+  <LoadingState
+    v-if="pageLoading"
+    :loading="pageLoading"
+    :has-sidebar="false"
+    :overlay="true"
+    :show-text="false"
+    width="30px"
+  />
   <header class="header-box">
     <div class="header-box-inner">
       <RouterLink to="#">
@@ -56,10 +83,23 @@ const handleLogout = async () => {
         <i class="fa-solid fa-heart"></i>
         <p>Yêu thích</p>
       </RouterLink>
-      <RouterLink to="#">
-        <i class="fa-brands fa-shopify"></i>
-        <p>Giỏ hàng</p>
-      </RouterLink>
+      <div class="cart-wrapper">
+        <RouterLink :to="{ name: ROUTE_NAMES.YOU_CART }" class="cart-link">
+          <i class="fa-brands fa-shopify"></i>
+          <p>
+            Giỏ hàng
+            <span v-if="cart?.items?.length"> ({{ cart.items.length }}) </span>
+          </p>
+        </RouterLink>
+
+        <div v-if="!cart?.items?.length" class="cart-dropdown">
+          <div class="empty-cart">
+            <i class="fa-solid fa-cart-shopping"></i>
+            <p>Giỏ hàng trống</p>
+            <span>Chưa có sản phẩm nào trong giỏ hàng</span>
+          </div>
+        </div>
+      </div>
       <RouterLink v-if="!user" :to="{ name: ROUTE_NAMES.LOGIN }">
         <i class="fa-solid fa-user"></i>
         <p>Đăng nhập</p>
@@ -74,7 +114,7 @@ const handleLogout = async () => {
             <i class="fa-solid fa-user"></i>
             <span>Tài khoản</span>
           </RouterLink>
-          <RouterLink to="#">
+          <RouterLink :to="{ name: ROUTE_NAMES.MY_ORDERS }">
             <i class="fa-solid fa-cube"></i>
             <span>Đơn mua</span>
           </RouterLink>
@@ -84,7 +124,6 @@ const handleLogout = async () => {
           </button>
         </div>
       </div>
-
     </div>
   </header>
 </template>
@@ -138,8 +177,6 @@ const handleLogout = async () => {
   cursor: pointer;
 }
 
-
-
 .user-dropdown i {
   width: 18px;
 }
@@ -153,7 +190,6 @@ const handleLogout = async () => {
 
 .header-box {
   background-color: var(--bg-footer-color);
-
 }
 
 .header-box-inner {
@@ -181,7 +217,7 @@ const handleLogout = async () => {
   transition: background-color 0.2s ease;
 }
 
-.header-box-inner div:not(.user-dropdown):hover,
+/* .header-box-inner div:not(.user-dropdown):hover, */
 .header-box-inner a:hover,
 .user-dropdown button:hover {
   background-color: rgba(0, 0, 0, 0.2);
@@ -202,5 +238,67 @@ const handleLogout = async () => {
   color: white;
   padding: 5px;
   font-size: 15px;
+}
+
+.cart-wrapper {
+  position: relative;
+}
+
+.cart-link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  padding: 5px 8px;
+}
+
+.cart-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  width: 280px;
+  padding: 20px;
+  background: white;
+  border-radius: 5px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(5px);
+
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease,
+    visibility 0.2s ease;
+}
+
+.cart-wrapper:hover .cart-dropdown {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.empty-cart {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.empty-cart i {
+  font-size: 32px;
+  color: #999;
+  margin-bottom: 10px;
+}
+
+.empty-cart p {
+  margin: 0 0 5px;
+  color: #333;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.empty-cart span {
+  color: #777;
+  font-size: 13px;
 }
 </style>
