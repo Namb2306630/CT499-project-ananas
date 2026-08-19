@@ -1,15 +1,17 @@
 <script setup>
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
 import { useOrderStore } from '@/stores/order'
 import { formatCurrency } from '@/utils/formatCurrency'
+import LoadingState from '@/components/common/LoadingState.vue'
+
 const BASE_URL = import.meta.env.VITE_BACKEND
 const router = useRouter()
 const orderStore = useOrderStore()
-
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 const { orders, loading, error } = storeToRefs(orderStore)
-
+const pageLoading = ref(false)
 /**
  * Format giờ
  */
@@ -100,6 +102,18 @@ const goToDetail = (orderCode) => {
   router.push(`/orders/${orderCode}`)
 }
 
+// hủy đơn hàng
+const cancelOrder = async (id) => {
+  pageLoading.value = true
+  try {
+    await delay(300)
+    await orderStore.cancelOrder(id)
+    await orderStore.fetchMyOrders()
+  } finally {
+    pageLoading.value = false
+  }
+}
+
 onMounted(async () => {
   await orderStore.fetchMyOrders()
 })
@@ -107,6 +121,14 @@ onMounted(async () => {
 
 <template>
   <div class="order-page">
+    <LoadingState
+      v-if="pageLoading"
+      :loading="pageLoading"
+      :has-sidebar="false"
+      :overlay="true"
+      :show-text="false"
+      width="30px"
+    />
     <div class="container">
       <!-- ================= HEADER ================= -->
       <div class="order-header">
@@ -173,8 +195,17 @@ onMounted(async () => {
               </div>
             </div>
 
-            <div class="order-status" :class="getOrderStatusClass(order.orderStatus)">
-              {{ getOrderStatus(order.orderStatus) }}
+            <div class="status-box">
+              <div class="order-status" :class="getOrderStatusClass(order.orderStatus)">
+                {{ getOrderStatus(order.orderStatus) }}
+              </div>
+              <div
+                v-if="getOrderStatus(order.orderStatus) === 'Chờ xác nhận'"
+                class="order-cancel"
+                @click="cancelOrder(order._id)"
+              >
+                Hủy đơn hàng
+              </div>
             </div>
           </div>
 
@@ -310,14 +341,11 @@ onMounted(async () => {
 
 .order-loading {
   min-height: 350px;
-
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-
   gap: 15px;
-
   color: #777;
 }
 
@@ -333,11 +361,8 @@ onMounted(async () => {
   display: flex;
   align-items: center;
   gap: 15px;
-
   padding: 20px;
-
   border: 1px solid #f5c2c7;
-
   background: #f8d7da;
   color: #842029;
 }
@@ -361,28 +386,22 @@ onMounted(async () => {
 
 .empty-order {
   min-height: 400px;
-
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-
   text-align: center;
 }
 
 .empty-icon {
   width: 90px;
   height: 90px;
-
   display: flex;
   justify-content: center;
   align-items: center;
-
   margin-bottom: 20px;
-
   border: 1px solid #ddd;
   border-radius: 50%;
-
   font-size: 32px;
   color: #777;
 }
@@ -402,14 +421,10 @@ onMounted(async () => {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-
   padding: 12px 25px;
-
   background: #000;
   color: #fff;
-
   text-decoration: none;
-
   transition: 0.2s;
 }
 
@@ -433,9 +448,7 @@ onMounted(async () => {
 
 .order-card {
   overflow: hidden;
-
   border: 1px solid #e5e5e5;
-
   background: #fff;
 }
 
@@ -447,9 +460,7 @@ onMounted(async () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-
   padding: 18px 22px;
-
   border-bottom: 1px solid #eee;
 }
 
@@ -493,9 +504,7 @@ onMounted(async () => {
 .status-badge {
   display: inline-flex;
   align-items: center;
-
   padding: 6px 12px;
-
   font-size: 15px;
   font-weight: 500;
 }
@@ -531,9 +540,7 @@ onMounted(async () => {
 .order-product {
   display: flex;
   gap: 20px;
-
   padding: 20px 0;
-
   border-bottom: 1px dashed #ddd;
 }
 
@@ -546,11 +553,8 @@ onMounted(async () => {
 .product-image {
   width: 110px;
   height: 110px;
-
   flex: 0 0 110px;
-
   overflow: hidden;
-
   background: #f5f5f5;
 }
 
@@ -567,16 +571,13 @@ onMounted(async () => {
 
 .product-info {
   min-width: 0;
-
   flex: 1;
-
   display: flex;
   flex-direction: column;
 }
 
 .product-name {
   margin: 0 0 10px;
-
   font-size: 16px;
   font-weight: 600;
 }
@@ -585,9 +586,7 @@ onMounted(async () => {
   display: flex;
   flex-wrap: wrap;
   gap: 8px 20px;
-
   color: #777;
-
   font-size: 15px;
 }
 
@@ -600,7 +599,6 @@ onMounted(async () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-
   margin-top: auto;
   padding-top: 12px;
 }
@@ -623,11 +621,8 @@ onMounted(async () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-
   padding: 18px 22px;
-
   border-top: 1px solid #eee;
-
   background: #fafafa;
 }
 
@@ -667,7 +662,6 @@ onMounted(async () => {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-
   gap: 5px;
 }
 
@@ -688,7 +682,6 @@ onMounted(async () => {
 .order-actions {
   display: flex;
   justify-content: flex-end;
-
   padding: 0 22px 20px;
 }
 
@@ -708,6 +701,21 @@ onMounted(async () => {
 .btn-detail:hover {
   background: #000;
   color: #fff;
+}
+
+.status-box {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.order-cancel {
+  color: #fff;
+  background-color: var(--color-23);
+  text-align: center;
+  padding: 6px 0;
+  font-weight: bolder;
+  cursor: pointer;
 }
 
 /* =====================================================

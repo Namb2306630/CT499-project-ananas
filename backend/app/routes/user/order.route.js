@@ -14,7 +14,7 @@ router.post("/", authMiddleware, validate(createOrder), orderController.create);
 router.get("/", authMiddleware, orderController.getAll);
 router.get("/user", authMiddleware, orderController.getByUser);
 router.get("/:id", authMiddleware, orderController.getById);
-router.patch("/cancel/:id", authMiddleware, orderController.cancelOrder);
+router.patch("/:id/cancel", authMiddleware, orderController.cancelOrder);
 // router.patch(
 //   "/:id",
 //   authMiddleware,
